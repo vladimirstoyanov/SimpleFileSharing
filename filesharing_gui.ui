@@ -1,0 +1,182 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<ui version="4.0">
+ <class>FileSharing_GUI</class>
+ <widget class="QMainWindow" name="FileSharing_GUI">
+  <property name="geometry">
+   <rect>
+    <x>0</x>
+    <y>0</y>
+    <width>500</width>
+    <height>307</height>
+   </rect>
+  </property>
+  <property name="minimumSize">
+   <size>
+    <width>500</width>
+    <height>300</height>
+   </size>
+  </property>
+  <property name="windowTitle">
+   <string>Simple File Sharing by Vladimir Stoyanov</string>
+  </property>
+  <widget class="QWidget" name="centralWidget">
+   <widget class="QPushButton" name="pushButton">
+    <property name="geometry">
+     <rect>
+      <x>0</x>
+      <y>60</y>
+      <width>131</width>
+      <height>23</height>
+     </rect>
+    </property>
+    <property name="text">
+     <string>Scan Network</string>
+    </property>
+   </widget>
+   <widget class="QTreeWidget" name="treeWidget">
+    <property name="geometry">
+     <rect>
+      <x>0</x>
+      <y>90</y>
+      <width>151</width>
+      <height>192</height>
+     </rect>
+    </property>
+    <property name="cursor" stdset="0">
+     <cursorShape>PointingHandCursor</cursorShape>
+    </property>
+    <property name="focusPolicy">
+     <enum>Qt::WheelFocus</enum>
+    </property>
+    <column>
+     <property name="text">
+      <string notr="true">1</string>
+     </property>
+    </column>
+   </widget>
+   <widget class="QTableView" name="tableView">
+    <property name="geometry">
+     <rect>
+      <x>160</x>
+      <y>40</y>
+      <width>256</width>
+      <height>192</height>
+     </rect>
+    </property>
+   </widget>
+   <widget class="QPushButton" name="pushButton_2">
+    <property name="geometry">
+     <rect>
+      <x>330</x>
+      <y>250</y>
+      <width>80</width>
+      <height>23</height>
+     </rect>
+    </property>
+    <property name="text">
+     <string>Download</string>
+    </property>
+   </widget>
+   <widget class="QPushButton" name="pushButton_3">
+    <property name="geometry">
+     <rect>
+      <x>0</x>
+      <y>30</y>
+      <width>131</width>
+      <height>23</height>
+     </rect>
+    </property>
+    <property name="text">
+     <string>Scan IP</string>
+    </property>
+   </widget>
+   <widget class="QPushButton" name="pushButton_4">
+    <property name="geometry">
+     <rect>
+      <x>240</x>
+      <y>250</y>
+      <width>80</width>
+      <height>23</height>
+     </rect>
+    </property>
+    <property name="text">
+     <string>Select All</string>
+    </property>
+   </widget>
+   <widget class="QPushButton" name="pushButton_5">
+    <property name="geometry">
+     <rect>
+      <x>150</x>
+      <y>250</y>
+      <width>80</width>
+      <height>23</height>
+     </rect>
+    </property>
+    <property name="text">
+     <string>Select None</string>
+    </property>
+   </widget>
+  </widget>
+  <widget class="QMenuBar" name="menuBar">
+   <property name="geometry">
+    <rect>
+     <x>0</x>
+     <y>0</y>
+     <width>500</width>
+     <height>20</height>
+    </rect>
+   </property>
+   <widget class="QMenu" name="menuAdd">
+    <property name="title">
+     <string>Share</string>
+    </property>
+    <addaction name="actionFilie_or_Directory"/>
+   </widget>
+   <widget class="QMenu" name="menuHelp">
+    <property name="title">
+     <string>Help</string>
+    </property>
+    <addaction name="actionWhat_s_This"/>
+    <addaction name="actionAbout"/>
+   </widget>
+   <widget class="QMenu" name="menuOptions">
+    <property name="title">
+     <string>Settings</string>
+    </property>
+    <addaction name="actionDownloaded_Directory"/>
+    <addaction name="actionSet_network"/>
+   </widget>
+   <addaction name="menuAdd"/>
+   <addaction name="menuOptions"/>
+   <addaction name="menuHelp"/>
+  </widget>
+  <action name="actionFilie_or_Directory">
+   <property name="text">
+    <string>Filie</string>
+   </property>
+  </action>
+  <action name="actionWhat_s_This">
+   <property name="text">
+    <string>What's This</string>
+   </property>
+  </action>
+  <action name="actionAbout">
+   <property name="text">
+    <string>About</string>
+   </property>
+  </action>
+  <action name="actionDownloaded_Directory">
+   <property name="text">
+    <string>Download directory</string>
+   </property>
+  </action>
+  <action name="actionSet_network">
+   <property name="text">
+    <string>Set network</string>
+   </property>
+  </action>
+ </widget>
+ <layoutdefault spacing="6" margin="11"/>
+ <resources/>
+ <connections/>
+</ui>

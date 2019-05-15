@@ -26,7 +26,7 @@ void MyServer::StartServer()
 {
     if (!this->listen(QHostAddress::Any, 26001)) //listen on 26001 port
     {
-        QMessageBox::critical(0,"Error!", "Can't share files! Please open port 26001 on your firewall!");
+        QMessageBox::critical(nullptr,"Error!", "Can't share files! Please open port 26001 on your firewall!");
     }
 }
 

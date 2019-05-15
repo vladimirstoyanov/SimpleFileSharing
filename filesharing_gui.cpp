@@ -500,7 +500,7 @@ void FileSharing_GUI::on_downloadButton_clicked()
                 continue;
             }
             double sizeDouble = m_model->item(i,3)->text().toDouble();
-            qint64 size = sizeDouble *1000;
+            qint64 size = sizeDouble * 1000;
             std::shared_ptr<Client> thread  = std::make_shared<Client>(m_currentHost,query, m_model->item(i,0)->text(),dir,size,i);
             connect(thread.get(), SIGNAL( setProgress(int,double) ), this, SLOT( on_setProgress(int,double) ));
             thread->start();

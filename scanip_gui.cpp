@@ -65,7 +65,7 @@ void ScanIP_GUI::on_okButton_clicked()
     if (m_ui->lineEdit->text() == "" || m_ui->lineEdit_2->text() == "" || m_ui->lineEdit_3->text() == "" || m_ui->lineEdit_4->text() == "")
     {
         QApplication::restoreOverrideCursor();
-        QMessageBox::critical(0,"Error!", "Wrong IP address: " + ip);
+        QMessageBox::critical(nullptr,"Error!", "Wrong IP address: " + ip);
         return;
     }
 
@@ -78,7 +78,7 @@ void ScanIP_GUI::on_okButton_clicked()
     else
     {
         QApplication::restoreOverrideCursor();
-        QMessageBox::critical(0,"Error!", "Couldn't connect to: " + ip);
+        QMessageBox::critical(nullptr,"Error!", "Couldn't connect to: " + ip);
     }
     QApplication::restoreOverrideCursor();
 }

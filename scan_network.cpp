@@ -93,7 +93,7 @@ int ScanNetwork::scanIP(const QString &ip)
     ncHello[2]='\n';
     socket.write(ncHello,3);
 
-    delete ncHello;
+    delete []ncHello;
 
     QByteArray ba1;
     content ="";

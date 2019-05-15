@@ -218,9 +218,9 @@ void AddFile_GUI::load()
     while(!in.atEnd())
     {
         QString line = in.readLine();
-        int index =0;
+        unsigned int index =0;
         QString fileTag = "<file>";
-        search.searchAfter(line, fileTag, &index);
+        search.searchAfter(line, fileTag, index);
         if (index != fileTag.length())
         {
             return;
@@ -250,7 +250,7 @@ void AddFile_GUI::load()
         line = in.readLine();
         index = 0;
         fileTag = "</file>";
-        search.searchAfter(line,fileTag, &index);
+        search.searchAfter(line,fileTag, index);
         if (index != fileTag.length())
         {
             return;
@@ -311,9 +311,9 @@ QList< QList<QString> > AddFile_GUI::getListWithSharedFiles()
     while(!in.atEnd())
     {
         QString line = in.readLine();
-        int index =0;
+        unsigned int index =0;
         QString fileTag = "<file>";
-        search.searchAfter(line, fileTag, &index);
+        search.searchAfter(line, fileTag, index);
         if (index != fileTag.length())
         {
             file.close();
@@ -347,7 +347,7 @@ QList< QList<QString> > AddFile_GUI::getListWithSharedFiles()
         line = in.readLine();
         index = 0;
         fileTag = "</file>";
-        search.searchAfter(line, fileTag, &index);
+        search.searchAfter(line, fileTag, index);
         if (index != fileTag.length())
         {
             file.close();

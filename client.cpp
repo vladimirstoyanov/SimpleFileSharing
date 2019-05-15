@@ -28,8 +28,8 @@ Client::Client(const QString &hostAdress,
     , m_hostIp(hostAdress)
     , m_fileDir (fileDir)
     , m_fileName(fileName)
-    , m_fileSize (size)
     , m_query(query)
+    , m_fileSize (size)
 {
 }
 
@@ -96,7 +96,7 @@ void Client::run()
             double a = b/(m_fileSize*1.0);
             percentage = 100*a;
             //qDebug()<<QString::number(procentage) + "% " +QString::number(a) + " " + QString::number(file_size);
-            if (percentage != 100)
+            if (percentage != 100.0)
             {
                 emit setProgress(m_row, percentage);
             }

@@ -69,7 +69,7 @@ private slots:
 
 
 signals:
-    void Bytes(quint32); //ToDo: change the name to bytes
+    void Bytes(qint64); //ToDo: change the name to bytes
 };
 
 #endif // SERVER_H

@@ -25,8 +25,8 @@ class Search {
         Search();
         virtual ~Search();
 
-        void searchBefore(const QString &text, const QString &subtext, int *index);
-        void searchAfter(const QString &text, const QString &subtext, int *index);
+        bool searchBefore(const QString &text, const QString &subtext, unsigned int &index);
+        bool searchAfter(const QString &text, const QString &subtext, unsigned int &index);
         int  getTextBetweenTwoStrings(const QString &line, const QString &str1, const QString &str2, QString &text);
 
 };

@@ -33,14 +33,14 @@ Search::~Search()
 
 }
 
-void Search::searchBefore(const QString &text, const QString &subtext, int *index)
+bool Search::searchBefore(const QString &text, const QString &subtext, unsigned int &index)
 {
     vector<int> T(subtext.length() + 1, -1);
 
     if(subtext.length() == 0 && subtext.length()>text.length())
     {
-        *index = -1;
-        return;
+        index = 0;
+        return false;
     }
     for(int i = 1; i <= subtext.length(); i++)
     {
@@ -49,31 +49,34 @@ void Search::searchBefore(const QString &text, const QString &subtext, int *inde
             T[i] = pos + 1;
     }
 
-    int sp = *index;
+    int sp = index;
     int kp = 0;
     while(sp < text.length())
     {
         while(kp != -1 && (kp == subtext.length() || subtext[kp] != text[sp]))
+        {
             kp = T[kp];
+        }
         kp++;
         sp++;
         if(kp == subtext.length())
         {
-            *index = sp - subtext.length();
-            return;
+            index = sp - subtext.length();
+            return true;
         }
     }
 
-    *index = -1;
+    index = 0;
+    return false;
 }
-void Search::searchAfter(const QString &text, const QString &subtext, int *index)
+bool Search::searchAfter(const QString &text, const QString &subtext, unsigned int &index)
 {
     vector<int> T(subtext.length() + 1, -1);
 
     if(subtext.length() == 0 && subtext.length()>text.length())
     {
-        *index = -1;
-        return;
+        index = 0;
+        return false;
     }
     for(int i = 1; i <= subtext.length(); i++)
     {
@@ -82,36 +85,46 @@ void Search::searchAfter(const QString &text, const QString &subtext, int *index
             T[i] = pos + 1;
     }
 
-    int sp = *index;
+    int sp = index;
     int kp = 0;
     while(sp < text.length())
     {
         while(kp != -1 && (kp == subtext.length() || subtext[kp] != text[sp]))
+        {
             kp = T[kp];
+        }
         kp++;
         sp++;
         if(kp == subtext.length())
         {
             //matches.push_back(sp - K.size());
-            *index = sp;
-            return;
+            index = sp;
+            return true;
         }
     }
 
-    *index = -1;
+    index = 0;
+    return false;
 }
 
 int  Search::getTextBetweenTwoStrings(const QString &line, const QString &str1, const QString &str2, QString &text)
 {
-    int index=0, index1= 0;
-    searchAfter(line, str1, &index);
-    searchBefore(line,str2, &index1);
-    if (index==-1 || index == -1 || index1<index)
+    unsigned int index=0, index1= 0;
+    if (!searchAfter(line, str1, index))
     {
         return 1;
     }
 
-    for(int i=index; i<index1; i++)
+    if (!searchBefore(line,str2, index1))
+    {
+        return 1;
+    }
+    if (index1<index)
+    {
+        return 1;
+    }
+
+    for(unsigned int i=index; i<index1; i++)
     {
         text+=line[i];
     }

@@ -42,7 +42,7 @@ class AddFile_GUI : public QDialog
     Q_OBJECT
 
 public:
-    explicit AddFile_GUI(QWidget *parent = 0);
+    explicit AddFile_GUI(QWidget *parent = nullptr);
     virtual ~AddFile_GUI();
 
     //ToDo: move the below list to the private section

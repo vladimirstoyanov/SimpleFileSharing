@@ -18,7 +18,7 @@
 #include "data.h"
 
 Data::Data():
-    m_arguments (0)
+    m_arguments (nullptr)
     , m_Fl (0)
     , m_size (0)
     , m_string (nullptr)
@@ -47,10 +47,10 @@ void Data::fromChar(const char *s)
 
     m_size = 0;
     m_type = 0;
-    m_string = 0;
+    m_string = nullptr;
     m_arguments = "";
 
-    int lenPos = 0;
+    unsigned int lenPos = 0;
     for(unsigned int i=0; i<strlen(s); i++)
     {
         if(s[i]=='\t') //get type

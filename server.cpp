@@ -34,12 +34,12 @@ Server::~Server()
 void Server::ReadyRead()
 {
     qDebug()<<"Ready read..";
-    int bytes = m_tcpSocket->bytesAvailable();
+    qint64 bytes = m_tcpSocket->bytesAvailable();
     emit Bytes(bytes);
 
     char *buf = new char[bytes];
     m_tcpSocket->read(buf,bytes);
-    m_socketData.append(buf,bytes); //QByteArray
+    m_socketData.append(buf,  bytes); //FIXME
     delete []buf;
 
     parseData();
@@ -136,7 +136,7 @@ void Server::parseData()
                 index+=8192;
                 QByteArray sendData;
                 sendData = part.toLocal8Bit();
-                d.fromChar(sendData,0,NC_RECV_LIST);
+                d.fromChar(sendData,nullptr,NC_RECV_LIST);
                 send(d.getString(), d.getSize());
                 while (index < sharedFiles.length())
                 {
@@ -185,6 +185,7 @@ Data Server::returnData()
 
 void Server::SockError(QAbstractSocket::SocketError error)
 {
+    qDebug()<<__PRETTY_FUNCTION__<<':'<<error;
     m_tcpSocket->close();
 }
 

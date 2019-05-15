@@ -1,4 +1,4 @@
 simpleFileSharing
 =================
 
-File sharing program created with Qt.
+A file sharing program created with Qt.

@@ -17,16 +17,17 @@
 
 #ifndef SEARCH_H
 #define SEARCH_H
+
 #include <QString>
 
-class CSearch {
+class Search {
     public:
-        CSearch();
-        ~CSearch();
+        Search();
+        virtual ~Search();
 
-        void Search_Before(QString text, QString subtext, int *index);
-        void Search_After(QString text, QString subtext, int *index);
-        int getTextBetweenTwoStrings(QString line, QString str1, QString str2, QString &text); //get text between 'str1' and 'str2' from 'line' and set it to 'text' variable
+        void searchBefore(const QString &text, const QString &subtext, int *index);
+        void searchAfter(const QString &text, const QString &subtext, int *index);
+        int  getTextBetweenTwoStrings(const QString &line, const QString &str1, const QString &str2, QString &text);
 
 };
 

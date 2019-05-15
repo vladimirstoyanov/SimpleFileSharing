@@ -18,10 +18,12 @@
 #ifndef SETNETWORK_GUI_H
 #define SETNETWORK_GUI_H
 
+#include <memory>
+
 #include <QDialog>
 
 /*
-  From menu: Settings->Set network
+  menu: "Settings"->"Set network"
 */
 
 namespace Ui {
@@ -34,19 +36,22 @@ class SetNetwork_GUI : public QDialog
 
 public:
     explicit SetNetwork_GUI(QWidget *parent = 0);
-    ~SetNetwork_GUI();
+    virtual ~SetNetwork_GUI();
+
     QString load();
 
 private slots:
-    void on_pushButton_clicked(); //'OK' button
-    void on_pushButton_2_clicked(); //'Cancel' button
     void addNetworksToComboBox();
-
+    void on_okButton_clicked(); //"OK" button
+    void on_cancelButton_clicked(); //"Cancel" button
 
 private:
-    Ui::SetNetwork_GUI *ui;
+    std::shared_ptr<Ui::SetNetwork_GUI> m_ui;
+
+private:
     void showEvent(QShowEvent *);
     void save ();
+
 };
 
 #endif // SETNETWORK_GUI_H

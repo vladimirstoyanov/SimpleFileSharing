@@ -18,14 +18,17 @@
 #ifndef SETDIR_GUI_H
 #define SETDIR_GUI_H
 
+#include <memory>
+
 #include <QDialog>
 
-namespace Ui {
-class SetDir_GUI;
+namespace Ui
+{
+    class SetDir_GUI;
 }
 
 /*
- From menu: Settings->Download directory
+  menu: "Settings"->"Download directory"
 */
 
 class SetDir_GUI : public QDialog
@@ -34,15 +37,17 @@ class SetDir_GUI : public QDialog
 
 public:
     explicit SetDir_GUI(QWidget *parent = 0);
-    ~SetDir_GUI();
+    virtual ~SetDir_GUI();
     QString load();
 
 private slots:
-    void on_pushButton_3_clicked(); //'OK' button
-    void on_pushButton_clicked();  //'Choose Directory' button clicked
+    void on_chooseDirectoryButton_clicked();  //"Choose Directory" button clicked
+    void on_okButton_clicked(); //"OK" button
 
 private:
-    Ui::SetDir_GUI *ui;
+    std::shared_ptr<Ui::SetDir_GUI> m_ui;
+
+private:
     void save ();
     void showEvent( QShowEvent *event );
 };

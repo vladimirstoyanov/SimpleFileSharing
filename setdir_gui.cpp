@@ -23,32 +23,31 @@
 
 SetDir_GUI::SetDir_GUI(QWidget *parent) :
     QDialog(parent),
-    ui(new Ui::SetDir_GUI)
+    m_ui(std::make_shared<Ui::SetDir_GUI> ())
 {
-    ui->setupUi(this);
+    m_ui->setupUi(this);
     this->setFixedSize(this->width(), this->height());
 }
 
 SetDir_GUI::~SetDir_GUI()
 {
-    delete ui;
 }
 
-//'OK' button
-void SetDir_GUI::on_pushButton_3_clicked()
+//"OK" button
+void SetDir_GUI::on_okButton_clicked()
 {
     save();
     this->hide();
 }
 
-//'Choose Directory' button clicked
-void SetDir_GUI::on_pushButton_clicked()
+//"Choose Directory" button clicked
+void SetDir_GUI::on_chooseDirectoryButton_clicked()
 {
     QString dir = QFileDialog::getExistingDirectory(this, tr("Open Directory"),
                                                  "/home",
                                                  QFileDialog::ShowDirsOnly
                                                  | QFileDialog::DontResolveSymlinks);
-    ui->lineEdit->setText(dir);
+    m_ui->lineEdit->setText(dir);
 }
 
 void SetDir_GUI::save()
@@ -58,7 +57,7 @@ void SetDir_GUI::save()
     {
         QTextStream stream(&file);
 
-        stream<<ui->lineEdit->text();
+        stream<<m_ui->lineEdit->text();
         file.close();
     }
 }
@@ -67,8 +66,9 @@ QString SetDir_GUI::load()
 {
     QFile file("settings_dir");
 
-    if(!file.open(QIODevice::ReadOnly)) {
-        ui->lineEdit->setText(QDir::currentPath());
+    if(!file.open(QIODevice::ReadOnly))
+    {
+        m_ui->lineEdit->setText(QDir::currentPath());
         return QDir::currentPath();
     }
 
@@ -78,12 +78,12 @@ QString SetDir_GUI::load()
     if (!QDir(line).exists())
     {
         qDebug()<<"Directory:" + line + " not exist!";
-        ui->lineEdit->setText(QDir::currentPath());
+        m_ui->lineEdit->setText(QDir::currentPath());
         return QDir::currentPath();
     }
-    ui->lineEdit->setText(line);
-    return line;
 
+    m_ui->lineEdit->setText(line);
+    return line;
 }
 
 void SetDir_GUI::showEvent(QShowEvent *event)

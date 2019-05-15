@@ -23,27 +23,26 @@
 
 SetNetwork_GUI::SetNetwork_GUI(QWidget *parent) :
     QDialog(parent),
-    ui(new Ui::SetNetwork_GUI)
+    m_ui(std::make_shared <Ui::SetNetwork_GUI> ())
 {
-    ui->setupUi(this);
+    m_ui->setupUi(this);
     addNetworksToComboBox ();
     this->setFixedSize(this->width(), this->height());
 }
 
 SetNetwork_GUI::~SetNetwork_GUI()
 {
-    delete ui;
 }
 
-//'OK' button
-void SetNetwork_GUI::on_pushButton_clicked()
+//"OK" button
+void SetNetwork_GUI::on_okButton_clicked()
 {
     save();
     this->hide();
 }
 
-//'Cancel' button
-void SetNetwork_GUI::on_pushButton_2_clicked()
+//"Cancel" button
+void SetNetwork_GUI::on_cancelButton_clicked()
 {
     this->hide();
 }
@@ -52,25 +51,30 @@ void SetNetwork_GUI::on_pushButton_2_clicked()
 void SetNetwork_GUI::addNetworksToComboBox()
 {
     //clear data into treeView
-    ui->comboBox->clear();
+    m_ui->comboBox->clear();
 
     //get IP address
-    foreach (const QHostAddress &address, QNetworkInterface::allAddresses()) {
+    foreach (const QHostAddress &address, QNetworkInterface::allAddresses())
+    {
         if (address.protocol() == QAbstractSocket::IPv4Protocol && address != QHostAddress(QHostAddress::LocalHost))
         {
-             QString ip_address = address.toString();
-             if (ip_address.length()<3)
+             QString ipAddress = address.toString();
+             if (ipAddress.length()<3)
+             {
                  continue;
-             if (ip_address[0]=='1' && ip_address[1]=='6' && ip_address[2]=='9')
+             }
+             if (ipAddress[0]=='1' && ipAddress[1]=='6' && ipAddress[2]=='9')
+             {
                  continue;
-             ui->comboBox->addItem(address.toString());
+             }
+             m_ui->comboBox->addItem(address.toString());
         }
     }
 }
 
 void SetNetwork_GUI::showEvent(QShowEvent *)
 {
-    ui->comboBox->clear();
+    m_ui->comboBox->clear();
     load();
 }
 
@@ -80,7 +84,7 @@ void SetNetwork_GUI::save()
     if ( file.open(QIODevice::ReadWrite) )
     {
         QTextStream stream(&file);
-        stream<<ui->comboBox->currentText();
+        stream<<m_ui->comboBox->currentText();
         file.close();
     }
 }
@@ -89,11 +93,12 @@ QString SetNetwork_GUI::load()
 {
     addNetworksToComboBox();
     QFile file("settings1");
-    if(!file.open(QIODevice::ReadOnly)) {
-        if (ui->comboBox->count()>0)
+    if(!file.open(QIODevice::ReadOnly))
+    {
+        if (m_ui->comboBox->count()>0)
         {
-            ui->comboBox->setCurrentIndex(0);
-            return ui->comboBox->itemText(0);
+            m_ui->comboBox->setCurrentIndex(0);
+            return m_ui->comboBox->itemText(0);
         }
         return "";
     }
@@ -102,20 +107,21 @@ QString SetNetwork_GUI::load()
     QString line = in.readLine();
     file.close();
 
-    //check for existing ip
-    for (int i=0; i<ui->comboBox->count(); i++)
+    //it checks for exist hosts
+    for (int i=0; i<m_ui->comboBox->count(); i++)
     {
-        if (ui->comboBox->itemText(i) == line)
+        if (m_ui->comboBox->itemText(i) == line)
         {
-            ui->comboBox->setCurrentIndex(i);
+            m_ui->comboBox->setCurrentIndex(i);
             return line;
         }
     }
-    if (ui->comboBox->count()>0)
+
+    if (m_ui->comboBox->count()>0)
     {
-        ui->comboBox->setCurrentIndex(0);
-        return ui->comboBox->itemText(0);
+        m_ui->comboBox->setCurrentIndex(0);
+        return m_ui->comboBox->itemText(0);
     }
 
-    return ""; //It haven't any network
+    return "";
 }

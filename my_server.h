@@ -15,45 +15,25 @@
     along with Simple File Sharing.  If not, see <http://www.gnu.org/licenses/>.
 */
 
-#ifndef CLIENT_H
-#define CLIENT_H
+#ifndef MYSERVER_H
+#define MYSERVER_H
 
-#include <QDebug>
-#include <QFileInfo>
-#include <QHostInfo>
-#include <QQueue>
-#include <QThread>
-#include <QTcpSocket>
+#include <QMessageBox>
+#include <QTcpServer>
 
-#include "data.h"
+#include "server.h"
 
-class Client: public QThread
+
+class MyServer : public QTcpServer
 {
     Q_OBJECT
-protected:
-    void run();
 
 public:
-    Client(
-            const QString &hostAdress,
-            const QString &query,
-            const QString &fileName,
-            const QString &fileDir,
-            const qint64 size,
-            const int index);
+    explicit MyServer(QObject *parent = 0);
+    void StartServer();
 
-    virtual ~Client();
-
-private:
-    int     m_row;
-    QString m_hostIp;
-    QString m_fileDir;
-    QString m_fileName;
-    QString m_query;
-    qint64  m_fileSize;
-
-signals:
-    void setProgress(const int, const double);
+protected:
+    void incomingConnection(qintptr ID);
 };
 
-#endif // CLIENT_H
+#endif // MYSERVER_H

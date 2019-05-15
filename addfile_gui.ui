@@ -19,7 +19,7 @@
   <property name="windowTitle">
    <string>Share File(s)</string>
   </property>
-  <widget class="QPushButton" name="pushButton">
+  <widget class="QPushButton" name="addButton">
    <property name="geometry">
     <rect>
      <x>20</x>
@@ -32,7 +32,7 @@
     <string>Add</string>
    </property>
   </widget>
-  <widget class="QPushButton" name="pushButton_2">
+  <widget class="QPushButton" name="okButton">
    <property name="geometry">
     <rect>
      <x>280</x>
@@ -45,7 +45,7 @@
     <string>OK</string>
    </property>
   </widget>
-  <widget class="QPushButton" name="pushButton_3">
+  <widget class="QPushButton" name="cancelButton">
    <property name="geometry">
     <rect>
      <x>190</x>
@@ -68,7 +68,7 @@
     </rect>
    </property>
   </widget>
-  <widget class="QPushButton" name="pushButton_4">
+  <widget class="QPushButton" name="removeButton">
    <property name="geometry">
     <rect>
      <x>130</x>

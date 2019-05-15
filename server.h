@@ -18,16 +18,19 @@
 #ifndef SERVER_H
 #define SERVER_H
 
-#include <QTcpServer>
-#include <QTcpSocket>
-#include <QStringList>
+#include <memory>
+
 #include <QDebug>
 #include <QFile>
+#include <QList>
 #include <QStringList>
 #include <QThread>
-#include <QList>
+#include <QTcpServer>
+#include <QTcpSocket>
+
 #include "data.h"
 
+//ToDo: if it possible, replace the below constants with an enum
 #define NC_GET_FILE 16
 #define NC_GET_LIST 20
 #define NC_RECV_LIST 40
@@ -38,33 +41,35 @@ class Server: public QThread
 {
     Q_OBJECT
 
-
-    QByteArray socketData;
-    quint64 fileSize;
-    QFile File;
-    QTcpSocket *Socket;
-
     void send(const char*,int);
     void parseData();
-public:
-    QString hostIP;
-    Server(qintptr ID);
-    ~Server();
 
-private:
-    qintptr descriptor;
-    Data returnData();
-    //QList< QList<QString> > getListWithSharedFiles ();
-private slots:
-    void ReadyRead();
-    void SockError(QAbstractSocket::SocketError);
-    void disconnected();
+public:
+    //ToDo: move the below member to the private section
+    QFile m_file;
+
+public:
+    Server(qintptr ID);
+    virtual ~Server();
 
 protected:
     void run();
 
+private:
+    qintptr m_descriptor;
+    QByteArray m_socketData;
+    std::shared_ptr<QTcpSocket> m_tcpSocket;
+
+    Data returnData();
+
+private slots:
+    void disconnected();
+    void ReadyRead(); //ToDo: change the name to readyRead ()
+    void SockError(QAbstractSocket::SocketError); //ToDo: change the name to sockError
+
+
 signals:
-    void Bytes(quint32);
+    void Bytes(quint32); //ToDo: change the name to bytes
 };
 
 #endif // SERVER_H

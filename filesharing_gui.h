@@ -18,29 +18,32 @@
 #ifndef FILESHARING_GUI_H
 #define FILESHARING_GUI_H
 
-#include <QMainWindow>
-#include <QTreeWidgetItem>
-#include <QStandardItemModel>
-#include <QNetworkInterface>
-#include <QThreadPool>
-#include <QTcpServer>
-#include <QMessageBox>
 #include <QDir>
+#include <QMainWindow>
+#include <QMessageBox>
 #include <QMovie>
-#include <QLabel>
-#include "scan_network.h"
-#include "client.h"
+#include <QNetworkInterface>
+#include <QStandardItemModel>
+#include <QTcpServer>
+#include <QThreadPool>
+#include <QTreeWidgetItem>
+
+#include <memory>
+
 #include "addfile_gui.h"
-#include "myserver.h"
+#include "client.h"
+#include "my_server.h"
+#include "scanip_gui.h"
+#include "scan_network.h"
 #include "setdir_gui.h"
 #include "setnetwork_gui.h"
-#include "scanip_gui.h"
 
 /*
  Main GUI window
 */
 
-namespace Ui {
+namespace Ui
+{
 class FileSharing_GUI;
 }
 
@@ -49,62 +52,57 @@ class FileSharing_GUI : public QMainWindow
     Q_OBJECT
 
 public:
-    //quint16 Threads;
-
     explicit FileSharing_GUI(QWidget *parent = 0);
-    ~FileSharing_GUI();
-
+    virtual ~FileSharing_GUI();
 
 public slots:
-    void onFoundComputer(QString ip);
+    void onFoundComputer(const QString &ip);
     void on_finishScan();
+
 private slots:
     void menu_addFile();
     void menu_downloadedDirectory();
     void menu_setNetwork();
-    void on_treeWidget_itemClicked(QTreeWidgetItem *item, int column);
-    void on_scanIP(QString ip);
-    void on_setProgress (int row, double percentage);
-
-    void on_pushButton_clicked(); //'Scan Network' button
-    void on_pushButton_2_clicked(); //'Download' button
-    void on_pushButton_3_clicked(); //'Scan IP' button
-    void on_pushButton_4_clicked(); //'Select All' button
-    void on_pushButton_5_clicked(); //'Select None' button
-
-
+    void on_treeWidget_itemClicked(QTreeWidgetItem *item);
+    void on_downloadButton_clicked();                               //"Download" button
+    void on_scanIP(const QString &ip);
+    void on_scanIpButton_clicked();                                 //"Scan IP" button
+    void on_scanNetworkButton_clicked();                            //"Scan Network" button
+    void on_selectAllButton_clicked();                              //"Select All" button
+    void on_selectNoneButton_clicked();                             //"Select None" button
+    void on_setProgress (const int row, const double percentage);
 
 private:
-    Ui::FileSharing_GUI *ui;
-    QStandardItemModel *model;
-    scan_network *sn;
-    SetDir_GUI *sd_g;
-    SetNetwork_GUI *sn_g;
-    QThreadPool *tp;
-    ScanIP_GUI *sip_g;
-    AddFile_GUI *m_AddFile_Gui;
-    qreal inBytes, outBytes;
-    MyServer server;
-    QString current_host;
-    QMovie *movie;
-    QLabel *l_waiting_gif;
-    bool download_button_clicked;
+    std::shared_ptr<AddFile_GUI>            m_addFileGUI;
+    bool                                    m_downloadButtonClicked;
+    QString                                 m_currentHost;
+    std::shared_ptr<QLabel>                 m_loadingGif;
+    std::shared_ptr<QStandardItemModel>     m_model;
+    std::shared_ptr<QMovie>                 m_movie;
+    std::shared_ptr<ScanIP_GUI>             m_scanIpGUI;
+    std::shared_ptr<ScanNetwork>            m_scanNetwork;
+    MyServer                                m_server;
+    std::shared_ptr<SetDir_GUI>             m_setDirGUI;
+    std::shared_ptr<SetNetwork_GUI>         m_setNetworkGUI;
+    std::shared_ptr<QThreadPool>            m_threadPool;
+    std::shared_ptr<Ui::FileSharing_GUI>    m_ui;
 
-    void addItemToThreeView(QString item);
-    void setGeometryOfWidgets();
-    void resizeEvent(QResizeEvent *);
-    void initModelTableView();
-    int scanNetwork();
-    void initActions();
-    void addDataInTableView(QString file_name, QString size);
-    int modifyPath(QString &path);
-    void startWaitAnimation();
-    void stopWaitAnimation();
-    void next(int row);
-    QString setQuery(int index);
+ private:
+    void    addDataInTableView(const QString &file_name, const QString &size);
+    void    addItemToThreeView(const QString &item);
+    void    initActions();
+    void    initModelTableView();
+    int     modifyPath(QString &path);
+    void    next(const int row);
+    int     scanNetwork();
+    void    resizeEvent(QResizeEvent *);
+    void    setGeometryOfWidgets();
+    QString setQuery(const int index);
+    void    startWaitAnimation();
+    void    stopWaitAnimation();
 
 signals:
-    void EmerFinish();
+    void EmerFinish(); //ToDo: change the name
 };
 
 #endif //FILESHARING_GUI_H

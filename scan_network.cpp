@@ -17,56 +17,62 @@
 
 #include "scan_network.h"
 
-scan_network::scan_network()
+ScanNetwork::ScanNetwork()
     : QRunnable()
+    , m_currentIP ("")
+    , m_mutex ()
 {
-    current_ip = "";
+
 }
 
-void scan_network::run()
+void ScanNetwork::run()
 {
-    mutex.lock();
-    if (current_ip == "")
+    m_mutex.lock();
+    if (m_currentIP == "")
     {
-        mutex.unlock();
+        m_mutex.unlock();
         return;
     }
 
-    QString current_ip_tmp = current_ip;
+    QString currentIpTmp = m_currentIP;
     int index = -1;
 
-    for (int i=0; i<is_scanned.size(); i++)
+    for (int i=0; i<m_scannedIPAddresses.size(); i++)
     {
-        if (is_scanned[i] == 0)
+        if (m_scannedIPAddresses[i] == 0)
         {
-            is_scanned[i]=1;
-            current_ip_tmp+=QString::number(i+1);
+            m_scannedIPAddresses[i]=1;
+            currentIpTmp+=QString::number(i+1);
             index=i;
             break;
         }
     }
 
-    mutex.unlock();
+    m_mutex.unlock();
 
     if (index==-1)
+    {
         return;
+    }
 
-    if(!scanIP(current_ip_tmp))
-        emit foundComputer(current_ip_tmp);
+    if(!scanIP(currentIpTmp))
+    {
+        emit foundComputer(currentIpTmp);
+    }
 
-    mutex.lock();
+    m_mutex.lock();
 
-    is_scanned[index]=2;
+    m_scannedIPAddresses[index]=2;
 
-    qDebug()<<current_ip_tmp + " has been scaned.";
+    qDebug()<<currentIpTmp + " has been scaned.";
 
     checkFinish();
 
-    mutex.unlock();
+    m_mutex.unlock();
 }
 
 //return 0: when found IP address
-int scan_network::scanIP(QString ip)
+int ScanNetwork::scanIP(const QString &ip)
 {
     QTcpSocket socket;
     QString content = "";
@@ -81,13 +87,13 @@ int scan_network::scanIP(QString ip)
         return 1;
     }
 
-    char *nc_hello = new char [3];
-    nc_hello[0]=char(1);
-    nc_hello[1]='\t';
-    nc_hello[2]='\n';
-    socket.write(nc_hello,3);
+    char *ncHello = new char [3];
+    ncHello[0]=char(1);
+    ncHello[1]='\t';
+    ncHello[2]='\n';
+    socket.write(ncHello,3);
 
-    delete nc_hello;
+    delete ncHello;
 
     QByteArray ba1;
     content ="";
@@ -96,30 +102,38 @@ int scan_network::scanIP(QString ip)
     ba1=socket.readAll();
 
     while(socket.waitForReadyRead())
+    {
         ba1=socket.readAll();
+    }
 
     socket.close();
     socket.deleteLater();
 
     const char *recv = ba1.constData();
     if (!recv)
+    {
         return 1;
+    }
 
     if(strlen(recv)<3)
+    {
         return 1;
+    }
 
     if (recv[0]!=char(2) || recv[1]!='\t' || recv[2]!='\n')
+    {
         return 1;
+    }
 
     return 0;
 }
 
-void scan_network::checkFinish()
+void ScanNetwork::checkFinish()
 {
     int count = 0;
     for (int i=0; i<255; i++)
     {
-        if (is_scanned[i] == 2)
+        if (m_scannedIPAddresses[i] == 2)
             count++;
     }
 

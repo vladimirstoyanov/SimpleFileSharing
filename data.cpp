@@ -17,49 +17,63 @@
 
 #include "data.h"
 
-Data::Data(){
-    arguments = 0;
-    string = 0;
-    type = 0;
+Data::Data():
+    m_arguments (0)
+    , m_Fl (0)
+    , m_size (0)
+    , m_string (nullptr)
+    , m_type (0)
+{
 }
 
 Data::~Data(){
-    if(string)
-        delete []string;
+    if(m_string)
+    {
+        delete []m_string;
+    }
 }
 
-void Data::FromChar(const char *s){
+void Data::fromChar(const char *s)
+{
     if(!s)
+    {
         return;
+    }
 
-    if(string)
-        delete []string;
+    if(m_string)
+    {
+        delete []m_string;
+    }
 
-    size = 0;
-    type = 0;
-    string = 0;
-    arguments = "";
+    m_size = 0;
+    m_type = 0;
+    m_string = 0;
+    m_arguments = "";
 
     int lenPos = 0;
-    for(int i=0; i<strlen(s); i++)
+    for(unsigned int i=0; i<strlen(s); i++)
     {
         if(s[i]=='\t') //get type
         {
             if (i!=1)
                 return;
             lenPos = 2;
-            type = int(s[0]); //fist byte is a type
+            m_type = int(s[0]); //fist byte is a type
         }
 
         if(s[i]=='\n') //get arguments
         {
             QByteArray bLen;
-            for(int j=lenPos; j<i;j++)
+            for(unsigned int j=lenPos; j<i;j++)
+            {
                 bLen += s[j];
+            }
             bLen += '\0';
             lenPos = i+1;
             if (strlen(bLen.constData())>0)
-                arguments = bLen;
+            {
+               m_arguments = bLen;
+            }
             break;
         }
     }
@@ -67,61 +81,73 @@ void Data::FromChar(const char *s){
     //get data
     if (strlen(s)-lenPos>0)
     {
-        string = new char[(strlen(s)-lenPos) + 1];
-        for (int i=lenPos, j=0; i<strlen(s); i++, j++)
-            string[j]=s[i];
+        m_string = new char[(strlen(s)-lenPos) + 1];
+        for (unsigned int i=lenPos, j=0; i<strlen(s); i++, j++)
+        {
+            m_string[j]=s[i];
+        }
     }
 
 }
 
-void Data::FromChar(const char *s, const char *arg, int cmd)
+void Data::fromChar(const char *s, const char *arg, int cmd)
 {
-    if(string)
-        delete []string;
+    if(m_string)
+    {
+        delete []m_string;
+    }
 
-    type = 0;
+    m_type = 0;
 
     if (arg && s)
-        string = new char[4+strlen(arg) + strlen(s)];
+    {
+        m_string = new char[4+strlen(arg) + strlen(s)];
+    }
     else if(arg)
-        string = new char[4+strlen(arg)];
+    {
+        m_string = new char[4+strlen(arg)];
+    }
     else if (s)
-        string = new char[4+strlen(s)];
+    {
+        m_string = new char[4+strlen(s)];
+    }
     else
-        string = new char[4];
+    {
+        m_string = new char[4];
+    }
 
-    size=3;
-    string[0] = cmd;
-    string[1] = '\t';
+    m_size=3;
+    m_string[0] = cmd;
+    m_string[1] = '\t';
 
     //argument
     int j=2;
     if (arg)
     {
-        for (int i=0; i<strlen(arg); i++)
+        for (unsigned int i=0; i<strlen(arg); i++)
         {
-            string[j++] = arg[i];
-            size++;
+            m_string[j++] = arg[i];
+            m_size++;
         }
     }
-    string[j++] = '\n';
+    m_string[j++] = '\n';
 
     //data
     if (s)
     {
-        for (int i=0; i<strlen(s); i++)
+        for (unsigned int i=0; i<strlen(s); i++)
         {
-            string[j++] = s[i];
-            size++;
+            m_string[j++] = s[i];
+            m_size++;
         }
     }
 }
 
 //return hash of file with name recorded in 'file_name' var
-QByteArray Data::getHash(QString file_name)
+QByteArray Data::getHash(const QString &fileName)
 {
     QCryptographicHash crypto(QCryptographicHash::Sha1);
-    QFile file(file_name);
+    QFile file(fileName);
     if (!file.open(QFile::ReadOnly))
         return "";
     while(!file.atEnd()){

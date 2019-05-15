@@ -15,54 +15,61 @@
     along with Simple File Sharing.  If not, see <http://www.gnu.org/licenses/>.
 */
 
-#include "addfile_gui.h"
-#include "ui_addfile_gui.h"
+
 #include <QFileInfo>
+
 #include <math.h>
+
+#include "addfile_gui.h"
 #include "search.h"
+#include "ui_addfile_gui.h"
 
 AddFile_GUI::AddFile_GUI(QWidget *parent) :
-    QDialog(parent),
-    ui(new Ui::AddFile_GUI)
+    QDialog(parent)
+    , m_addFileLastDir("")
+    , m_model (std::make_shared<QStandardItemModel>(0,3,this))
+    , m_ui(std::make_shared<Ui::AddFile_GUI> ())
 {
-    ui->setupUi(this);
+    m_ui->setupUi(this);
     initModelTableView();
-    add_file_last_dir = "";
 }
 
 AddFile_GUI::~AddFile_GUI()
 {
-    delete ui;
 }
 
-//'Add' button
-void AddFile_GUI::on_pushButton_clicked()
+//"Add" button
+void AddFile_GUI::on_addButton_clicked()
 {
     //Dialog to chose files
-    QStringList l_path = QFileDialog::getOpenFileNames(this, tr("Share File(s)"),add_file_last_dir,tr("Files (*.*)"));
+    QStringList pathList = QFileDialog::getOpenFileNames(this, tr("Share File(s)"), m_addFileLastDir, tr("Files (*.*)"));
 
-    if (l_path.size() == 0)
+    if (pathList.size() == 0)
+    {
         return;
+    }
 
-    QString afld_tmp = "";
-    if (!getDirNameFromPath(l_path[0], afld_tmp))
-        add_file_last_dir = afld_tmp;
+    QString dirNameTmp = "";
+    if (!getDirNameByAbsolutePath(pathList[0], dirNameTmp))
+    {
+        m_addFileLastDir = dirNameTmp;
+    }
 
-    for (int i=0; i<l_path.size(); i++)
+    for (int i=0; i<pathList.size(); i++)
     {
         QString filename="";
-        if (getFileNameFromPath(l_path[i],filename))
+        if (getFileNameByAbsolutePath(pathList[i],filename))
         {
-            qDebug()<<"Error path: " + l_path[i];
+            qDebug()<<"Error path: " + pathList[i];
             continue;
         }
-        QFileInfo fi(l_path[i]);
+        QFileInfo fi(pathList[i]);
         double size = fi.size()/(1024.0*1024.0); //calculate size in KB
-        addDataInTableView(filename, l_path[i], QString::number(size));
+        addDataInTableView(filename, pathList[i], QString::number(size));
     }
 }
 
-int AddFile_GUI::getDirNameFromPath(QString path, QString &dirname)
+int AddFile_GUI::getDirNameByAbsolutePath(const QString &path, QString &dirname)
 {
     QString separator;
     separator = "/";
@@ -78,78 +85,87 @@ int AddFile_GUI::getDirNameFromPath(QString path, QString &dirname)
         }
     }
     if (index == -1)
+    {
         return 1;
+    }
 
     for (int i=0; i<=index; i++)
+    {
         dirname+=path[i];
+    }
 
     return 0;
 }
 
 void AddFile_GUI::initModelTableView()
 {
-    model = new QStandardItemModel(0,3,this);
-    model->setHorizontalHeaderItem(0, new QStandardItem(QString("file name")));
-    model->setHorizontalHeaderItem(1, new QStandardItem(QString("path")));
-    model->setHorizontalHeaderItem(2, new QStandardItem(QString("size (MB)")));
-    ui->tableView->setModel(model);
+    m_model->setHorizontalHeaderItem(0, new QStandardItem(QString("file name")));
+    m_model->setHorizontalHeaderItem(1, new QStandardItem(QString("path")));
+    m_model->setHorizontalHeaderItem(2, new QStandardItem(QString("size (MB)")));
+    m_ui->tableView->setModel(m_model.get());
 }
 
-void AddFile_GUI::addDataInTableView(QString file_name, QString path, QString size)
+void AddFile_GUI::addDataInTableView(const QString &fileName, const QString &path, const QString &size)
 {
     QModelIndex mi;
     QVariant v;
 
-    //check for exist path
-    for (int i=0; i<model->rowCount(); i++)
+    //check is "path" exist
+    for (int i=0; i<m_model->rowCount(); i++)
     {
-        mi = model->index(i,1);
+        mi = m_model->index(i,1);
         v=mi.data();
         if (v.toString() == path)
             return;
     }
 
-    model->setRowCount(model->rowCount()+1);
+    m_model->setRowCount(m_model->rowCount()+1);
 
-    model->setData(model->index(model->rowCount()-1,0),file_name);
-    model->setData(model->index(model->rowCount()-1,1),path);
-    model->setData(model->index(model->rowCount()-1,2),size);
+    m_model->setData(m_model->index(m_model->rowCount()-1,0),fileName);
+    m_model->setData(m_model->index(m_model->rowCount()-1,1),path);
+    m_model->setData(m_model->index(m_model->rowCount()-1,2),size);
 
     //set data not editable
-    model->item(model->rowCount()-1,0)->setEditable(false);
-    model->item(model->rowCount()-1,1)->setEditable(false);
-    model->item(model->rowCount()-1,2)->setEditable(false);
+    m_model->item(m_model->rowCount()-1,0)->setEditable(false);
+    m_model->item(m_model->rowCount()-1,1)->setEditable(false);
+    m_model->item(m_model->rowCount()-1,2)->setEditable(false);
 }
 
-int AddFile_GUI::getFileNameFromPath(QString path, QString &filename)
+int AddFile_GUI::getFileNameByAbsolutePath(const QString &path, QString &filename)
 {
-    QString separator, filename_tmp ="";
+    QString separator, fileNameTmp ="";
     separator = "/";
 
     if (separator.length()<1)
+    {
         return 1;
+    }
 
     for (int i=path.length()-1; i>=0; i--)
     {
 
         if (path[i] == separator[0])
+        {
             break;
-        if (i == 0) //if not found separator, return 1, mean error
+        }
+        if (i == 0) //if not found a separator, it's return "1" (an error)
+        {
             return 1;
-        filename_tmp = path[i] + filename_tmp;
+        }
+        fileNameTmp = path[i] + fileNameTmp;
     }
-    filename = filename_tmp;
+    filename = fileNameTmp;
     return 0;
 }
 
 void AddFile_GUI::resizeEvent(QResizeEvent *)
 {
     //set geometry of widgets
-    ui->pushButton->setGeometry(5,5,ui->pushButton->width(), ui->pushButton->height());
-    ui->pushButton_4->setGeometry(ui->pushButton->x() + ui->pushButton->width() + 5, 5,ui->pushButton_4->width(), ui->pushButton_4->height());
-    ui->tableView->setGeometry(5,ui->pushButton->y()+ ui->pushButton->height() + 5,this->width()-10,this->height()-(ui->pushButton->height()*2+20));
-    ui->pushButton_2->setGeometry(this->width()-(ui->pushButton_3->width()*2+10), ui->tableView->y()+ ui->tableView->height() + 5, ui->pushButton_2->width(), ui->pushButton_2->height());
-    ui->pushButton_3->setGeometry(ui->pushButton_2->x() + ui->pushButton_2->width() + 5, ui->pushButton_2->y(), ui->pushButton_3->width(), ui->pushButton_2->height());
+    m_ui->addButton->setGeometry(5,5,m_ui->addButton->width(), m_ui->addButton->height());
+    m_ui->removeButton->setGeometry(m_ui->addButton->x() + m_ui->addButton->width() + 5, 5,m_ui->removeButton->width(), m_ui->removeButton->height());
+    m_ui->tableView->setGeometry(5,m_ui->addButton->y()+ m_ui->addButton->height() + 5,this->width()-10,this->height()-(m_ui->addButton->height()*2+20));
+    m_ui->okButton->setGeometry(this->width()-(m_ui->cancelButton->width()*2+10), m_ui->tableView->y()+ m_ui->tableView->height() + 5, m_ui->okButton->width(), m_ui->okButton->height());
+    m_ui->cancelButton->setGeometry(m_ui->okButton->x() + m_ui->okButton->width() + 5, m_ui->okButton->y(), m_ui->cancelButton->width(), m_ui->okButton->height());
 }
 void AddFile_GUI::save()
 {
@@ -160,72 +176,88 @@ void AddFile_GUI::save()
         QModelIndex mi;
         QVariant v;
 
-        //check for exist path
-        for (int i=0; i<model->rowCount(); i++)
+        for (int i=0; i<m_model->rowCount(); i++)
         {
-            mi = model->index(i,0);
+            mi = m_model->index(i,0);
             v=mi.data();
             stream<<"<file>\n\t<file_name>" + v.toString() + "</file_name>\n\t";
 
-            mi = model->index(i,1);
+            mi = m_model->index(i,1);
             v=mi.data();
             stream<<"<path>" + v.toString() + "</path>\n\t";
 
-            mi = model->index(i,2);
+            mi = m_model->index(i,2);
             v=mi.data();
             stream<<"<size>" + v.toString() + "</size>\n</file>\n";
        }
+
        file.flush();
        file.close();
     }
 }
+
+//ToDo: refactor the below method
 void AddFile_GUI::load()
 {
-    CSearch cs;
-    //clear old data
-    while (model->rowCount() > 0)
+    Search search;
+    //clear the old data
+    while (m_model->rowCount() > 0)
     {
-        model->removeRow(0);
+        m_model->removeRow(0);
     }
 
     QFile file("sharedFiles");
-    if(!file.open(QIODevice::ReadOnly)) {
+    if(!file.open(QIODevice::ReadOnly))
+    {
         return;
         //QMessageBox::information(0, "error", file.errorString());
     }
 
     QTextStream in(&file);
 
-    while(!in.atEnd()) {
+    while(!in.atEnd())
+    {
         QString line = in.readLine();
         int index =0;
-        cs.Search_After(line,"<file>", &index);
-        if (index != 6)
+        QString fileTag = "<file>";
+        search.searchAfter(line, fileTag, &index);
+        if (index != fileTag.length())
+        {
             return;
+        }
 
         line = in.readLine();
-        QString file_name = "";
-        if (cs.getTextBetweenTwoStrings(line,"<file_name>", "</file_name>", file_name))
+        QString fileName = "";
+        if (search.getTextBetweenTwoStrings(line, "<file_name>", "</file_name>", fileName))
+        {
             return;
+        }
 
         line = in.readLine();
         QString path = "";
-        if (cs.getTextBetweenTwoStrings(line,"<path>", "</path>", path))
+        if (search.getTextBetweenTwoStrings(line,"<path>", "</path>", path))
+        {
             return;
+        }
 
         line = in.readLine();
         QString size="";
-        if (cs.getTextBetweenTwoStrings(line,"<size>", "</size>", size))
+        if (search.getTextBetweenTwoStrings(line,"<size>", "</size>", size))
+        {
             return;
+        }
 
         line = in.readLine();
         index = 0;
-        cs.Search_After(line,"</file>", &index);
-        if (index != 7)
+        fileTag = "</file>";
+        search.searchAfter(line,fileTag, &index);
+        if (index != fileTag.length())
+        {
             return;
+        }
 
-        //add to tableView
-        addDataInTableView(file_name, path, size);
+        //add to "tableView"
+        addDataInTableView(fileName, path, size);
     }
 
     file.close();
@@ -233,25 +265,25 @@ void AddFile_GUI::load()
 
 
 
-//OK button
-void AddFile_GUI::on_pushButton_2_clicked()
+//"OK" button
+void AddFile_GUI::on_okButton_clicked()
 {
     save();
     this->hide();
 }
 
 //remove button clicked
-void AddFile_GUI::on_pushButton_4_clicked()
+void AddFile_GUI::on_removeButton_clicked()
 {
     //get selected rows
-    QModelIndexList indexes = ui->tableView->selectionModel()->selectedRows();
+    QModelIndexList indexes = m_ui->tableView->selectionModel()->selectedRows();
 
     qSort(indexes.begin(), indexes.end());
 
     //remove last index in list
     while (!indexes.isEmpty())
     {
-        model->removeRows(indexes.last().row(), 1);
+        m_model->removeRows(indexes.last().row(), 1);
         indexes.removeLast();
     }
 }
@@ -262,74 +294,79 @@ void AddFile_GUI::showEvent( QShowEvent *event )
     load();
 }
 
+//ToDo: refactor the below method
 QList< QList<QString> > AddFile_GUI::getListWithSharedFiles()
 {
-    CSearch cs;
-    QList< QList<QString> > l_shared_files;
+    Search search;
+    QList< QList<QString> > sharedFilesList;
 
     QFile file("sharedFiles");
-    if(!file.open(QIODevice::ReadOnly)) {
-        return l_shared_files;
+    if(!file.open(QIODevice::ReadOnly))
+    {
+        return sharedFilesList;
     }
 
     QTextStream in(&file);
 
-    while(!in.atEnd()) {
+    while(!in.atEnd())
+    {
         QString line = in.readLine();
         int index =0;
-        cs.Search_After(line,"<file>", &index);
-        if (index != 6)
+        QString fileTag = "<file>";
+        search.searchAfter(line, fileTag, &index);
+        if (index != fileTag.length())
         {
             file.close();
-            return l_shared_files;
+            return sharedFilesList;
         }
 
         line = in.readLine();
-        QString file_name = "";
-        if (cs.getTextBetweenTwoStrings(line,"<file_name>", "</file_name>", file_name))
+        QString fileName = "";
+        if (search.getTextBetweenTwoStrings(line,"<file_name>", "</file_name>", fileName))
         {
             file.close();
-            return l_shared_files;
+            return sharedFilesList;
         }
 
         line = in.readLine();
         QString path = "";
-        if (cs.getTextBetweenTwoStrings(line,"<path>", "</path>", path))
+        if (search.getTextBetweenTwoStrings(line,"<path>", "</path>", path))
         {
             file.close();
-            return l_shared_files;
+            return sharedFilesList;
         }
 
         line = in.readLine();
         QString size="";
-        if (cs.getTextBetweenTwoStrings(line,"<size>", "</size>", size))
+        if (search.getTextBetweenTwoStrings(line,"<size>", "</size>", size))
         {
             file.close();
-            return l_shared_files;
+            return sharedFilesList;
         }
 
         line = in.readLine();
         index = 0;
-        cs.Search_After(line,"</file>", &index);
-        if (index != 7)
+        fileTag = "</file>";
+        search.searchAfter(line, fileTag, &index);
+        if (index != fileTag.length())
         {
             file.close();
-            return l_shared_files;
+            return sharedFilesList;
         }
 
         //add to tableView
         QList<QString> item;
-        item.push_back(file_name);
+        item.push_back(fileName);
         item.push_back(path);
         item.push_back(size);
-        l_shared_files.push_back(item);
+        sharedFilesList.push_back(item);
     }
 
     file.close();
-    return l_shared_files;
+    return sharedFilesList;
 }
 
-void AddFile_GUI::on_pushButton_3_clicked()
+void AddFile_GUI::on_cancelButton_clicked()
 {
     this->hide();
 }

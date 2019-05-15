@@ -18,18 +18,21 @@
 #ifndef SCANIP_GUI_H
 #define SCANIP_GUI_H
 
+#include <memory>
+
 #include <QDialog>
-#include <QMovie>
 #include <QLabel>
+#include <QMovie>
 
 #include "scan_network.h"
 
 /*
- This gui class appear when click on 'Scan IP' button from main window.
+ This gui class is shown when the user clicked on 'Scan IP' button from main window.
 */
 
-namespace Ui {
-class ScanIP_GUI;
+namespace Ui
+{
+    class ScanIP_GUI;
 }
 
 class ScanIP_GUI : public QDialog
@@ -38,15 +41,16 @@ class ScanIP_GUI : public QDialog
 
 public:
     explicit ScanIP_GUI(QWidget *parent = 0);
-    ~ScanIP_GUI();
+    virtual ~ScanIP_GUI();
 
 private:
-    Ui::ScanIP_GUI *ui;
+    std::shared_ptr <Ui::ScanIP_GUI> m_ui;
+
+private slots:
+    void on_okButton_clicked();
 
 signals:
-    void scanIP(QString);
-private slots:
-    void on_pushButton_clicked();
+    void scanIP(const QString &);
 };
 
 #endif // SCANIP_GUI_H

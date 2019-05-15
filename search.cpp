@@ -23,17 +23,17 @@
 #include <vector>
 using namespace std;
 
-CSearch::CSearch()
+Search::Search()
 {
 
 }
 
-CSearch::~CSearch()
+Search::~Search()
 {
 
 }
 
-void CSearch::Search_Before(QString text, QString subtext, int *index)
+void Search::searchBefore(const QString &text, const QString &subtext, int *index)
 {
     vector<int> T(subtext.length() + 1, -1);
 
@@ -66,7 +66,7 @@ void CSearch::Search_Before(QString text, QString subtext, int *index)
 
     *index = -1;
 }
-void CSearch::Search_After(QString text, QString subtext, int *index)
+void Search::searchAfter(const QString &text, const QString &subtext, int *index)
 {
     vector<int> T(subtext.length() + 1, -1);
 
@@ -101,16 +101,21 @@ void CSearch::Search_After(QString text, QString subtext, int *index)
     *index = -1;
 }
 
-int  CSearch::getTextBetweenTwoStrings(QString line, QString str1, QString str2, QString &text)
+int  Search::getTextBetweenTwoStrings(const QString &line, const QString &str1, const QString &str2, QString &text)
 {
     int index=0, index1= 0;
-    Search_After(line, str1, &index);
-    Search_Before(line,str2, &index1);
+    searchAfter(line, str1, &index);
+    searchBefore(line,str2, &index1);
     if (index==-1 || index == -1 || index1<index)
+    {
         return 1;
+    }
 
     for(int i=index; i<index1; i++)
+    {
         text+=line[i];
+    }
+
     return 0;
 }
 

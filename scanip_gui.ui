@@ -13,7 +13,7 @@
   <property name="windowTitle">
    <string>Scan IP address</string>
   </property>
-  <widget class="QPushButton" name="pushButton">
+  <widget class="QPushButton" name="okButton">
    <property name="geometry">
     <rect>
      <x>155</x>

@@ -15,45 +15,27 @@
     along with Simple File Sharing.  If not, see <http://www.gnu.org/licenses/>.
 */
 
-#ifndef CLIENT_H
-#define CLIENT_H
-
+#include "my_server.h"
 #include <QDebug>
-#include <QFileInfo>
-#include <QHostInfo>
-#include <QQueue>
-#include <QThread>
-#include <QTcpSocket>
-
-#include "data.h"
-
-class Client: public QThread
+MyServer::MyServer(QObject *parent) :
+    QTcpServer(parent)
 {
-    Q_OBJECT
-protected:
-    void run();
+}
 
-public:
-    Client(
-            const QString &hostAdress,
-            const QString &query,
-            const QString &fileName,
-            const QString &fileDir,
-            const qint64 size,
-            const int index);
+void MyServer::StartServer()
+{
+    if (!this->listen(QHostAddress::Any, 26001)) //listen on 26001 port
+    {
+        QMessageBox::critical(0,"Error!", "Can't share files! Please open port 26001 on your firewall!");
+    }
+}
 
-    virtual ~Client();
+void MyServer::incomingConnection(qintptr ID)
+{
+    qDebug()<<"Incoming connection:" + QString::number(ID);
+    std::shared_ptr<Server> thread = std::make_shared<Server>(ID);
 
-private:
-    int     m_row;
-    QString m_hostIp;
-    QString m_fileDir;
-    QString m_fileName;
-    QString m_query;
-    qint64  m_fileSize;
+    connect(thread.get(), SIGNAL(finished()),thread.get(), SLOT(deleteLater()));
 
-signals:
-    void setProgress(const int, const double);
-};
-
-#endif // CLIENT_H
+    thread->start();
+}

@@ -18,31 +18,43 @@
 #ifndef SCAN_NETWORK_H
 #define SCAN_NETWORK_H
 
-#include <QObject>
-#include <QtCore>
 #include <QDebug>
-#include <QTcpSocket>
-#include <QThreadPool>
-#include <QThread>
-#include <QRunnable>
 #include <QList>
 #include <QMutex>
+#include <QRunnable>
+#include <QTcpSocket>
+#include <QThread>
+#include <QThreadPool>
+#include <QtCore>
 
-class scan_network: public QObject, public QRunnable
+class ScanNetwork: public QObject, public QRunnable
 {
     Q_OBJECT
 public:
-    scan_network();
-    QString current_ip;
-    QList<int> is_scanned;
-    QMutex mutex;
-    void run();
-    int scanIP(QString ip);
+    QList<int> m_scannedIPAddresses; //ToDo: move this list in the private section
+
+public:
+    ScanNetwork();
+
+    void    run();
+    int     scanIP(const QString &ip);
+
+    //get
+    QString getCurrentIP () const { return this->m_currentIP; }
+
+    //set
+    void    setCurrentIP (const QString &currentIP) { this->m_currentIP = currentIP; }
+
 private:
-    void checkFinish();
+    QString m_currentIP;
+    QMutex  m_mutex;
+
+private:
+    void    checkFinish();
+
 signals:
-    void foundComputer(QString ip);
-    void finishScan();
+    void    foundComputer(const QString &ip);
+    void    finishScan();
 };
 
 #endif // SCAN_NETWORK_H

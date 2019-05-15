@@ -26,49 +26,50 @@
 #include <QLabel>
 #include <QKeyEvent>
 
+#include <memory>
+
 ScanIP_GUI::ScanIP_GUI(QWidget *parent) :
-    QDialog(parent),
-    ui(new Ui::ScanIP_GUI)
+    QDialog(parent)
+    , m_ui(std::make_shared<Ui::ScanIP_GUI> ())
 {
-    ui->setupUi(this);
+    m_ui->setupUi(this);
 
     this->setFixedSize(this->width(), this->height());
-    ui->lineEdit->setAlignment(Qt::AlignCenter);
-    ui->lineEdit_2->setAlignment(Qt::AlignCenter);
-    ui->lineEdit_3->setAlignment(Qt::AlignCenter);
-    ui->lineEdit_4->setAlignment(Qt::AlignCenter);
+    m_ui->lineEdit->setAlignment(Qt::AlignCenter);
+    m_ui->lineEdit_2->setAlignment(Qt::AlignCenter);
+    m_ui->lineEdit_3->setAlignment(Qt::AlignCenter);
+    m_ui->lineEdit_4->setAlignment(Qt::AlignCenter);
 
 
     QRegExp rx ( "^(0|[1-9]|[1-9][0-9]|1[0-9][0-9]|2([0-4][0-9]|5[0-5]))$" );
-    QValidator *validator = new QRegExpValidator(rx, ui->lineEdit);
-    ui->lineEdit->setValidator( validator );
-    QValidator *validator1 = new QRegExpValidator(rx,  ui->lineEdit_2);
-    ui->lineEdit_2->setValidator( validator1 );
-    QValidator *validator2 = new QRegExpValidator(rx,  ui->lineEdit_3);
-    ui->lineEdit_3->setValidator( validator2 );
-    QValidator *validator3 = new QRegExpValidator(rx, ui->lineEdit_4);
-    ui->lineEdit_4->setValidator( validator3 );
+    std::shared_ptr<QValidator> validator = std::make_shared<QRegExpValidator>(rx, m_ui->lineEdit);
+    m_ui->lineEdit->setValidator( validator.get() );
+    std::shared_ptr<QValidator> validator1 = std::make_shared<QRegExpValidator>(rx,  m_ui->lineEdit_2);
+    m_ui->lineEdit_2->setValidator( validator1.get() );
+    std::shared_ptr<QValidator> validator2 = std::make_shared<QRegExpValidator>(rx,  m_ui->lineEdit_3);
+    m_ui->lineEdit_3->setValidator( validator2.get() );
+    std::shared_ptr<QValidator> validator3 = std::make_shared<QRegExpValidator>(rx, m_ui->lineEdit_4);
+    m_ui->lineEdit_4->setValidator( validator3.get() );
 }
 
 ScanIP_GUI::~ScanIP_GUI()
 {
-    delete ui;
 }
 
-void ScanIP_GUI::on_pushButton_clicked()
+void ScanIP_GUI::on_okButton_clicked()
 {
     //change cursor
     QApplication::setOverrideCursor(Qt::WaitCursor);
 
-    QString ip = ui->lineEdit->text() + "." + ui->lineEdit_2->text() + "." + ui->lineEdit_3->text() + "." + ui->lineEdit_4->text();
-    if (ui->lineEdit->text() == "" || ui->lineEdit_2->text() == "" || ui->lineEdit_3->text() == "" || ui->lineEdit_4->text() == "")
+    QString ip = m_ui->lineEdit->text() + "." + m_ui->lineEdit_2->text() + "." + m_ui->lineEdit_3->text() + "." + m_ui->lineEdit_4->text();
+    if (m_ui->lineEdit->text() == "" || m_ui->lineEdit_2->text() == "" || m_ui->lineEdit_3->text() == "" || m_ui->lineEdit_4->text() == "")
     {
         QApplication::restoreOverrideCursor();
         QMessageBox::critical(0,"Error!", "Wrong IP address: " + ip);
         return;
     }
 
-    scan_network sn;
+    ScanNetwork sn;
     if (!sn.scanIP(ip))
     {
         emit scanIP(ip);
@@ -80,5 +81,4 @@ void ScanIP_GUI::on_pushButton_clicked()
         QMessageBox::critical(0,"Error!", "Couldn't connect to: " + ip);
     }
     QApplication::restoreOverrideCursor();
-
 }

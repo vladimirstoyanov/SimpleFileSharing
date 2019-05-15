@@ -30,8 +30,11 @@
 #include <QMessageBox>
 #include <QList>
 
-namespace Ui {
-class AddFile_GUI;
+#include <memory>
+
+namespace Ui
+{
+    class AddFile_GUI;
 }
 
 class AddFile_GUI : public QDialog
@@ -40,28 +43,33 @@ class AddFile_GUI : public QDialog
 
 public:
     explicit AddFile_GUI(QWidget *parent = 0);
-    ~AddFile_GUI();
+    virtual ~AddFile_GUI();
+
+    //ToDo: move the below list to the private section
     QList< QList<QString> > getListWithSharedFiles (); //list with shared files (name, size etc.)
 
 private slots:
-    void on_pushButton_clicked(); //'Add' button
-    void on_pushButton_2_clicked(); //'OK' button
-    void on_pushButton_4_clicked(); //'Remove' button
-    void on_pushButton_3_clicked(); //'Cancel' button
+    void on_addButton_clicked();    //"Add" button
+    void on_cancelButton_clicked(); //"Cancel" button
+    void on_okButton_clicked();     //"OK" button
+    void on_removeButton_clicked(); //"Remove" button
+
 
 private:
-    Ui::AddFile_GUI *ui;
-    QStandardItemModel *model;
-    QString add_file_last_dir;
+    QString                             m_addFileLastDir;
+    std::shared_ptr<QStandardItemModel> m_model;
+    std::shared_ptr<Ui::AddFile_GUI>    m_ui;
 
-    int getDirNameFromPath(QString path, QString &dirname); //from full path of file, get only path to directory where is a file
+private:
+    void addDataInTableView(const QString &fileName, const QString &path, const QString &size);
+    int  getDirNameByAbsolutePath(const QString &path, QString &dirname);
+    int  getFileNameByAbsolutePath(const QString &path, QString &filename);//get the filename by an absolute path
     void initModelTableView(); //initialization of QTableView with QStandardItemModel model
-    void addDataInTableView(QString file_name, QString path, QString size);
-    int  getFileNameFromPath(QString path, QString &filename);//from full path of file, get only filename
-    void resizeEvent(QResizeEvent *); //resize window event
-    void save(); //save list with shared files in 'sharedFiles' file
-    void load(); //load list with shared files from 'sharedFiles' file
-    void showEvent( QShowEvent *event ); //event when window appear
+    void load(); //load list with shared files from "sharedFiles" file
+    void resizeEvent(QResizeEvent *); //this event is called when "addfile_gui" window is resized
+    void save(); //save list with shared files in "sharedFiles" file
+    void showEvent( QShowEvent *event ); //this event is called when "addfile_gui" window is shown
+
 };
 
 #endif // ADDFILE_GUI_H

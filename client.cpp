@@ -18,15 +18,21 @@
 #include "client.h"
 #include <QDataStream>
 
-Client::Client(const QString hostadress, const QString query_, const QString file_name_, const QString file_dir_,  qint64 size, int index_)
+Client::Client(const QString &hostAdress,
+        const QString &query,
+        const QString &fileName,
+        const QString &fileDir,
+        const qint64 size,
+        const int index):
+    m_row(index)
+    , m_hostIp(hostAdress)
+    , m_fileDir (fileDir)
+    , m_fileName(fileName)
+    , m_fileSize (size)
+    , m_query(query)
 {
-    host_ip = hostadress;
-    query = query_;
-    file_name = file_name_;
-    file_dir = file_dir_;
-    file_size = size;
-    row = index_;
 }
+
 Client::~Client()
 {
 }
@@ -35,9 +41,9 @@ void Client::run()
 {
     QTcpSocket socket;
     Data data;
-    socket.connectToHost(host_ip,26001);
+    socket.connectToHost(m_hostIp, 26001);
     double percentage = 0;
-    emit setProgress(row, 0);
+    emit setProgress(m_row, 0);
 
     if(!socket.waitForConnected())
     {
@@ -46,7 +52,7 @@ void Client::run()
     }
 
     QByteArray ba2;
-    ba2 = query.toLocal8Bit(); //query to get hash of checked file
+    ba2 = m_query.toLocal8Bit(); //query to get hash of checked file
     socket.write(ba2);
     socket.waitForReadyRead();
 
@@ -59,35 +65,41 @@ void Client::run()
     for (j=0; j<ba1.size(); j++)
     {
         if (ba1[j]=='#')
+        {
             break;
+        }
         hash+=ba1[j];
     }
     ba1 = ba1.remove(0,j+1);
-    QFile f(file_dir + file_name);
+    QFile f(m_fileDir + m_fileName);
 
     if (!f.open(QIODevice::WriteOnly))
     {
-        qDebug()<<"Client::run(): Can't open " + file_dir + file_name + ".";
+        qDebug()<<"Client::run(): Can't open " + m_fileDir + m_fileName + ".";
         socket.close();
         return;
     }
 
     if (ba1.size()>0)
+    {
         f.write(ba1);
+    }
 
     int b = 0;
 
     while(socket.waitForReadyRead())
     {
         ba1=socket.readAll();
-        if (file_size>b)
+        if (m_fileSize>b)
         {
             b+=ba1.size();
-            double a = b/(file_size*1.0);
+            double a = b/(m_fileSize*1.0);
             percentage = 100*a;
             //qDebug()<<QString::number(procentage) + "% " +QString::number(a) + " " + QString::number(file_size);
             if (percentage != 100)
-                emit setProgress(row, percentage);
+            {
+                emit setProgress(m_row, percentage);
+            }
         }
 
         f.write(ba1);
@@ -95,13 +107,16 @@ void Client::run()
 
     f.close();
     socket.close();
-    if (hash!=data.getHash(file_dir + file_name).data())
+
+    if (hash!=data.getHash(m_fileDir + m_fileName).data())
     {
-        emit setProgress(row, -1);
-        qDebug()<<file_dir + file_name + " failed to download.";
-        qDebug()<<"hash:"<<hash;
-        qDebug()<<"getHash:"<<data.getHash(file_dir + file_name).data();
+        emit setProgress(m_row, -1);
+        qDebug()<<m_fileDir + m_fileName + " failed to download.";
+        qDebug()<<"hash: "<<hash;
+        qDebug()<<"getHash: "<<data.getHash(m_fileDir + m_fileName).data();
     }
     else
-        emit setProgress(row, 100);
+    {
+        emit setProgress(m_row, 100);
+    }
 }

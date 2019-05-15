@@ -300,6 +300,8 @@ void FileSharing_GUI::menu_setNetwork()
     m_setNetworkGUI->show();
 }
 
+
+//ToDo: refactor the below function
 void FileSharing_GUI::on_treeWidget_itemClicked(QTreeWidgetItem *item /*, const int column */)
 {
     //change cursor

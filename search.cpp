@@ -33,6 +33,7 @@ Search::~Search()
 
 }
 
+//ToDo: replace with std::find
 bool Search::searchBefore(const QString &text, const QString &subtext, unsigned int &index)
 {
     vector<int> T(subtext.length() + 1, -1);
@@ -69,6 +70,8 @@ bool Search::searchBefore(const QString &text, const QString &subtext, unsigned 
     index = 0;
     return false;
 }
+
+//ToDo: replace with std::find
 bool Search::searchAfter(const QString &text, const QString &subtext, unsigned int &index)
 {
     vector<int> T(subtext.length() + 1, -1);

@@ -9,7 +9,8 @@ then
   exit 1
 fi
 
-rm *.pro.user
+rm -rf build-simpleLanFileSharing-Desktop*
+rm source/*.pro.user
 
 echo "git add --all"
 git add --all

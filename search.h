@@ -21,14 +21,13 @@
 #include <QString>
 
 class Search {
-    public:
+public:
         Search();
         virtual ~Search();
 
         bool searchBefore(const QString &text, const QString &subtext, unsigned int &index);
         bool searchAfter(const QString &text, const QString &subtext, unsigned int &index);
         int  getTextBetweenTwoStrings(const QString &line, const QString &str1, const QString &str2, QString &text);
-
 };
 
 #endif // SEARCH_H

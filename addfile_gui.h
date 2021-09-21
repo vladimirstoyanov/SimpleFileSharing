@@ -60,7 +60,6 @@ private:
     std::shared_ptr<QStandardItemModel> m_model;
     std::shared_ptr<Ui::AddFile_GUI>    m_ui;
 
-private:
     void addDataInTableView(const QString &fileName, const QString &path, const QString &size);
     int  getDirNameByAbsolutePath(const QString &path, QString &dirname);
     int  getFileNameByAbsolutePath(const QString &path, QString &filename);//get the filename by an absolute path

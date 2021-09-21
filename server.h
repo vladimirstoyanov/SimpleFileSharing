@@ -67,7 +67,6 @@ private slots:
     void ReadyRead(); //ToDo: change the name to readyRead ()
     void SockError(QAbstractSocket::SocketError); //ToDo: change the name to sockError
 
-
 signals:
     void Bytes(qint64); //ToDo: change the name to bytes
 };

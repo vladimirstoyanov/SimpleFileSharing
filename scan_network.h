@@ -49,7 +49,6 @@ private:
     QString m_currentIP;
     QMutex  m_mutex;
 
-private:
     void    checkFinish();
 
 signals:

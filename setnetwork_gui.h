@@ -40,18 +40,16 @@ public:
 
     QString load();
 
+private:
+    std::shared_ptr<Ui::SetNetwork_GUI> m_ui;
+
+    void showEvent(QShowEvent *);
+    void save ();
+
 private slots:
     void addNetworksToComboBox();
     void on_okButton_clicked(); //"OK" button
     void on_cancelButton_clicked(); //"Cancel" button
-
-private:
-    std::shared_ptr<Ui::SetNetwork_GUI> m_ui;
-
-private:
-    void showEvent(QShowEvent *);
-    void save ();
-
 };
 
 #endif // SETNETWORK_GUI_H

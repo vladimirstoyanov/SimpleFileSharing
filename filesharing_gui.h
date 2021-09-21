@@ -59,19 +59,6 @@ public slots:
     void onFoundComputer(const QString &ip);
     void on_finishScan();
 
-private slots:
-    void menu_addFile();
-    void menu_downloadedDirectory();
-    void menu_setNetwork();
-    void on_treeWidget_itemClicked(QTreeWidgetItem *item);
-    void on_downloadButton_clicked();                               //"Download" button
-    void on_scanIP(const QString &ip);
-    void on_scanIpButton_clicked();                                 //"Scan IP" button
-    void on_scanNetworkButton_clicked();                            //"Scan Network" button
-    void on_selectAllButton_clicked();                              //"Select All" button
-    void on_selectNoneButton_clicked();                             //"Select None" button
-    void on_setProgress (const int row, const double percentage);
-
 private:
     std::shared_ptr<AddFile_GUI>            m_addFileGUI;
     bool                                    m_downloadButtonClicked;
@@ -87,7 +74,6 @@ private:
     std::shared_ptr<QThreadPool>            m_threadPool;
     std::shared_ptr<Ui::FileSharing_GUI>    m_ui;
 
- private:
     void    addDataInTableView(const QString &file_name, const QString &size);
     void    addItemToThreeView(const QString &item);
     void    initActions();
@@ -100,6 +86,19 @@ private:
     QString setQuery(const int index);
     void    startWaitAnimation();
     void    stopWaitAnimation();
+
+private slots:
+    void menu_addFile();
+    void menu_downloadedDirectory();
+    void menu_setNetwork();
+    void on_treeWidget_itemClicked(QTreeWidgetItem *item);
+    void on_downloadButton_clicked();                               //"Download" button
+    void on_scanIP(const QString &ip);
+    void on_scanIpButton_clicked();                                 //"Scan IP" button
+    void on_scanNetworkButton_clicked();                            //"Scan Network" button
+    void on_selectAllButton_clicked();                              //"Select All" button
+    void on_selectNoneButton_clicked();                             //"Select None" button
+    void on_setProgress (const int row, const double percentage);
 
 signals:
     void EmerFinish(); //ToDo: change the name

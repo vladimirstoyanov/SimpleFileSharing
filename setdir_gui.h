@@ -40,16 +40,15 @@ public:
     virtual ~SetDir_GUI();
     QString load();
 
-private slots:
-    void on_chooseDirectoryButton_clicked();  //"Choose Directory" button clicked
-    void on_okButton_clicked(); //"OK" button
-
 private:
     std::shared_ptr<Ui::SetDir_GUI> m_ui;
 
-private:
     void save ();
     void showEvent( QShowEvent *event );
+
+private slots:
+    void on_chooseDirectoryButton_clicked();  //"Choose Directory" button clicked
+    void on_okButton_clicked(); //"OK" button
 };
 
 #endif // SETDIR_GUI_H

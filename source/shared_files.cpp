@@ -76,7 +76,7 @@ bool SharedFiles::save()
 
 void SharedFiles::update (const std::vector<FileData> &files)
 {
-    m_fileData.clear(); //remove odl files
+    m_fileData.clear(); //remove old files
     for (auto &item: files)
     {
         m_fileData.push_back(item);

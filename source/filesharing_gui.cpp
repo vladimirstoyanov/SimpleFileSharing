@@ -39,7 +39,7 @@ FileSharing_GUI::FileSharing_GUI(QWidget *parent) :
     m_ui->setupUi(this);
 
     //thread pool used to scanning a network
-    m_threadPool->setMaxThreadCount(50); //set max thread count to available CPU threads
+    m_threadPool->setMaxThreadCount(50); //ToDo: set max thread count to available CPU threads
 
     setGeometryOfWidgets();
     initModelTableView();

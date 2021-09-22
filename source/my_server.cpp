@@ -17,8 +17,9 @@
 
 #include "my_server.h"
 #include <QDebug>
-MyServer::MyServer(QObject *parent) :
+MyServer::MyServer(std::shared_ptr<SharedFiles> sharedFiles, QObject *parent) :
     QTcpServer(parent)
+    , m_sharedFiles(sharedFiles)
 {
 }
 
@@ -33,7 +34,7 @@ void MyServer::StartServer()
 void MyServer::incomingConnection(qintptr ID)
 {
     qDebug()<<"Incoming connection:" + QString::number(ID);
-    std::shared_ptr<Server> thread = std::make_shared<Server>(ID);
+    std::shared_ptr<Server> thread = std::make_shared<Server>(ID, m_sharedFiles);
 
     connect(thread.get(), SIGNAL(finished()),thread.get(), SLOT(deleteLater()));
 

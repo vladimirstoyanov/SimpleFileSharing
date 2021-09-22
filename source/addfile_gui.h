@@ -19,18 +19,20 @@
 #define ADDFILE_GUI_H
 
 /*
- *From menu: Share->File
+menu: Share->File
 */
 
 #include <QDialog>
 #include <QDebug>
-#include <QFile>
 #include <QFileDialog>
 #include <QStandardItemModel>
 #include <QMessageBox>
-#include <QList>
 
 #include <memory>
+#include <vector>
+
+#include "parse_file_data.h"
+#include "shared_files.h"
 
 namespace Ui
 {
@@ -42,10 +44,8 @@ class AddFile_GUI : public QDialog
     Q_OBJECT
 
 public:
-    explicit AddFile_GUI(QWidget *parent = nullptr);
+    explicit AddFile_GUI( std::shared_ptr<SharedFiles> sharedFiles, QWidget *parent = nullptr);
     virtual ~AddFile_GUI();
-
-    QList< QList<QString> > getListWithSharedFiles (); //list with shared files (name, size etc.)
 
 private slots:
     void on_addButton_clicked();    //"Add" button
@@ -57,15 +57,20 @@ private slots:
 private:
     QString                             m_addFileLastDir;
     std::shared_ptr<QStandardItemModel> m_model;
+    int                                 m_offsetBetweenWidgets;
+    std::shared_ptr<SharedFiles>        m_sharedFiles;
     std::shared_ptr<Ui::AddFile_GUI>    m_ui;
 
-    void addDataInTableView(const QString &fileName, const QString &path, const QString &size);
+
+    void addToTableView(const FileData & fileData);
+    void clearModelData ();
+    std::vector<FileData> convertToVectorOfFileData();
     int  getDirNameByAbsolutePath(const QString &path, QString &dirname);
     int  getFileNameByAbsolutePath(const QString &path, QString &filename);//get the filename by an absolute path
     void initModelTableView(); //initialization of QTableView with QStandardItemModel model
-    void load(); //load list with shared files from "sharedFiles" file
+    bool isPathExist (const QString &path);
+    void loadData(); //load list with shared files
     void resizeEvent(QResizeEvent *); //this event is called when "addfile_gui" window is resized
-    void save(); //save list with shared files in "sharedFiles" file
     void showEvent( QShowEvent *event ); //this event is called when "addfile_gui" window is shown
 
 };

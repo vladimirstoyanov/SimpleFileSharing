@@ -19,16 +19,19 @@
 #define SERVER_H
 
 #include <memory>
+#include <vector>
 
 #include <QDebug>
 #include <QFile>
-#include <QList>
 #include <QStringList>
 #include <QThread>
 #include <QTcpServer>
 #include <QTcpSocket>
 
 #include "data.h"
+#include "file_data.h"
+#include "shared_files.h"
+
 
 //ToDo: if it possible, replace the below constants with an enum
 #define NC_GET_FILE 16
@@ -49,7 +52,7 @@ public:
     QFile m_file;
 
 public:
-    Server(qintptr ID);
+    Server(qintptr ID, std::shared_ptr<SharedFiles> sharedFiels);
     virtual ~Server();
 
 protected:
@@ -57,6 +60,7 @@ protected:
 
 private:
     qintptr m_descriptor;
+    std::shared_ptr<SharedFiles> m_sharedFiles;
     QByteArray m_socketData;
     std::shared_ptr<QTcpSocket> m_tcpSocket;
 

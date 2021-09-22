@@ -21,19 +21,21 @@
 #include <QMessageBox>
 #include <QTcpServer>
 
+#include "shared_files.h"
 #include "server.h"
-
 
 class MyServer : public QTcpServer
 {
     Q_OBJECT
 
 public:
-    explicit MyServer(QObject *parent = 0);
+    explicit MyServer(std::shared_ptr<SharedFiles> sharedFiles, QObject *parent = 0);
     void StartServer();
 
 protected:
     void incomingConnection(qintptr ID);
+private:
+    std::shared_ptr<SharedFiles> m_sharedFiles;
 };
 
 #endif // MYSERVER_H

@@ -21,7 +21,8 @@
 FileSharing_GUI::FileSharing_GUI(QWidget *parent) :
     QMainWindow(parent)
     , m_aboutGUI (std::make_shared<About_GUI>())
-    , m_addFileGUI (std::make_shared<AddFile_GUI>())
+    , m_sharedFiles (std::make_shared<SharedFiles> ())
+    , m_addFileGUI (std::make_shared<AddFile_GUI>(m_sharedFiles))
     , m_downloadButtonClicked (false)
     , m_currentHost ("")
     , m_loadingGif (std::make_shared<QLabel>(this))
@@ -29,7 +30,7 @@ FileSharing_GUI::FileSharing_GUI(QWidget *parent) :
     , m_movie (std::make_shared<QMovie>("ajax_waiting.gif"))
     , m_scanIpGUI (std::make_shared<ScanIP_GUI> ())
     , m_scanNetwork (std::make_shared<ScanNetwork>())
-    , m_server ()
+    , m_server (m_sharedFiles)
     , m_setDirGUI (std::make_shared<SetDir_GUI> ())
     , m_setNetworkGUI (std::make_shared<SetNetwork_GUI>())
     , m_threadPool (std::make_shared<QThreadPool>(this))
@@ -38,7 +39,7 @@ FileSharing_GUI::FileSharing_GUI(QWidget *parent) :
     m_ui->setupUi(this);
 
     //thread pool used to scanning a network
-    m_threadPool->setMaxThreadCount(50); //check 50 IP addresses at the same time
+    m_threadPool->setMaxThreadCount(50); //set max thread count to available CPU threads
 
     setGeometryOfWidgets();
     initModelTableView();

@@ -26,7 +26,8 @@ Data::Data():
 {
 }
 
-Data::~Data(){
+Data::~Data()
+{
     if(m_string)
     {
         delete []m_string;

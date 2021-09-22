@@ -17,7 +17,9 @@ CONFIG += c++11
 
 SOURCES += main.cpp\
     about_gui.cpp \
+    file_data.cpp \
         filesharing_gui.cpp \
+    parse_file_data.cpp \
     search.cpp \
     server.cpp \
     scan_network.cpp \
@@ -27,10 +29,13 @@ SOURCES += main.cpp\
     setdir_gui.cpp \
     setnetwork_gui.cpp \
     scanip_gui.cpp \
-    my_server.cpp
+    my_server.cpp \
+    shared_files.cpp
 
 HEADERS  += filesharing_gui.h \
     about_gui.h \
+    file_data.h \
+    parse_file_data.h \
     search.h \
     server.h \
     scan_network.h \
@@ -40,7 +45,8 @@ HEADERS  += filesharing_gui.h \
     setdir_gui.h \
     setnetwork_gui.h \
     scanip_gui.h \
-    my_server.h
+    my_server.h \
+    shared_files.h
 
 FORMS    += filesharing_gui.ui \
     about_gui.ui \

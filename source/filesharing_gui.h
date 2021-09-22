@@ -38,6 +38,7 @@
 #include "scan_network.h"
 #include "setdir_gui.h"
 #include "setnetwork_gui.h"
+#include "shared_files.h"
 
 /*
  Main GUI window
@@ -62,6 +63,7 @@ public slots:
 
 private:
     std::shared_ptr<About_GUI>              m_aboutGUI;
+    std::shared_ptr<SharedFiles>            m_sharedFiles;
     std::shared_ptr<AddFile_GUI>            m_addFileGUI;
     bool                                    m_downloadButtonClicked;
     QString                                 m_currentHost;
@@ -75,6 +77,7 @@ private:
     std::shared_ptr<SetNetwork_GUI>         m_setNetworkGUI;
     std::shared_ptr<QThreadPool>            m_threadPool;
     std::shared_ptr<Ui::FileSharing_GUI>    m_ui;
+
 
     void    addDataInTableView(const QString &file_name, const QString &size);
     void    addItemToThreeView(const QString &item);

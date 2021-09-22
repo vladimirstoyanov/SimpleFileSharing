@@ -21,8 +21,9 @@
 #include <QDir>
 #include "addfile_gui.h"
 
-Server::Server(qintptr ID):
-    m_descriptor(ID)
+Server::Server(qintptr id, std::shared_ptr<SharedFiles> sharedFiels):
+    m_descriptor(id)
+    , m_sharedFiles (sharedFiels)
     , m_tcpSocket (std::make_shared<QTcpSocket>())
 {
 }
@@ -45,17 +46,17 @@ void Server::ReadyRead()
     parseData();
 }
 
+//ToDo: refactor this method
 void Server::parseData()
 {
      Data d = returnData();
-     AddFile_GUI addfile;
+
      switch (d.getType())
      {
         case NC_GET_FILE://this case block send file
         {
-
                 //check d.string is to list
-                QList< QList<QString> > files = addfile.getListWithSharedFiles();
+                std::vector<FileData> files = m_sharedFiles->get();
                 int index=-1;
                 QByteArray arguments = d.getArguments();
                 qDebug()<<arguments;
@@ -66,18 +67,18 @@ void Server::parseData()
                 while(i<arguments.size() && arguments[i]!='#')
                 {
                     num+=arguments[i];
-                    i++;
+                    ++i;
                 }
-                i++;
+                ++i;
                 while(i<arguments.size() && arguments[i]!='\0')
                 {
                     filename+=arguments[i];
-                    i++;
+                    ++i;
                 }
                 int number = num.toInt();
                 for (int i=0; i<files.size(); i++)
                 {
-                    if (filename == files[i][0])
+                    if (filename == files[i].getFileName())
                     {
                         if (number>0)
                         {
@@ -93,12 +94,12 @@ void Server::parseData()
                     break;
 
                 //send hash
-                QString s_hash= d.getHash(files[index][1]);
+                QString s_hash= d.getHash(files[index].getPath());
                 s_hash +='#';
                 QByteArray b_hash = s_hash.toLocal8Bit();
                 send(b_hash.constData(), b_hash.size());
 
-                QFile file(files[index][1]);
+                QFile file(files[index].getPath());
                 if (!file.open(QIODevice::ReadOnly))
                     break;
 
@@ -111,22 +112,16 @@ void Server::parseData()
         }
         case NC_GET_LIST:
         {
-                QList< QList<QString> > files = addfile.getListWithSharedFiles();
+                std::vector<FileData> files = m_sharedFiles->get();
                 QString sharedFiles = "";
                 qDebug()<<"files.size():"<<files.size();
-                for (int i=0; i<files.size(); i++)
+                for (int i=0; i<files.size(); ++i)
                 {
-                    if (files[i].size()<3)
-                    {
-                        qDebug()<<"ignore:"<<i;
-                        continue;
-                    }
-                    QFileInfo fi(files[i][1]);
+                    QFileInfo fi(files[i].getPath());
                     sharedFiles+=QString::number(fi.size());
 
-                    //sharedFiles+=getHash(files[i][1]);
                     sharedFiles+= "#";
-                    sharedFiles+=files[i][0] + "\n";
+                    sharedFiles+=files[i].getFileName() + "\n";
                 }
                 int index = 0;
                 //qDebug()<<sharedFiles;

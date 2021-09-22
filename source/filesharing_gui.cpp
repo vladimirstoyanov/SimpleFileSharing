@@ -20,6 +20,7 @@
 
 FileSharing_GUI::FileSharing_GUI(QWidget *parent) :
     QMainWindow(parent)
+    , m_aboutGUI (std::make_shared<About_GUI>())
     , m_addFileGUI (std::make_shared<AddFile_GUI>())
     , m_downloadButtonClicked (false)
     , m_currentHost ("")
@@ -282,6 +283,12 @@ void FileSharing_GUI::initActions()
     connect(m_ui->actionFilie_or_Directory, SIGNAL(triggered()), this, SLOT(menu_addFile()));
     connect(m_ui->actionDownloaded_Directory, SIGNAL(triggered()), this, SLOT(menu_downloadedDirectory()));
     connect(m_ui->actionSet_network, SIGNAL(triggered()), this, SLOT(menu_setNetwork()));
+    connect(m_ui->actionAbout, SIGNAL(triggered()), this, SLOT(menu_about()));
+}
+
+void FileSharing_GUI::menu_about()
+{
+    m_aboutGUI->show();
 }
 
 void FileSharing_GUI::menu_addFile()

@@ -123,7 +123,7 @@
      <x>0</x>
      <y>0</y>
      <width>500</width>
-     <height>27</height>
+     <height>23</height>
     </rect>
    </property>
    <widget class="QMenu" name="menuAdd">
@@ -136,7 +136,6 @@
     <property name="title">
      <string>Help</string>
     </property>
-    <addaction name="actionWhat_s_This"/>
     <addaction name="actionAbout"/>
    </widget>
    <widget class="QMenu" name="menuOptions">

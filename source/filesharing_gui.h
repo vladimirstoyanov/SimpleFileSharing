@@ -30,6 +30,7 @@
 
 #include <memory>
 
+#include "about_gui.h"
 #include "addfile_gui.h"
 #include "client.h"
 #include "my_server.h"
@@ -60,6 +61,7 @@ public slots:
     void on_finishScan();
 
 private:
+    std::shared_ptr<About_GUI>              m_aboutGUI;
     std::shared_ptr<AddFile_GUI>            m_addFileGUI;
     bool                                    m_downloadButtonClicked;
     QString                                 m_currentHost;
@@ -88,6 +90,7 @@ private:
     void    stopWaitAnimation();
 
 private slots:
+    void menu_about();
     void menu_addFile();
     void menu_downloadedDirectory();
     void menu_setNetwork();

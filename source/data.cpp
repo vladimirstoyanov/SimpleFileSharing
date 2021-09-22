@@ -143,15 +143,21 @@ void Data::fromChar(const char *s, const char *arg, int cmd)
     }
 }
 
-//return hash of file with name recorded in 'file_name' var
 QByteArray Data::getHash(const QString &fileName)
 {
+    int chunkSize = 8192;
     QCryptographicHash crypto(QCryptographicHash::Sha1);
     QFile file(fileName);
+
     if (!file.open(QFile::ReadOnly))
+    {
         return "";
-    while(!file.atEnd()){
-      crypto.addData(file.read(8192));
     }
+
+    while(!file.atEnd())
+    {
+      crypto.addData(file.read(chunkSize));
+    }
+
     return crypto.result().toHex();
 }

@@ -45,7 +45,6 @@ public:
     explicit AddFile_GUI(QWidget *parent = nullptr);
     virtual ~AddFile_GUI();
 
-    //ToDo: move the below list to the private section
     QList< QList<QString> > getListWithSharedFiles (); //list with shared files (name, size etc.)
 
 private slots:

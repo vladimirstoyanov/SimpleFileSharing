@@ -27,11 +27,13 @@
 #include <QThreadPool>
 #include <QtCore>
 
+#include <vector>
+
 class ScanNetwork: public QObject, public QRunnable
 {
     Q_OBJECT
 public:
-    QList<int> m_scannedIPAddresses; //ToDo: move this list in the private section
+    std::vector<int> m_scannedIPAddresses; //ToDo: move this list in the private section
 
 public:
     ScanNetwork();

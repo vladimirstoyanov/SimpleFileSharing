@@ -25,18 +25,23 @@ FileSharing_GUI::FileSharing_GUI(QWidget *parent) :
     , m_addFileGUI (std::make_shared<AddFile_GUI>(m_sharedFiles))
     , m_defaultThreadCount (4)
     , m_downloadButtonClicked (false)
+    , m_downloadColumnId(2)
     , m_currentHost ("")
     , m_loadingGif (std::make_shared<QLabel>(this))
     , m_loadingGifWidth (16)
     , m_loadingGifHeight (16)
+    , m_maxHostCount (256)
     , m_model (std::make_shared<QStandardItemModel>(0,4,this))
     , m_movie (std::make_shared<QMovie>("ajax_waiting.gif"))
+    , m_nameColumnId(0)
     , m_offsetBetweenWidgets(5)
+    , m_progressColumnId(1)
     , m_scanIpGUI (std::make_shared<ScanIP_GUI> ())
     , m_scanNetwork (std::make_shared<ScanNetwork>())
     , m_server (m_sharedFiles)
     , m_setDirGUI (std::make_shared<SetDir_GUI> ())
     , m_setNetworkGUI (std::make_shared<SetNetwork_GUI>())
+    , m_sizeColumnId (3)
     , m_threadPool (std::make_shared<QThreadPool>(this))
     , m_ui(std::make_shared<Ui::FileSharing_GUI> ())
 {
@@ -55,9 +60,8 @@ void FileSharing_GUI::onFoundComputer(const QString &ip)
 
 void FileSharing_GUI::on_finishScan()
 {
-    m_ui->scanNetworkButton->setEnabled(true);
     qDebug()<<"The network scan has finished.";
-    stopWaitAnimation();
+    postScanNetwork();
 }
 
 void FileSharing_GUI::addItemToThreeView(const QString &name)
@@ -145,41 +149,37 @@ void FileSharing_GUI::resizeEvent(QResizeEvent *event)
 
 void FileSharing_GUI::initModelTableView()
 {
-    m_model->setHorizontalHeaderItem(0, new QStandardItem(QString("name")));
-    m_model->setHorizontalHeaderItem(1, new QStandardItem(QString("progress")));
-    m_model->setHorizontalHeaderItem(2, new QStandardItem(QString("download")));
-    m_model->setHorizontalHeaderItem(3, new QStandardItem(QString("size (KB)")));
+    m_model->setHorizontalHeaderItem(m_nameColumnId, new QStandardItem(QString("name")));
+    m_model->setHorizontalHeaderItem(m_progressColumnId, new QStandardItem(QString("progress")));
+    m_model->setHorizontalHeaderItem(m_downloadColumnId, new QStandardItem(QString("download")));
+    m_model->setHorizontalHeaderItem(m_sizeColumnId, new QStandardItem(QString("size (KB)")));
     m_ui->tableView->setModel(m_model.get());
 }
 
-int FileSharing_GUI::scanNetwork()
+void FileSharing_GUI::preScanNetwork ()
 {
     m_ui->treeWidget->clear();
-
     m_ui->scanNetworkButton->setEnabled(false);
-    startWaitAnimation();
+    startLoadingAnimation();
+}
 
-    QString ipAddress = "";
-    ipAddress = m_setNetworkGUI->load();
+void FileSharing_GUI::postScanNetwork ()
+{
+    m_ui->scanNetworkButton->setEnabled(true);
+    stopLoadingAnimation();
+}
 
-    qDebug()<<"IP address: " + ipAddress;
-    if (ipAddress == "")
-    {
-        m_ui->scanNetworkButton->setEnabled(true);
-        stopWaitAnimation();
-        return 1;
-    }
-
-    QString networkIp ="";
-    QString lastNum = "";
-    int lastNumToInt = 0;
+bool FileSharing_GUI::getBaseNetworkIp (const QString &ipAddress, QString &networkIp)
+{
+    networkIp ="";
     int countDots = 0;
+    int ipAddressDotCount = 3;
     for (int i=0; i<ipAddress.length(); ++i)
     {
         if (ipAddress[i]=='.')
         {
-            countDots+=1;
-            if (countDots == 3) //FIXME: what is 3?
+            ++countDots;
+            if (countDots == ipAddressDotCount)
             {
                 break;
             }
@@ -187,75 +187,101 @@ int FileSharing_GUI::scanNetwork()
         networkIp+=ipAddress[i];
     }
 
+    if (countDots<ipAddressDotCount)
+    {
+        return false;
+    }
+    networkIp+='.';
+    return true;
+}
+
+bool FileSharing_GUI::getLastNumberOfIpAddress (const QString &ipAddress, int &lastNumber)
+{
+    QString lastNum = "";
+    lastNumber = 0;
+    int maxDigitsCount = 3;
+    int minDigitsCount = 1;
+
     for (int i = ipAddress.length()-1; ipAddress[i]!='.'; --i)
     {
-        lastNum =ipAddress[i] + lastNum;
+        lastNum = ipAddress[i] + lastNum;
     }
 
-    if (lastNum.length()>3 || lastNum.length()<1) //FIXME: what is 3 and 1?
+    if (lastNum.length()>maxDigitsCount || lastNum.length()<minDigitsCount)
     {
-        stopWaitAnimation();
-        return 1;
+        return false;
     }
 
-    lastNumToInt = lastNum.toInt();
+    lastNumber = lastNum.toInt();
+    return true;
+}
 
-    if (countDots<3)
-    {
-        m_ui->scanNetworkButton->setEnabled(true);
-        stopWaitAnimation();
-        return 1;
-    }
-
-    networkIp+='.';
+void FileSharing_GUI::startScan(const QString &baseNetworkIp, const int lastNumberOfIpAddress)
+{
     m_threadPool->releaseThread();
-    if (m_scanNetwork->getCurrentIP() == "")
+
+    if ("" == m_scanNetwork->getCurrentIP())
     {
-        m_scanNetwork->setCurrentIP(networkIp);
+        m_scanNetwork->setCurrentIP(baseNetworkIp);
     }
 
-    if (m_scanNetwork->m_scannedIPAddresses.size()==0)
-    {
-        for(int i=1; i<256; i++)
-        {
-            if (i == lastNumToInt)
-            {
-                m_scanNetwork->m_scannedIPAddresses.append(1);
-                continue;
-            }
-            m_scanNetwork->m_scannedIPAddresses.append(0);
-        }
-    }
-    else
-    {
-        for(int i=0; i<255; i++)
-        {
-            if (i == lastNumToInt-1)
-            {
-                m_scanNetwork->m_scannedIPAddresses[i]=1;
-                continue;
-            }
-            m_scanNetwork->m_scannedIPAddresses[i]=0;
-        }
-    }
+    initArrayOfScannedIpAddresses (lastNumberOfIpAddress);
 
     m_scanNetwork->setAutoDelete(false);
-    for (int i=1; i<256; i++)
+
+    for (int i=1; i<m_maxHostCount; ++i)
     {
         m_threadPool->start(m_scanNetwork.get());
     }
+}
+
+int FileSharing_GUI::scanNetwork()
+{
+    QString baseNetworkIp= "";
+    int lastNumberOfIpAddress = 0;
+    QString ipAddress = m_setNetworkGUI->load();
+
+    preScanNetwork ();
+
+    qDebug()<<"IP address: " + ipAddress;
+    if ("" == ipAddress &&
+        !getBaseNetworkIp(ipAddress, baseNetworkIp) &&
+        !getLastNumberOfIpAddress (ipAddress, lastNumberOfIpAddress))
+    {
+        postScanNetwork ();
+        return 1;
+    }
+
+    startScan (baseNetworkIp, lastNumberOfIpAddress);
 
     return 0;
 }
 
-//"Scan Network" button
-void FileSharing_GUI::on_scanNetworkButton_clicked()
+void FileSharing_GUI::initArrayOfScannedIpAddresses (int lastNumberOfIpAddress)
+{
+    for(int i=0; i<m_maxHostCount-1; ++i)
+    {
+        if (i == lastNumberOfIpAddress-1)
+        {
+            m_scanNetwork->m_scannedIPAddresses[i]=1; //mark as scanned
+            continue;
+         }
+         m_scanNetwork->m_scannedIPAddresses[i]=0; //mark as unscanned
+    }
+}
+
+void FileSharing_GUI::clearTableView ()
 {
     while (m_model->rowCount() > 0)
     {
         m_model->removeRow(0);
     }
+}
 
+//"Scan Network" button
+void FileSharing_GUI::on_scanNetworkButton_clicked()
+{
+    clearTableView();
     scanNetwork();
 }
 
@@ -379,27 +405,26 @@ void FileSharing_GUI::on_treeWidget_itemClicked(QTreeWidgetItem *item /*, const 
 
 void FileSharing_GUI::addDataInTableView(const QString &fileName, const QString &size)
 {
-
     m_model->setRowCount(m_model->rowCount()+1);
 
-    m_model->setData(m_model->index(m_model->rowCount()-1,0),fileName);
-    m_model->setData(m_model->index(m_model->rowCount()-1,1),"");
+    m_model->setData(m_model->index(m_model->rowCount()-1,m_nameColumnId),fileName);
+    m_model->setData(m_model->index(m_model->rowCount()-1,m_progressColumnId),"");
 
     //checkBox
     std::shared_ptr<QStandardItem> item0 = std::make_shared<QStandardItem>(true);
     item0->setCheckable(true);
     item0->setCheckState(Qt::Unchecked);
-    m_model->setItem(m_model->rowCount()-1,2,item0.get());
+    m_model->setItem(m_model->rowCount()-1,m_downloadColumnId,item0.get());
 
     double size_num = size.toInt();
     size_num/=1024.0;
-    m_model->setData(m_model->index(m_model->rowCount()-1,3),QString::number(size_num));
+    m_model->setData(m_model->index(m_model->rowCount()-1,m_sizeColumnId),QString::number(size_num));
 
-    //set data not editable
-    m_model->item(m_model->rowCount()-1,0)->setEditable(false);
-    m_model->item(m_model->rowCount()-1,1)->setEditable(false);
-    m_model->item(m_model->rowCount()-1,2)->setEditable(false);
-    m_model->item(m_model->rowCount()-1,3)->setEditable(false);
+    //set data to be not editable
+    m_model->item(m_model->rowCount()-1,m_nameColumnId)->setEditable(false);
+    m_model->item(m_model->rowCount()-1,m_progressColumnId)->setEditable(false);
+    m_model->item(m_model->rowCount()-1,m_downloadColumnId)->setEditable(false);
+    m_model->item(m_model->rowCount()-1,m_sizeColumnId)->setEditable(false);
 }
 
 int FileSharing_GUI::modifyPath(QString &path)
@@ -421,13 +446,13 @@ int FileSharing_GUI::modifyPath(QString &path)
     return 0;
 }
 
-void FileSharing_GUI::startWaitAnimation()
+void FileSharing_GUI::startLoadingAnimation()
 {
     m_movie->start();
     m_loadingGif->show();
 }
 
-void FileSharing_GUI::stopWaitAnimation()
+void FileSharing_GUI::stopLoadingAnimation()
 {
     m_movie->stop();
     m_loadingGif->hide();
@@ -442,7 +467,7 @@ QString FileSharing_GUI::setQuery(int index)
 
     QString query = "\x10\t";
 
-    QString filename=m_model->item(index, 0)->text();
+    QString filename=m_model->item(index, m_nameColumnId)->text();
     int num=0;
     for (int i = 0; i<m_model->rowCount(); ++i)
     {
@@ -451,9 +476,9 @@ QString FileSharing_GUI::setQuery(int index)
             break;
         }
 
-        if (filename == m_model->item(i,0)->text())
+        if (filename == m_model->item(i,m_nameColumnId)->text())
         {
-            num++;
+            ++num;
         }
     }
     query+=QString::number(num) + "#" + filename+"\n";
@@ -464,7 +489,7 @@ void FileSharing_GUI::clearProgressColumnData ()
 {
     for (int i=0; i<m_model->rowCount(); ++i)
     {
-        m_model->item(i, 1)->setText("");
+        m_model->item(i, m_progressColumnId)->setText("");
     }
 }
 
@@ -473,7 +498,7 @@ void FileSharing_GUI::startDownload (const int row)
     QModelIndex index;
     for (int i=row; i<m_model->rowCount(); ++i)
     {
-        index= m_model->index(i,2, QModelIndex());
+        index= m_model->index(i,m_downloadColumnId, QModelIndex());
         if(index.data(Qt::CheckStateRole) == Qt::Checked)
         {
             QString dir = m_setDirGUI->load();
@@ -488,9 +513,9 @@ void FileSharing_GUI::startDownload (const int row)
                 continue;
             }
 
-            double sizeDouble = m_model->item(i,3)->text().toDouble();
+            double sizeDouble = m_model->item(i,m_sizeColumnId)->text().toDouble();
             qint64 size = sizeDouble *1000;
-            std::shared_ptr<Client> thread  = std::make_shared<Client>(m_currentHost, query, m_model->item(i,0)->text(),dir,size,i);
+            std::shared_ptr<Client> thread  = std::make_shared<Client>(m_currentHost, query, m_model->item(i,m_nameColumnId)->text(),dir,size,i);
             connect(thread.get(), SIGNAL(setProgress(int,double)), this, SLOT(on_setProgress(int,double)));
             thread->start();
             return;
@@ -524,18 +549,18 @@ void FileSharing_GUI::next(const int row)
 
 void FileSharing_GUI::on_setProgress(const int row, const double percentage)
 {
-    if (-1 == percentage)
+    if (-1 == percentage) //ToDo: remove the magic number
     {
-        m_model->item(row, 1)->setText("Fail to download");
-    }
-    else if (100 == percentage)
-    {
-        m_model->item(row, 1)->setText(QString::number(percentage) + "%");
-        next(row);
+        m_model->item(row, m_progressColumnId)->setText("Fail to download");
     }
     else
     {
-        m_model->item(row, 1)->setText(QString::number(percentage) + "%");
+        m_model->item(row, m_progressColumnId)->setText(QString::number(percentage) + "%");
+    }
+
+    if (100 == percentage) //ToDo: remove the magic number
+    {
+        next(row);
     }
 }
 
@@ -556,9 +581,9 @@ void FileSharing_GUI::on_scanIP(const QString &ip)
 //"Select All" button
 void FileSharing_GUI::on_selectAllButton_clicked()
 {
-    for (int i=0; i<m_model->rowCount(); i++)
+    for (int i=0; i<m_model->rowCount(); ++i)
     {
-        m_model->item(i, 2)->setCheckState(Qt::Checked);
+        m_model->item(i, m_downloadColumnId)->setCheckState(Qt::Checked);
     }
 }
 
@@ -567,7 +592,7 @@ void FileSharing_GUI::on_selectNoneButton_clicked()
 {
     for (int i=0; i<m_model->rowCount(); i++)
     {
-        m_model->item(i, 2)->setCheckState(Qt::Unchecked);
+        m_model->item(i, m_downloadColumnId)->setCheckState(Qt::Unchecked);
     }
 }
 
@@ -582,6 +607,11 @@ void FileSharing_GUI::setThreadCount ()
     {
         m_threadPool->setMaxThreadCount(availableThreadCount);
     }
+}
+
+void FileSharing_GUI::allocateMemory()
+{
+    m_scanNetwork->m_scannedIPAddresses.reserve(m_maxHostCount);
 }
 
 void FileSharing_GUI::setupConnections ()
@@ -613,5 +643,7 @@ void FileSharing_GUI::setupGui ()
 
     //init waiting gif animation
     m_loadingGif->setMovie(m_movie.get());
+
+    allocateMemory();
 }
 

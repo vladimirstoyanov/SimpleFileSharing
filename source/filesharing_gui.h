@@ -68,39 +68,52 @@ private:
     std::shared_ptr<AddFile_GUI>            m_addFileGUI;
     int                                     m_defaultThreadCount;
     bool                                    m_downloadButtonClicked;
+    int                                     m_downloadColumnId;
     QString                                 m_currentHost;
     std::shared_ptr<QLabel>                 m_loadingGif;
     int                                     m_loadingGifWidth;
     int                                     m_loadingGifHeight;
+    int                                     m_maxHostCount;
     std::shared_ptr<QStandardItemModel>     m_model;
     std::shared_ptr<QMovie>                 m_movie;
+    int                                     m_nameColumnId;
     int                                     m_offsetBetweenWidgets;
+    int                                     m_progressColumnId;
     std::shared_ptr<ScanIP_GUI>             m_scanIpGUI;
     std::shared_ptr<ScanNetwork>            m_scanNetwork;
     MyServer                                m_server;
     std::shared_ptr<SetDir_GUI>             m_setDirGUI;
     std::shared_ptr<SetNetwork_GUI>         m_setNetworkGUI;
+    int                                     m_sizeColumnId;
     std::shared_ptr<QThreadPool>            m_threadPool;
     std::shared_ptr<Ui::FileSharing_GUI>    m_ui;
 
 
     void    addDataInTableView(const QString &file_name, const QString &size);
     void    addItemToThreeView(const QString &item);
+    void    allocateMemory();
     void    clearProgressColumnData ();
+    void    clearTableView ();
+    bool    getBaseNetworkIp (const QString &ipAddress, QString &networkIp);
+    bool    getLastNumberOfIpAddress (const QString &ipAddress, int &lastNumber);
     void    initActions();
+    void    initArrayOfScannedIpAddresses (int lastNumberOfIpAddress);
     void    initModelTableView();
     int     modifyPath(QString &path);
     void    next(const int row);
+    void    postScanNetwork ();
+    void    preScanNetwork ();
+    void    resizeEvent(QResizeEvent *);
     int     scanNetwork();
     void    setThreadCount ();
-    void    resizeEvent(QResizeEvent *);
     void    setupConnections ();
     void    setupGui ();
     void    setGeometryOfWidgets();
     QString setQuery(const int index);
     void    startDownload (const int row);
-    void    startWaitAnimation();
-    void    stopWaitAnimation();
+    void    startLoadingAnimation();
+    void    startScan(const QString &baseNetworkIp, const int lastNumberOfIpAddress);
+    void    stopLoadingAnimation();
 
 private slots:
     void menu_about();

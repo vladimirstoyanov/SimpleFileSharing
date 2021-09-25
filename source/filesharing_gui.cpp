@@ -169,9 +169,9 @@ void FileSharing_GUI::postScanNetwork ()
     stopLoadingAnimation();
 }
 
-bool FileSharing_GUI::getBaseNetworkIp (const QString &ipAddress, QString &networkIp)
+bool FileSharing_GUI::getBaseNetworkIp (const QString &ipAddress, QString &baseNetworkIp)
 {
-    networkIp ="";
+    baseNetworkIp ="";
     int countDots = 0;
     int ipAddressDotCount = 3;
     for (int i=0; i<ipAddress.length(); ++i)
@@ -184,14 +184,14 @@ bool FileSharing_GUI::getBaseNetworkIp (const QString &ipAddress, QString &netwo
                 break;
             }
         }
-        networkIp+=ipAddress[i];
+        baseNetworkIp+=ipAddress[i];
     }
 
     if (countDots<ipAddressDotCount)
     {
         return false;
     }
-    networkIp+='.';
+    baseNetworkIp+='.';
     return true;
 }
 
@@ -244,8 +244,8 @@ int FileSharing_GUI::scanNetwork()
     preScanNetwork ();
 
     qDebug()<<"IP address: " + ipAddress;
-    if ("" == ipAddress &&
-        !getBaseNetworkIp(ipAddress, baseNetworkIp) &&
+    if ("" == ipAddress ||
+        !getBaseNetworkIp(ipAddress, baseNetworkIp) ||
         !getLastNumberOfIpAddress (ipAddress, lastNumberOfIpAddress))
     {
         postScanNetwork ();
@@ -317,88 +317,19 @@ void FileSharing_GUI::menu_setNetwork()
 }
 
 
-//ToDo: refactor the below function
-void FileSharing_GUI::on_treeWidget_itemClicked(QTreeWidgetItem *item /*, const int column */)
+void FileSharing_GUI::on_treeWidget_itemClicked(QTreeWidgetItem *item)
 {
-    //change cursor
-    QApplication::setOverrideCursor(Qt::WaitCursor);
+    QApplication::setOverrideCursor(Qt::WaitCursor); //change cursor
+    clearTableView();
 
-    //remove data in tableView
-    while (m_model->rowCount() > 0)
-    {
-        m_model->removeRow(0);
-    }
-
-    qDebug()<<item->text(0);
     m_currentHost = item->text(0);
+    Socket socket;
+    std::vector<RemoteHostFileData> remoteHostFileData = socket.getSharedFilesByRemoteHost(m_currentHost, 26001);
 
-    QTcpSocket socket;
-
-    socket.connectToHost(item->text(0),26001);
-    bool flag = socket.waitForConnected();
-    if(!flag)
+    for (auto &item : remoteHostFileData)
     {
-        socket.close();
-        qDebug()<<"Can't connect to " + item->text(0);
-        QApplication::restoreOverrideCursor();
-        return;
+        addDataInTableView(item.getFileName(), item.getSize());
     }
-
-    char *ncGetList = new char [3];
-    ncGetList[0]=char(20);
-    ncGetList[1]='\t';
-    ncGetList[2]='\n';
-    socket.write(ncGetList,3);
-
-    QByteArray ba1;
-    QString recv = "";
-    while(socket.waitForReadyRead())
-    {
-        //qDebug()<<"-------------";
-        ba1=socket.readAll();
-        recv+=ba1.data();
-        //qDebug()<<recv;
-    }
-    socket.close();
-    qDebug()<<"size:"<<recv.size();
-    if (recv == "")
-    {
-        QApplication::restoreOverrideCursor();
-        return;
-    }
-    if(recv.length()<3)
-    {
-        QApplication::restoreOverrideCursor();
-        return;
-    }
-    //qDebug()<<"recv:"<<recv;
-
-    //fill tableView
-    int i=2;
-    QString text ="";
-    QString size ="";
-    QString name ="";
-    do
-    {
-        i++;
-        if (recv[i]=='#') //hash
-        {
-            size = text;
-            text="";
-            continue;
-        }
-        if (recv[i]=='\n') //name
-        {
-            name = text;
-            addDataInTableView(name,size);
-            name="";
-            size="";
-            text="";
-            continue;
-        }
-        text+=recv[i];
-    }
-    while(i<recv.length());
 
     QApplication::restoreOverrideCursor();
 }

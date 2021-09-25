@@ -22,24 +22,27 @@
 #include <QMainWindow>
 #include <QMessageBox>
 #include <QMovie>
-#include <QNetworkInterface>
+//#include <QNetworkInterface>
 #include <QStandardItemModel>
-#include <QTcpServer>
+//#include <QTcpServer>
 #include <QThreadPool>
 #include <QTreeWidgetItem>
 
 #include <memory>
 #include <thread>
+#include <vector>
 
 #include "about_gui.h"
 #include "addfile_gui.h"
 #include "client.h"
 #include "my_server.h"
+#include "remote_host_file_data.h"
 #include "scanip_gui.h"
 #include "scan_network.h"
 #include "setdir_gui.h"
 #include "setnetwork_gui.h"
 #include "shared_files.h"
+#include "socket.h"
 
 /*
  Main GUI window
@@ -94,7 +97,7 @@ private:
     void    allocateMemory();
     void    clearProgressColumnData ();
     void    clearTableView ();
-    bool    getBaseNetworkIp (const QString &ipAddress, QString &networkIp);
+    bool    getBaseNetworkIp (const QString &ipAddress, QString &baseNetworkIp);
     bool    getLastNumberOfIpAddress (const QString &ipAddress, int &lastNumber);
     void    initActions();
     void    initArrayOfScannedIpAddresses (int lastNumberOfIpAddress);

@@ -407,7 +407,7 @@ int FileSharing_GUI::modifyPath(QString &path)
         return 1;
     }
 
-    for (int i = path.length()-1; i>=0; i--)
+    for (int i = path.length()-1; i>=0; --i)
     {
         if (path[i] == '\\' || path[i] == '/')
         {
@@ -442,7 +442,7 @@ QString FileSharing_GUI::setQuery(int index)
 
     QString filename=m_model->item(index, 0)->text();
     int num=0;
-    for (int i = 0; i<m_model->rowCount(); i++)
+    for (int i = 0; i<m_model->rowCount(); ++i)
     {
         if (index == i)
         {
@@ -458,66 +458,30 @@ QString FileSharing_GUI::setQuery(int index)
     return query;
 }
 
-//"Download" button
-void FileSharing_GUI::on_downloadButton_clicked()
+void FileSharing_GUI::clearProgressColumnData ()
 {
-    if (m_downloadButtonClicked)
-    {
-        return;
-    }
-
-    //clear all data in progress column
-    for (int i=0; i<m_model->rowCount(); i++)
+    for (int i=0; i<m_model->rowCount(); ++i)
     {
         m_model->item(i, 1)->setText("");
     }
-
-    m_downloadButtonClicked = true;
-    QModelIndex index;
-    for (int i=0; i<m_model->rowCount(); i++)
-    {
-        index = m_model->index(i,2, QModelIndex());
-        if(index.data(Qt::CheckStateRole) == Qt::Checked)
-        {
-            QString dir = m_setDirGUI->load();
-            if (modifyPath(dir)==0)
-            {
-                   dir = QDir::currentPath();
-            }
-            QString query = setQuery(i);
-            if (query == "")
-            {
-                continue;
-            }
-            double sizeDouble = m_model->item(i,3)->text().toDouble();
-            qint64 size = sizeDouble * 1000;
-            std::shared_ptr<Client> thread  = std::make_shared<Client>(m_currentHost,query, m_model->item(i,0)->text(),dir,size,i);
-            connect(thread.get(), SIGNAL( setProgress(int,double) ), this, SLOT( on_setProgress(int,double) ));
-            thread->start();
-            return;
-        }
-    }
-
-    m_downloadButtonClicked = false;
 }
 
-void FileSharing_GUI::next(const int row)
+void FileSharing_GUI::startDownload (const int row)
 {
     QModelIndex index;
-    for (int i=row+1; i<m_model->rowCount(); i++)
+    for (int i=row; i<m_model->rowCount(); ++i)
     {
-
         index= m_model->index(i,2, QModelIndex());
         if(index.data(Qt::CheckStateRole) == Qt::Checked)
         {
             QString dir = m_setDirGUI->load();
-            if (modifyPath(dir)==0)
+            if (0 == modifyPath(dir))
             {
-                   dir = QDir::currentPath();
+                dir = QDir::currentPath();
             }
 
             QString query = setQuery(i);
-            if (query == "")
+            if ("" == query)
             {
                 continue;
             }
@@ -530,26 +494,44 @@ void FileSharing_GUI::next(const int row)
             return;
         }
     }
+}
+
+//"Download" button
+void FileSharing_GUI::on_downloadButton_clicked()
+{
+    if (m_downloadButtonClicked)
+    {
+        return;
+    }
+
+    clearProgressColumnData ();
+
+    m_downloadButtonClicked = true;
+
+    startDownload(0);
+
+    m_downloadButtonClicked = false;
+}
+
+
+void FileSharing_GUI::next(const int row)
+{
+    startDownload(row + 1);
     m_downloadButtonClicked = false;
 }
 
 void FileSharing_GUI::on_setProgress(const int row, const double percentage)
 {
-    if (percentage == 100 || percentage == -1)
+    if (-1 == percentage)
     {
-        if (percentage == -1)
-        {
-            m_model->item(row, 1)->setText("Fail to download");
-        }
-        else
-        {
-            m_model->item(row, 1)->setText(QString::number(percentage) + "%");
-        }
-
-        next(row);
-        return;
+        m_model->item(row, 1)->setText("Fail to download");
     }
-    if (percentage<100)
+    else if (100 == percentage)
+    {
+        m_model->item(row, 1)->setText(QString::number(percentage) + "%");
+        next(row);
+    }
+    else
     {
         m_model->item(row, 1)->setText(QString::number(percentage) + "%");
     }
@@ -563,7 +545,7 @@ void FileSharing_GUI::on_scanIpButton_clicked()
 
 void FileSharing_GUI::on_scanIP(const QString &ip)
 {
-    if (ip!="")
+    if (""!=ip)
     {
         addItemToThreeView(ip);
     }
@@ -589,7 +571,6 @@ void FileSharing_GUI::on_selectNoneButton_clicked()
 
 void FileSharing_GUI::setThreadCount ()
 {
-
     int availableThreadCount = std::thread::hardware_concurrency();
     if (0==availableThreadCount)
     {

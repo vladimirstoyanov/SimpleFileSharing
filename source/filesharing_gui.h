@@ -83,6 +83,7 @@ private:
 
     void    addDataInTableView(const QString &file_name, const QString &size);
     void    addItemToThreeView(const QString &item);
+    void    clearProgressColumnData ();
     void    initActions();
     void    initModelTableView();
     int     modifyPath(QString &path);
@@ -94,6 +95,7 @@ private:
     void    setupGui ();
     void    setGeometryOfWidgets();
     QString setQuery(const int index);
+    void    startDownload (const int row);
     void    startWaitAnimation();
     void    stopWaitAnimation();
 

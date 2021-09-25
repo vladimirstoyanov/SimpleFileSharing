@@ -35,6 +35,7 @@ FileSharing_GUI::FileSharing_GUI(QWidget *parent) :
     , m_movie (std::make_shared<QMovie>("ajax_waiting.gif"))
     , m_nameColumnId(0)
     , m_offsetBetweenWidgets(5)
+    , m_port (26001)
     , m_progressColumnId(1)
     , m_scanIpGUI (std::make_shared<ScanIP_GUI> ())
     , m_scanNetwork (std::make_shared<ScanNetwork>())
@@ -324,7 +325,7 @@ void FileSharing_GUI::on_treeWidget_itemClicked(QTreeWidgetItem *item)
 
     m_currentHost = item->text(0);
     Socket socket;
-    std::vector<RemoteHostFileData> remoteHostFileData = socket.getSharedFilesByRemoteHost(m_currentHost, 26001);
+    std::vector<RemoteHostFileData> remoteHostFileData = socket.getSharedFilesByRemoteHost(m_currentHost, m_port);
 
     for (auto &item : remoteHostFileData)
     {
@@ -480,7 +481,10 @@ void FileSharing_GUI::next(const int row)
 
 void FileSharing_GUI::on_setProgress(const int row, const double percentage)
 {
-    if (-1 == percentage) //ToDo: remove the magic number
+    double error = -1;
+    double downloadFinished = 100;
+
+    if (error == percentage)
     {
         m_model->item(row, m_progressColumnId)->setText("Fail to download");
     }
@@ -489,7 +493,7 @@ void FileSharing_GUI::on_setProgress(const int row, const double percentage)
         m_model->item(row, m_progressColumnId)->setText(QString::number(percentage) + "%");
     }
 
-    if (100 == percentage) //ToDo: remove the magic number
+    if (downloadFinished == percentage)
     {
         next(row);
     }

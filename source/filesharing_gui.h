@@ -22,9 +22,7 @@
 #include <QMainWindow>
 #include <QMessageBox>
 #include <QMovie>
-//#include <QNetworkInterface>
 #include <QStandardItemModel>
-//#include <QTcpServer>
 #include <QThreadPool>
 #include <QTreeWidgetItem>
 
@@ -81,6 +79,7 @@ private:
     std::shared_ptr<QMovie>                 m_movie;
     int                                     m_nameColumnId;
     int                                     m_offsetBetweenWidgets;
+    int                                     m_port;
     int                                     m_progressColumnId;
     std::shared_ptr<ScanIP_GUI>             m_scanIpGUI;
     std::shared_ptr<ScanNetwork>            m_scanNetwork;

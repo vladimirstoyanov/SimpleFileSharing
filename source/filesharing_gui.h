@@ -70,8 +70,11 @@ private:
     bool                                    m_downloadButtonClicked;
     QString                                 m_currentHost;
     std::shared_ptr<QLabel>                 m_loadingGif;
+    int                                     m_loadingGifWidth;
+    int                                     m_loadingGifHeight;
     std::shared_ptr<QStandardItemModel>     m_model;
     std::shared_ptr<QMovie>                 m_movie;
+    int                                     m_offsetBetweenWidgets;
     std::shared_ptr<ScanIP_GUI>             m_scanIpGUI;
     std::shared_ptr<ScanNetwork>            m_scanNetwork;
     MyServer                                m_server;

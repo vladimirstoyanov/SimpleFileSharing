@@ -27,8 +27,11 @@ FileSharing_GUI::FileSharing_GUI(QWidget *parent) :
     , m_downloadButtonClicked (false)
     , m_currentHost ("")
     , m_loadingGif (std::make_shared<QLabel>(this))
+    , m_loadingGifWidth (16)
+    , m_loadingGifHeight (16)
     , m_model (std::make_shared<QStandardItemModel>(0,4,this))
     , m_movie (std::make_shared<QMovie>("ajax_waiting.gif"))
+    , m_offsetBetweenWidgets(5)
     , m_scanIpGUI (std::make_shared<ScanIP_GUI> ())
     , m_scanNetwork (std::make_shared<ScanNetwork>())
     , m_server (m_sharedFiles)
@@ -57,7 +60,6 @@ void FileSharing_GUI::on_finishScan()
     stopWaitAnimation();
 }
 
-//add item to treeview
 void FileSharing_GUI::addItemToThreeView(const QString &name)
 {
     for (int i=0; i<m_ui->treeWidget->topLevelItemCount(); i++)
@@ -73,67 +75,69 @@ void FileSharing_GUI::addItemToThreeView(const QString &name)
     m_ui->treeWidget->addTopLevelItem(item.get());
 }
 
-//ToDo: remove magic numbers
-//set geometry of widgets
 void FileSharing_GUI::setGeometryOfWidgets()
 {
-    m_ui->scanNetworkButton->setGeometry(5
-                                  , 5
+    m_ui->scanNetworkButton->setGeometry(m_offsetBetweenWidgets
+                                  , m_offsetBetweenWidgets
                                   , m_ui->scanNetworkButton->width()
                                   , m_ui->scanNetworkButton->height());
 
-    m_ui->treeWidget->setGeometry(5
-                                  , 10+m_ui->scanNetworkButton->height()
-                                  , 180
-                                  , this->height() - (15 + m_ui->scanNetworkButton->height()));
+    m_ui->treeWidget->setGeometry(m_offsetBetweenWidgets
+                                  , m_offsetBetweenWidgets*2+m_ui->scanNetworkButton->height()
+                                  , this->width()*0.3
+                                  , this->height() - (m_offsetBetweenWidgets*3 + m_ui->scanNetworkButton->height()));
 
-    m_ui->tableView->setGeometry(m_ui->treeWidget->width()+10
-                                 , 5
-                                 , this->width()-(m_ui->treeWidget->width()+15),this->height()-(15 + m_ui->downloadButton->height() + + m_ui->menuBar->height()));
+    m_ui->tableView->setGeometry(m_ui->treeWidget->width()+m_offsetBetweenWidgets*2
+                                 , m_offsetBetweenWidgets
+                                 , this->width()-(m_ui->treeWidget->width()+m_offsetBetweenWidgets*3)
+                                 , this->height()-(m_offsetBetweenWidgets*3 + m_ui->downloadButton->height() + + m_ui->menuBar->height()));
 
-    m_ui->downloadButton->setGeometry(this->width()-(5+m_ui->downloadButton->width())
-                                    , this->height() - (5 + m_ui->downloadButton->height() + m_ui->menuBar->height())
-                                    , m_ui->downloadButton->width(),m_ui->downloadButton->height());
+    m_ui->downloadButton->setGeometry(this->width()-(m_offsetBetweenWidgets+m_ui->downloadButton->width())
+                                    , this->height() - (m_offsetBetweenWidgets + m_ui->downloadButton->height() + m_ui->menuBar->height())
+                                    , m_ui->downloadButton->width()
+                                    , m_ui->downloadButton->height());
 }
 
-//ToDo: remove magic numbers
 void FileSharing_GUI::resizeEvent(QResizeEvent *event)
 {
     QMainWindow::resizeEvent(event);
 
-    m_ui->treeWidget->setGeometry(5
-                                  , 5
-                                  , 180
-                                  , this->height() - (20 + m_ui->scanNetworkButton->height()*2 + m_ui->menuBar->height()));
+    m_ui->treeWidget->setGeometry(m_offsetBetweenWidgets
+                                  , m_offsetBetweenWidgets
+                                  , this->width()*0.3
+                                  , this->height() - (m_offsetBetweenWidgets*4 + m_ui->scanNetworkButton->height()*2 + m_ui->menuBar->height()));
 
-    m_ui->scanNetworkButton->setGeometry(5
-                                  , 10+m_ui->treeWidget->height()
+    m_ui->scanNetworkButton->setGeometry(m_offsetBetweenWidgets
+                                  , m_offsetBetweenWidgets*2+m_ui->treeWidget->height()
                                   , m_ui->scanNetworkButton->width()
                                   , m_ui->scanNetworkButton->height());
 
-    m_ui->scanIpButton->setGeometry(5
-                                    , m_ui->scanNetworkButton->y() + m_ui->scanNetworkButton->height() + 5
+    m_ui->scanIpButton->setGeometry(m_offsetBetweenWidgets
+                                    , m_ui->scanNetworkButton->y() + m_ui->scanNetworkButton->height() + m_offsetBetweenWidgets
                                     , m_ui->scanNetworkButton->width()
                                     , m_ui->scanNetworkButton->height());
 
-    m_ui->tableView->setGeometry(m_ui->treeWidget->width()+10
-                                    , 5
-                                    , this->width()-(m_ui->treeWidget->width()+15)
-                                    , this->height()-(15 + m_ui->downloadButton->height() + + m_ui->menuBar->height()));
+    m_ui->tableView->setGeometry(m_ui->treeWidget->width()+m_offsetBetweenWidgets*2
+                                    , m_offsetBetweenWidgets
+                                    , this->width()-(m_ui->treeWidget->width()+m_offsetBetweenWidgets*3)
+                                    , this->height()-(m_offsetBetweenWidgets*3 + m_ui->downloadButton->height() + + m_ui->menuBar->height()));
 
-    m_ui->downloadButton->setGeometry(this->width()-(5+m_ui->downloadButton->width())
-                                    , this->height() - (5 + m_ui->downloadButton->height()+m_ui->menuBar->height())
-                                    , m_ui->downloadButton->width(),m_ui->downloadButton->height());
+    m_ui->downloadButton->setGeometry(this->width()-(m_offsetBetweenWidgets+m_ui->downloadButton->width())
+                                    , this->height() - (m_offsetBetweenWidgets + m_ui->downloadButton->height()+m_ui->menuBar->height())
+                                    , m_ui->downloadButton->width()
+                                    , m_ui->downloadButton->height());
 
     m_loadingGif->setGeometry((m_ui->scanNetworkButton->width() + m_ui->treeWidget->width())/2 - 3
-                                    , m_ui->scanIpButton->y()-5, 16,16);
+                                    , m_ui->scanIpButton->y()-m_offsetBetweenWidgets
+                                    , m_loadingGifWidth
+                                    , m_loadingGifHeight);
 
-    m_ui->selectAllButton->setGeometry(m_ui->downloadButton->x() - (5 + m_ui->selectAllButton->width())
+    m_ui->selectAllButton->setGeometry(m_ui->downloadButton->x() - (m_offsetBetweenWidgets + m_ui->selectAllButton->width())
                                     , m_ui->downloadButton->y()
                                     , m_ui->selectAllButton->width()
                                     , m_ui->selectAllButton->height());
 
-    m_ui->selectNoneButton->setGeometry(m_ui->selectAllButton->x() - (5 + m_ui->selectNoneButton->width())
+    m_ui->selectNoneButton->setGeometry(m_ui->selectAllButton->x() - (m_offsetBetweenWidgets + m_ui->selectNoneButton->width())
                                     , m_ui->downloadButton->y()
                                     , m_ui->selectNoneButton->width()
                                     , m_ui->selectNoneButton->height());
@@ -148,10 +152,8 @@ void FileSharing_GUI::initModelTableView()
     m_ui->tableView->setModel(m_model.get());
 }
 
-//ToDo: refactor 'scanNetwork' method
 int FileSharing_GUI::scanNetwork()
 {
-    //clear data into treeView
     m_ui->treeWidget->clear();
 
     m_ui->scanNetworkButton->setEnabled(false);
@@ -172,7 +174,7 @@ int FileSharing_GUI::scanNetwork()
     QString lastNum = "";
     int lastNumToInt = 0;
     int countDots = 0;
-    for (int i=0; i<ipAddress.length(); i++)
+    for (int i=0; i<ipAddress.length(); ++i)
     {
         if (ipAddress[i]=='.')
         {
@@ -185,7 +187,7 @@ int FileSharing_GUI::scanNetwork()
         networkIp+=ipAddress[i];
     }
 
-    for (int i = ipAddress.length()-1; ipAddress[i]!='.'; i--)
+    for (int i = ipAddress.length()-1; ipAddress[i]!='.'; --i)
     {
         lastNum =ipAddress[i] + lastNum;
     }

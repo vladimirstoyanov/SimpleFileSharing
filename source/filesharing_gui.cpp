@@ -23,6 +23,7 @@ FileSharing_GUI::FileSharing_GUI(QWidget *parent) :
     , m_aboutGUI (std::make_shared<About_GUI>())
     , m_sharedFiles (std::make_shared<SharedFiles> ())
     , m_addFileGUI (std::make_shared<AddFile_GUI>(m_sharedFiles))
+    , m_defaultThreadCount (4)
     , m_downloadButtonClicked (false)
     , m_currentHost ("")
     , m_loadingGif (std::make_shared<QLabel>(this))
@@ -36,31 +37,7 @@ FileSharing_GUI::FileSharing_GUI(QWidget *parent) :
     , m_threadPool (std::make_shared<QThreadPool>(this))
     , m_ui(std::make_shared<Ui::FileSharing_GUI> ())
 {
-    m_ui->setupUi(this);
-
-    //thread pool used to scanning a network
-    m_threadPool->setMaxThreadCount(50); //ToDo: set max thread count to available CPU threads
-
-    setGeometryOfWidgets();
-    initModelTableView();
-    m_server.StartServer();
-
-    //init menu actions
-    initActions();
-
-    //'scanip_gui.cpp' make connect with this class, when given IP using this program.
-    connect(m_scanIpGUI.get(),SIGNAL(scanIP(QString)),this,SLOT(on_scanIP(QString)));
-
-    m_ui->treeWidget->setHeaderLabel("Avaliable Hosts");
-
-    //init waiting gif animation
-    m_loadingGif->setMovie(m_movie.get());
-
-    //when found computer
-    connect(m_scanNetwork.get(),SIGNAL(foundComputer(QString)),this,SLOT(onFoundComputer(QString)));
-
-    //when a scanner finished
-    connect(m_scanNetwork.get(),SIGNAL(finishScan()),this,SLOT(on_finishScan()));
+    setupGui();
 }
 
 FileSharing_GUI::~FileSharing_GUI()
@@ -96,6 +73,7 @@ void FileSharing_GUI::addItemToThreeView(const QString &name)
     m_ui->treeWidget->addTopLevelItem(item.get());
 }
 
+//ToDo: remove magic numbers
 //set geometry of widgets
 void FileSharing_GUI::setGeometryOfWidgets()
 {
@@ -118,6 +96,7 @@ void FileSharing_GUI::setGeometryOfWidgets()
                                     , m_ui->downloadButton->width(),m_ui->downloadButton->height());
 }
 
+//ToDo: remove magic numbers
 void FileSharing_GUI::resizeEvent(QResizeEvent *event)
 {
     QMainWindow::resizeEvent(event);
@@ -169,6 +148,7 @@ void FileSharing_GUI::initModelTableView()
     m_ui->tableView->setModel(m_model.get());
 }
 
+//ToDo: refactor 'scanNetwork' method
 int FileSharing_GUI::scanNetwork()
 {
     //clear data into treeView
@@ -581,7 +561,6 @@ void FileSharing_GUI::on_scanIpButton_clicked()
     m_scanIpGUI->show();
 }
 
-//When given IP using this program, "scanip_gui.cpp" emit this funtion.
 void FileSharing_GUI::on_scanIP(const QString &ip)
 {
     if (ip!="")
@@ -607,3 +586,49 @@ void FileSharing_GUI::on_selectNoneButton_clicked()
         m_model->item(i, 2)->setCheckState(Qt::Unchecked);
     }
 }
+
+void FileSharing_GUI::setThreadCount ()
+{
+
+    int availableThreadCount = std::thread::hardware_concurrency();
+    if (0==availableThreadCount)
+    {
+        m_threadPool->setMaxThreadCount(m_defaultThreadCount);
+    }
+    else
+    {
+        m_threadPool->setMaxThreadCount(availableThreadCount);
+    }
+}
+
+void FileSharing_GUI::setupConnections ()
+{
+    connect(m_scanIpGUI.get(),SIGNAL(scanIP(QString)),this,SLOT(on_scanIP(QString)));
+
+    //when a host has been found
+    connect(m_scanNetwork.get(),SIGNAL(foundComputer(QString)),this,SLOT(onFoundComputer(QString)));
+
+    //when the network scanner has finished
+    connect(m_scanNetwork.get(),SIGNAL(finishScan()),this,SLOT(on_finishScan()));
+}
+
+void FileSharing_GUI::setupGui ()
+{
+    m_ui->setupUi(this);
+
+    setThreadCount();
+    setGeometryOfWidgets();
+    initModelTableView();
+    m_server.StartServer();
+
+    //init menu actions
+    initActions();
+
+    setupConnections();
+
+    m_ui->treeWidget->setHeaderLabel("Avaliable Hosts");
+
+    //init waiting gif animation
+    m_loadingGif->setMovie(m_movie.get());
+}
+

@@ -63,7 +63,7 @@ private:
 
 
     void addToTableView(const FileData & fileData);
-    void clearModelData ();
+    void clearTableView ();
     std::vector<FileData> convertToVectorOfFileData();
     int  getDirNameByAbsolutePath(const QString &path, QString &dirname);
     int  getFileNameByAbsolutePath(const QString &path, QString &filename);//get the filename by an absolute path

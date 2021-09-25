@@ -199,7 +199,7 @@ void AddFile_GUI::resizeEvent(QResizeEvent *)
                                     m_ui->okButton->height());
 }
 
-void AddFile_GUI::clearModelData ()
+void AddFile_GUI::clearTableView ()
 {
     while (m_model->rowCount() > 0)
     {
@@ -209,7 +209,7 @@ void AddFile_GUI::clearModelData ()
 
 void AddFile_GUI::loadData ()
 {
-    clearModelData();
+    clearTableView();
     std::vector<FileData> sharedFiles = m_sharedFiles->get();
     for (auto &item: sharedFiles)
     {

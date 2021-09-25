@@ -29,6 +29,7 @@
 #include <QTreeWidgetItem>
 
 #include <memory>
+#include <thread>
 
 #include "about_gui.h"
 #include "addfile_gui.h"
@@ -65,6 +66,7 @@ private:
     std::shared_ptr<About_GUI>              m_aboutGUI;
     std::shared_ptr<SharedFiles>            m_sharedFiles;
     std::shared_ptr<AddFile_GUI>            m_addFileGUI;
+    int                                     m_defaultThreadCount;
     bool                                    m_downloadButtonClicked;
     QString                                 m_currentHost;
     std::shared_ptr<QLabel>                 m_loadingGif;
@@ -86,7 +88,10 @@ private:
     int     modifyPath(QString &path);
     void    next(const int row);
     int     scanNetwork();
+    void    setThreadCount ();
     void    resizeEvent(QResizeEvent *);
+    void    setupConnections ();
+    void    setupGui ();
     void    setGeometryOfWidgets();
     QString setQuery(const int index);
     void    startWaitAnimation();

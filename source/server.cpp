@@ -21,7 +21,7 @@
 #include <QDir>
 #include "addfile_gui.h"
 
-Server::Server(qintptr id, std::shared_ptr<SharedFiles> sharedFiels):
+Server::Server(qintptr id, const SharedFiles &sharedFiels):
     m_descriptor(id)
     , m_sharedFiles (sharedFiels)
 {
@@ -85,12 +85,13 @@ void Server::parseData()
 {
      Data data = returnData();
      NetworkManager networkManager;
+     std::vector<FileData> files  = m_sharedFiles.get();
 
      switch (data.getType())
      {
         case NC_GET_FILE:
         {
-                std::vector<FileData> files = m_sharedFiles->get();
+
                 int index = getFileIndex (data, files);
                 if (DOWNLOAD_ERROR == index)
                 {
@@ -103,7 +104,7 @@ void Server::parseData()
         }
         case NC_GET_LIST:
         {
-                networkManager.sendSharedFilesList(m_tcpSocket, m_sharedFiles->get(), data);
+                networkManager.sendSharedFilesList(m_tcpSocket, files, data);
                 break;
         }
         case NC_HELLO:

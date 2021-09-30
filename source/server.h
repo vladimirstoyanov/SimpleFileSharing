@@ -38,7 +38,7 @@ class Server: public QThread
 {
     Q_OBJECT
 public:
-    Server(qintptr ID, std::shared_ptr<SharedFiles> sharedFiels);
+    Server(qintptr ID, const SharedFiles & sharedFiels);
     virtual ~Server();
 
 protected:
@@ -46,9 +46,9 @@ protected:
 
 private:
     qintptr m_descriptor;
-    std::shared_ptr<SharedFiles> m_sharedFiles;
+    SharedFiles m_sharedFiles;
     QByteArray m_socketData;
-    std::shared_ptr<QTcpSocket> m_tcpSocket;
+    QTcpSocket m_tcpSocket;
 
     Data returnData();
     int  getFileIndex (const Data &data, const std::vector<FileData> &files);

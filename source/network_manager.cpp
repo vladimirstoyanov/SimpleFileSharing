@@ -194,7 +194,7 @@ bool NetworkManager::sendFile (QTcpSocket & tcpSocket, const FileData &fileData)
 
 void NetworkManager::sendSharedFilesList (QTcpSocket &tcpSocket, const std::vector<FileData> &files)
 {
-    QString sharedFiles = m_protocolMessages.getSharedFilesListMessage(files);
+    QString sharedFiles = m_protocolMessages.generateSharedFilesListMessage(files);
 
     int index = 0;
     qDebug()<<files.size();

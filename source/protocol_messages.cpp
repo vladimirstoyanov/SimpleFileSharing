@@ -7,14 +7,14 @@ ProtocolMessages::ProtocolMessages():
 
 }
 
-QString ProtocolMessages::getDownloadFileMessage (const QString &fileName, const QString & id)
+QString ProtocolMessages::generateDownloadFileMessage (const QString &fileName, const QString & id)
 {
      QString query = "\x10\t";
      query+= id + "#" + fileName+"\n";
      return query;
 }
 
-QString ProtocolMessages::getSharedFilesListMessage (const std::vector<FileData> &files)
+QString ProtocolMessages::generateSharedFilesListMessage (const std::vector<FileData> &files)
 {
     QString sharedFiles = m_receiveListMessage;
     FileOperations fileOperations;

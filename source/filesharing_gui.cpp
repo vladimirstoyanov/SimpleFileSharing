@@ -392,14 +392,14 @@ void FileSharing_GUI::stopLoadingAnimation()
 
 QString FileSharing_GUI::setQuery(int index)
 {
-    if (index>=m_model->rowCount())
+    if (index>=m_model->rowCount() || index<0)
     {
         return "";
     }
 
     QString filename=m_model->item(index, m_nameColumnId)->text();
-    int id = 0; //ToDo: set file id
-    return m_protocolMessages.getDownloadFileMessage(filename, QString::number(id));
+
+    return m_protocolMessages.generateDownloadFileMessage(filename, QString::number(index));
 }
 
 void FileSharing_GUI::clearProgressColumnData ()

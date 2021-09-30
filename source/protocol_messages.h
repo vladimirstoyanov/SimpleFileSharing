@@ -12,10 +12,10 @@ class ProtocolMessages
 public:
     ProtocolMessages();
 
-    QString    getDownloadFileMessage (const QString &fileName, const QString &id);
+    QString    generateDownloadFileMessage (const QString &fileName, const QString &id);
+    QString    generateSharedFilesListMessage (const std::vector<FileData> &files);
     QByteArray getHelloMessage () const { return m_helloMessage; }
     QByteArray getReceiveListMessage () const { return m_receiveListMessage; }
-    QString    getSharedFilesListMessage (const std::vector<FileData> &files);
 
 private:
     QByteArray m_helloMessage;

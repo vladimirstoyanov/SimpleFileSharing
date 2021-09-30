@@ -19,6 +19,7 @@ SOURCES += main.cpp\
     about_gui.cpp \
     client_thread.cpp \
     file_data.cpp \
+    file_operations.cpp \
         filesharing_gui.cpp \
     network_manager.cpp \
     parse_file_data.cpp \
@@ -39,6 +40,7 @@ HEADERS  += filesharing_gui.h \
     about_gui.h \
     client_thread.h \
     file_data.h \
+    file_operations.h \
     message_codes.h \
     network_manager.h \
     parse_file_data.h \

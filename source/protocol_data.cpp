@@ -142,21 +142,3 @@ void ProtocolData::fromChar(const char *s, const char *arg, int cmd)
         }
     }
 }
-
-QByteArray ProtocolData::getHash(const QString &fileName)
-{
-    QCryptographicHash crypto(QCryptographicHash::Sha1);
-    QFile file(fileName);
-
-    if (!file.open(QFile::ReadOnly))
-    {
-        return "";
-    }
-
-    while(!file.atEnd())
-    {
-      crypto.addData(file.read(BUFFER_SIZE));
-    }
-
-    return crypto.result().toHex();
-}

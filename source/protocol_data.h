@@ -21,7 +21,6 @@
 #include <string>
 
 #include <QByteArray>
-#include <QCryptographicHash>
 #include <QDebug>
 #include <QFile>
 
@@ -34,7 +33,6 @@ public:
     explicit ProtocolData();
     virtual ~ProtocolData();
 
-    QByteArray  getHash(const QString &fileName);
     void        fromChar(const char *);
     void        fromChar(const char *s, const char *arg, int cmd);
 

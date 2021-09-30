@@ -96,7 +96,7 @@ void ServerThread::parseData()
                     //ToDo: notify the GUI
                     break;
                 }
-                networkManager.sendFile(m_tcpSocket, files[index], protocolData);
+                networkManager.sendFile(m_tcpSocket, files[index]);
 
                 break;
         }
@@ -137,7 +137,7 @@ ProtocolData ServerThread::getProtocolData()
                 bSize.append(m_socketData[j]);
             }
 
-            m_socketData = m_socketData.remove(0,bSize.toInt());
+            m_socketData = m_socketData.remove(0, bSize.toInt());
             protocolData.fromChar(bSize.constData());
             break;
         }

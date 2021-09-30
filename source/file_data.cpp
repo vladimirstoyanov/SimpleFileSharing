@@ -8,3 +8,5 @@ FileData::FileData (const QString &fileName, const QString &path, const QString 
 {
 
 }
+
+

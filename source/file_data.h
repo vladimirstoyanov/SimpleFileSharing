@@ -3,6 +3,8 @@
 
 #include <QString>
 
+#include "message_codes.h"
+
 class FileData
 {
 public:

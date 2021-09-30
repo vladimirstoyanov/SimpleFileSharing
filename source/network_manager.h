@@ -16,6 +16,7 @@
 #include "message_codes.h"
 #include "parse_network_message.h"
 #include "remote_host_file_data.h"
+#include "file_operations.h"
 
 class NetworkManager
 {
@@ -32,12 +33,13 @@ public:
     int                             getPort () const { return this->m_port; }
     void                            sendHelloMessage (QTcpSocket &socket);
     void                            sendBuffer (QTcpSocket &socket, const char *data, int size);
-    bool                            sendFile (QTcpSocket & tcpSocket, const FileData &fileData, ProtocolData &data);
+    bool                            sendFile (QTcpSocket & tcpSocket, const FileData &fileData);
     void                            sendSharedFilesList(QTcpSocket &tcpSocket, const std::vector<FileData> &sharedFiles, ProtocolData &data);
 
 
 private:
-    int         m_port;
+    int             m_port;
+    FileOperations  m_fileOperations;
 
     bool        checkFileHash (const QString &filePath, const QString &remoteFileHash);
     bool        connectToHost (QTcpSocket &socket, const QString &ip);

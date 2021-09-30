@@ -23,3 +23,9 @@ QByteArray FileOperations::getFileHash(const QString &fileName)
 
     return crypto.result().toHex();
 }
+
+size_t FileOperations::getFileSize(const QString &filePath)
+{
+    QFileInfo fileInfo(filePath);
+    return fileInfo.size();
+}

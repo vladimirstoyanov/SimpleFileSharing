@@ -13,3 +13,20 @@ QString ProtocolMessages::getDownloadFileMessage (const QString &fileName, const
      query+= id + "#" + fileName+"\n";
      return query;
 }
+
+QString ProtocolMessages::getSharedFilesListMessage (const std::vector<FileData> &files)
+{
+    QString sharedFiles = m_receiveListMessage;
+    FileOperations fileOperations;
+    for (unsigned int i=0; i<files.size(); ++i)
+    {
+        sharedFiles+=QString::number(fileOperations.getFileSize(files[i].getPath()));
+        sharedFiles+= "#";
+        sharedFiles+=files[i].getFileId();
+        sharedFiles+="#";
+        sharedFiles+=files[i].getFileName();
+        sharedFiles+="\n";
+    }
+
+    return sharedFiles;
+}

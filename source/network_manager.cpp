@@ -194,16 +194,7 @@ bool NetworkManager::sendFile (QTcpSocket & tcpSocket, const FileData &fileData)
 
 void NetworkManager::sendSharedFilesList (QTcpSocket &tcpSocket, const std::vector<FileData> &files)
 {
-    QString sharedFiles = "";
-    qDebug()<<"files.size():"<<sharedFiles.size();
-    for (unsigned int i=0; i<files.size(); ++i)
-    {
-        QFileInfo fileInfo(files[i].getPath());
-        sharedFiles+=QString::number(fileInfo.size());
-
-        sharedFiles+= "#";
-        sharedFiles+=files[i].getFileName() + "\n";
-    }
+    QString sharedFiles = m_protocolMessages.getSharedFilesListMessage(files);
 
     int index = 0;
     qDebug()<<files.size();
@@ -211,8 +202,7 @@ void NetworkManager::sendSharedFilesList (QTcpSocket &tcpSocket, const std::vect
     QString part = sharedFiles.mid(index, index+BUFFER_SIZE);
     index+=BUFFER_SIZE;
     QByteArray sendData;
-    sendData = m_protocolMessages.getReceiveListMessage();
-    sendData += part.toLocal8Bit();
+    sendData = part.toLocal8Bit();
     sendBuffer(tcpSocket, sendData);
     while (index < sharedFiles.length())
     {

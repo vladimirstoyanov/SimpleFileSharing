@@ -41,32 +41,26 @@ std::vector<RemoteHostFileData> ParseNetworkMessage::parseGetListResultMessage (
         return remoteHostFileDataList;
     }
 
-    int i=2;
+    QStringList pieces = resultMessage.split( "\n" );
+    QString id = "";
     QString text ="";
     QString size ="";
     QString name ="";
-    do
+
+    for (int i=1; i<pieces.length(); ++i) //first line is skipped (message protocol)
     {
-        ++i;
-        if (resultMessage[i]=='#') //hash
+        QStringList line = resultMessage.split("#");
+        if (line.length()!=3)
         {
-            size = text;
-            text="";
-            continue;
+            //ToDo: return an error
+            return remoteHostFileDataList;
         }
-        if (resultMessage[i]=='\n') //name
-        {
-            name = text;
-            RemoteHostFileData remoteHostFileData(name, size, "");
-            remoteHostFileDataList.push_back(remoteHostFileData);
-            name="";
-            size="";
-            text="";
-            continue;
-        }
-        text+=resultMessage[i];
+        QString size = line.at(0);
+        QString id = line.at(1);
+        QString fileName = line.at(2);
+        RemoteHostFileData remoteHostFileData (id, fileName,size, "");
+        remoteHostFileDataList.push_back(remoteHostFileData);
     }
-    while(i<resultMessage.length());
 
     return remoteHostFileDataList;
 }

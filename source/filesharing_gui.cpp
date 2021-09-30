@@ -35,7 +35,6 @@ FileSharing_GUI::FileSharing_GUI(QWidget *parent) :
     , m_movie (std::make_shared<QMovie>("ajax_waiting.gif"))
     , m_nameColumnId(0)
     , m_offsetBetweenWidgets(5)
-    , m_port (26001)
     , m_progressColumnId(1)
     , m_scanIpGUI (std::make_shared<ScanIP_GUI> ())
     , m_scanNetwork (std::make_shared<ScanNetwork>())
@@ -320,12 +319,12 @@ void FileSharing_GUI::menu_setNetwork()
 
 void FileSharing_GUI::on_treeWidget_itemClicked(QTreeWidgetItem *item)
 {
-    QApplication::setOverrideCursor(Qt::WaitCursor); //change cursor
+    QApplication::setOverrideCursor(Qt::WaitCursor); //change the cursor
     clearTableView();
 
     m_currentHost = item->text(0);
-    Socket socket;
-    std::vector<RemoteHostFileData> remoteHostFileData = socket.getSharedFilesByRemoteHost(m_currentHost, m_port);
+    NetworkManager networkManager;
+    std::vector<RemoteHostFileData> remoteHostFileData = networkManager.getSharedFilesByRemoteHost(m_currentHost);
 
     for (auto &item : remoteHostFileData)
     {
@@ -430,7 +429,7 @@ void FileSharing_GUI::startDownload (const int row)
     QModelIndex index;
     for (int i=row; i<m_model->rowCount(); ++i)
     {
-        index= m_model->index(i,m_downloadColumnId, QModelIndex());
+        index = m_model->index(i,m_downloadColumnId, QModelIndex());
         if(index.data(Qt::CheckStateRole) == Qt::Checked)
         {
             QString dir = m_setDirGUI->load();

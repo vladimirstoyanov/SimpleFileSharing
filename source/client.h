@@ -18,6 +18,8 @@
 #ifndef CLIENT_H
 #define CLIENT_H
 
+#include <functional>
+
 #include <QDebug>
 #include <QFileInfo>
 #include <QHostInfo>
@@ -26,6 +28,7 @@
 #include <QTcpSocket>
 
 #include "data.h"
+#include "network_manager.h"
 
 class Client: public QThread
 {
@@ -51,6 +54,8 @@ private:
     QString m_fileName;
     QString m_query;
     qint64  m_fileSize;
+
+    void downloadProgressCallback (int percentage);
 
 signals:
     void setProgress(const int, const double);

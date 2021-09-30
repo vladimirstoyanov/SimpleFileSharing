@@ -10,7 +10,7 @@ class ParseFileData
 {
 public:
     ParseFileData();
-    bool parseField (QTextStream & in, QString &fileName, QString &path, QString &size);
+    bool parseField (QTextStream & in, QString &id, QString &fileName, QString &path, QString &size);
 
 private:
     bool isElementExist (const QString &line, const QString &element);

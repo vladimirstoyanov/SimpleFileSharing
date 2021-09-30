@@ -67,7 +67,7 @@ void AddFile_GUI::on_addButton_clicked()
         }
         QFileInfo fi(pathList[i]);
         double size = fi.size()/(1024.0*1024.0); //calculate size in KB
-        FileData fileData (filename, pathList[i],  QString::number(size));
+        FileData fileData (QString::number(i), filename, pathList[i],  QString::number(size));
         addToTableView(fileData);
     }
 }
@@ -222,7 +222,8 @@ std::vector<FileData> AddFile_GUI::convertToVectorOfFileData()
         std::vector<FileData> sharedFiles;
         for (int i=0; i<m_model->rowCount(); i++)
         {
-            FileData fileData (m_model->index(i,0).data().toString(),
+            FileData fileData (QString::number(i),
+                               m_model->index(i,0).data().toString(),
                                m_model->index(i,1).data().toString(),
                                m_model->index(i,2).data().toString());
             sharedFiles.push_back(fileData);

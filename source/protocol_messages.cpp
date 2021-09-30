@@ -7,10 +7,9 @@ ProtocolMessages::ProtocolMessages():
 
 }
 
-
-QString ProtocolMessages::getFileMessage (const QString &fileName, const QString & numberOfFile)
+QString ProtocolMessages::getDownloadFileMessage (const QString &fileName, const QString & id)
 {
      QString query = "\x10\t";
-     query+=numberOfFile + "#" + fileName+"\n";
+     query+= id + "#" + fileName+"\n";
      return query;
 }

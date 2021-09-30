@@ -30,9 +30,10 @@ bool ParseFileData::isElementExist (const QString &line, const QString &element)
     return true;
 }
 
-bool ParseFileData::parseField (QTextStream & in, QString &fileName, QString &path, QString &size)
+bool ParseFileData::parseField (QTextStream & in, QString &id, QString &fileName, QString &path, QString &size)
 {
     if (!isElementExist (in.readLine(), "<file>") ||
+        parseData (in.readLine(), "id", id) ||
         parseData (in.readLine(), "file_name", fileName) ||
         parseData (in.readLine(), "path", path) ||
         parseData (in.readLine(), "size", size)||

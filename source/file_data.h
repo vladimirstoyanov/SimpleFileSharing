@@ -8,8 +8,9 @@
 class FileData
 {
 public:
-    FileData (const QString &fileName, const QString &path, const QString &size);
+    FileData (const QString &fileId, const QString &fileName, const QString &path, const QString &size);
 
+    QString getFileId () const { return this->m_fileId; }
     QString getFileName () const { return this->m_fileName; }
     QString getPath () const { return this->m_path; }
     QString getSize () const { return this->m_size; }
@@ -22,9 +23,11 @@ public:
     }
 
 private:
+    QString m_fileId;
     QString m_fileName;
     QString m_path;
     QString m_size;
+
 };
 
 #endif // FILEDATA_H

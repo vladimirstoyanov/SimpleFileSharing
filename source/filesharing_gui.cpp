@@ -397,23 +397,9 @@ QString FileSharing_GUI::setQuery(int index)
         return "";
     }
 
-
     QString filename=m_model->item(index, m_nameColumnId)->text();
-    int num=0;
-    for (int i = 0; i<m_model->rowCount(); ++i)
-    {
-        if (index == i)
-        {
-            break;
-        }
-
-        if (filename == m_model->item(i,m_nameColumnId)->text())
-        {
-            ++num;
-        }
-    }
-
-    return m_protocolMessages.getFileMessage(filename, QString::number(num));
+    int id = 0; //ToDo: set file id
+    return m_protocolMessages.getDownloadFileMessage(filename, QString::number(id));
 }
 
 void FileSharing_GUI::clearProgressColumnData ()

@@ -50,10 +50,10 @@ int ServerThread::getFileIndex (const ProtocolData &data, const std::vector<File
     qDebug()<<arguments;
 
     int i=0;
-    QString numberOfFile="", filename=""; //ToDo: add file ID.
+    QString fileId="", filename="";
     while(i<arguments.size() && arguments[i]!='#')
     {
-        numberOfFile+=arguments[i];
+        fileId+=arguments[i];
         ++i;
     }
     ++i;
@@ -62,16 +62,11 @@ int ServerThread::getFileIndex (const ProtocolData &data, const std::vector<File
         filename+=arguments[i];
         ++i;
     }
-    int number = numberOfFile.toInt();
+
     for (unsigned int i=0; i<files.size(); ++i)
     {
-        if (filename == files[i].getFileName())
+        if (filename == files[i].getFileName() && fileId == files[i].getFileId())
         {
-            if (number>0)
-            {
-                --number;
-                continue;
-            }
             index = i;
             break;
         }

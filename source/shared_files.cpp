@@ -40,12 +40,12 @@ bool SharedFiles::load()
 
     while(!in.atEnd())
     {
-        QString fileName = "", path = "", size = "";
-        if (!parseFileData.parseField(in, fileName, path, size))
+        QString id="", fileName = "", path = "", size = "";
+        if (!parseFileData.parseField(in, id, fileName, path, size))
         {
             return false;
         }
-        FileData fileData (fileName, path, size);
+        FileData fileData (id, fileName, path, size);
         m_fileData.push_back(fileData);
     }
     file.close();
@@ -62,7 +62,8 @@ bool SharedFiles::save()
         QTextStream stream( &file );
         for (const auto &item: m_fileData)
         {
-            stream<<"<file>\n\t<file_name>" + item.getFileName() + "</file_name>\n\t";
+            stream<<"<file>\n\t<id>" + item.getFileId() + "</id>\n\t";
+            stream<<"<file_name>" + item.getFileName()+ "</file_name>\n\t";
             stream<<"<path>" + item.getPath()+ "</path>\n\t";
             stream<<"<size>" + item.getSize() + "</size>\n</file>\n";
         }

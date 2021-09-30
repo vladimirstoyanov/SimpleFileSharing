@@ -12,7 +12,7 @@ public:
     QByteArray getReceiveListMessage () const { return m_receiveListMessage; }
     QByteArray getHelloMessage () const { return m_helloMessage; }
 
-    QString getFileMessage (const QString &fileName, const QString &numberOfFile);
+    QString    getDownloadFileMessage (const QString &fileName, const QString &id);
 
 
 

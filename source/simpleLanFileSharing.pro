@@ -38,6 +38,7 @@ SOURCES += main.cpp\
 HEADERS  += filesharing_gui.h \
     about_gui.h \
     file_data.h \
+    message_codes.h \
     network_manager.h \
     parse_file_data.h \
     parse_network_message.h \

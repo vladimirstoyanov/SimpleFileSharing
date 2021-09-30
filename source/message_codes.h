@@ -1,0 +1,17 @@
+#ifndef MESSAGE_CODES_H
+#define MESSAGE_CODES_H
+
+
+#define NC_GET_FILE 16
+#define NC_GET_LIST 20
+#define NC_RECV_LIST 40
+#define NC_HELLO 01
+#define NC_RECV_HELLO 02
+
+#define CODE_LENGTH 3
+#define BUFFER_SIZE 8192
+#define DOWNLOAD_ERROR -1
+#define DOWNLOAD_FINISHED 100
+
+
+#endif // MESSAGE_CODES_H

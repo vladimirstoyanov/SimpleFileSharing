@@ -21,11 +21,11 @@ bool NetworkManager::connectToHost (QTcpSocket &socket, const QString &ip)
 
 void NetworkManager::requestFileList (QTcpSocket &socket)
 {
-    char *ncGetList = new char [3];
-    ncGetList[0]=char(20); //20 list of shared files
+    char *ncGetList = new char [CODE_LENGTH];
+    ncGetList[0]=char(NC_GET_LIST);
     ncGetList[1]='\t';
     ncGetList[2]='\n';
-    socket.write(ncGetList,3);
+    socket.write(ncGetList, CODE_LENGTH);
 }
 
 QString NetworkManager::getResultAsQString (QTcpSocket &socket)
@@ -103,11 +103,11 @@ void NetworkManager::downloadFile (const QString &ip,
 
     if (checkFileHash(filePath, remoteFileHash))
     {
-        downloadProgress(-1); //error
+        downloadProgress(DOWNLOAD_ERROR);
     }
     else
     {
-        downloadProgress(100);
+        downloadProgress(DOWNLOAD_FINISHED);
     }
 }
 
@@ -117,13 +117,8 @@ bool NetworkManager::checkFileHash (const QString &filePath, const QString &remo
     Data data;
     if (remoteFileHash!=data.getHash(filePath).data())
     {
-
-        qDebug()<<filePath + " failed to download.";
-        qDebug()<<"hash: "<<remoteFileHash;
-        qDebug()<<"getHash: "<<data.getHash(filePath).data();
         return false;
     }
-
     return true;
 }
 
@@ -137,9 +132,9 @@ void NetworkManager::createFile (QTcpSocket &socket,
 
     if (!f.open(QIODevice::WriteOnly))
     {
-        qDebug()<<"Client::run(): Can't open " + filePath + ".";
+        qDebug()<<__PRETTY_FUNCTION__<<": Can't open " + filePath + ".";
         socket.close();
-        downloadProgress (-1);
+        downloadProgress (DOWNLOAD_ERROR);
         return;
     }
 
@@ -167,4 +162,70 @@ void NetworkManager::createFile (QTcpSocket &socket,
 
     f.close();
     socket.close();
+}
+
+
+void NetworkManager::sendBuffer (QTcpSocket &socket, const char *data, int size)
+{
+    socket.write(data,size);
+    socket.waitForBytesWritten();
+}
+
+bool NetworkManager::sendFile (QTcpSocket & tcpSocket, const FileData &fileData,  Data &data)
+{
+    QString fileHash= data.getHash(fileData.getPath());
+    fileHash +='#';
+    QByteArray fileHashBytes = fileHash.toLocal8Bit();
+    sendBuffer(tcpSocket, fileHashBytes.constData(), fileHashBytes.size());
+
+    QFile file(fileData.getPath());
+    if (!file.open(QIODevice::ReadOnly))
+    {
+        return false;
+    }
+
+    while (!file.atEnd())
+    {
+        QByteArray  bytes = file.read(BUFFER_SIZE);
+        sendBuffer(tcpSocket, bytes.constData(),bytes.size());
+    }
+    return true;
+}
+
+
+void NetworkManager::sendSharedFilesList (QTcpSocket &tcpSocket, const std::vector<FileData> &files, Data &data)
+{
+    QString sharedFiles = "";
+    qDebug()<<"files.size():"<<sharedFiles.size();
+    for (unsigned int i=0; i<files.size(); ++i)
+    {
+        QFileInfo fi(files[i].getPath());
+        sharedFiles+=QString::number(fi.size());
+
+        sharedFiles+= "#";
+        sharedFiles+=files[i].getFileName() + "\n";
+    }
+
+    int index = 0;
+    qDebug()<<files.size();
+    qDebug()<<"Size: "<<sharedFiles.length();
+    QString part = sharedFiles.mid(index, index+BUFFER_SIZE);
+    index+=BUFFER_SIZE;
+    QByteArray sendData;
+    sendData = part.toLocal8Bit();
+    data.fromChar(sendData, nullptr, NC_RECV_LIST);
+    sendBuffer(tcpSocket, data.getString(), data.getSize());
+    while (index < sharedFiles.length())
+    {
+        qDebug()<<"index:"<<index;
+        part = sharedFiles.mid(index, BUFFER_SIZE);
+        index+=BUFFER_SIZE;
+        sendData = part.toLocal8Bit();
+        sendBuffer(tcpSocket, sendData.constData(), sendData.size());
+    }
+}
+
+void NetworkManager::sendHelloMessage (QTcpSocket& tcpSocket)
+{
+    sendBuffer(tcpSocket, "\x02\t\n", CODE_LENGTH);
 }

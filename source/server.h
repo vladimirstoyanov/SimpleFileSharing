@@ -30,27 +30,13 @@
 
 #include "data.h"
 #include "file_data.h"
+#include "message_codes.h"
+#include "network_manager.h"
 #include "shared_files.h"
-
-
-//ToDo: if it possible, replace the below constants with an enum
-#define NC_GET_FILE 16
-#define NC_GET_LIST 20
-#define NC_RECV_LIST 40
-#define NC_HELLO 01
-#define NC_RECV_HELLO 02
 
 class Server: public QThread
 {
     Q_OBJECT
-
-    void send(const char*,int);
-    void parseData();
-
-public:
-    //ToDo: move the below member to the private section
-    QFile m_file;
-
 public:
     Server(qintptr ID, std::shared_ptr<SharedFiles> sharedFiels);
     virtual ~Server();
@@ -65,11 +51,13 @@ private:
     std::shared_ptr<QTcpSocket> m_tcpSocket;
 
     Data returnData();
+    int  getFileIndex (const Data &data, const std::vector<FileData> &files);
+    void parseData();
 
 private slots:
     void disconnected();
-    void ReadyRead(); //ToDo: change the name to readyRead ()
-    void SockError(QAbstractSocket::SocketError); //ToDo: change the name to sockError
+    void readyToRead();
+    void sockError(QAbstractSocket::SocketError); //ToDo: change the name to sockError
 
 signals:
     void Bytes(qint64); //ToDo: change the name to bytes

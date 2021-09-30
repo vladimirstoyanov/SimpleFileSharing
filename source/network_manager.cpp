@@ -164,9 +164,9 @@ void NetworkManager::createFile (QTcpSocket &socket,
 }
 
 
-void NetworkManager::sendBuffer (QTcpSocket &socket, const char *data, int size)
+void NetworkManager::sendBuffer (QTcpSocket &socket, const QByteArray &byteArray)
 {
-    socket.write(data,size);
+    socket.write(byteArray);
     socket.waitForBytesWritten();
 }
 
@@ -175,7 +175,7 @@ bool NetworkManager::sendFile (QTcpSocket & tcpSocket, const FileData &fileData)
     QString fileHash= m_fileOperations.getFileHash(fileData.getPath());
     fileHash +='#';
     QByteArray fileHashBytes = fileHash.toLocal8Bit();
-    sendBuffer(tcpSocket, fileHashBytes.constData(), fileHashBytes.size());
+    sendBuffer(tcpSocket, fileHashBytes);
 
     QFile file(fileData.getPath());
     if (!file.open(QIODevice::ReadOnly))
@@ -186,20 +186,20 @@ bool NetworkManager::sendFile (QTcpSocket & tcpSocket, const FileData &fileData)
     while (!file.atEnd())
     {
         QByteArray  bytes = file.read(BUFFER_SIZE);
-        sendBuffer(tcpSocket, bytes.constData(),bytes.size());
+        sendBuffer(tcpSocket, bytes);
     }
     return true;
 }
 
 
-void NetworkManager::sendSharedFilesList (QTcpSocket &tcpSocket, const std::vector<FileData> &files, ProtocolData &data)
+void NetworkManager::sendSharedFilesList (QTcpSocket &tcpSocket, const std::vector<FileData> &files)
 {
     QString sharedFiles = "";
     qDebug()<<"files.size():"<<sharedFiles.size();
     for (unsigned int i=0; i<files.size(); ++i)
     {
-        QFileInfo fi(files[i].getPath());
-        sharedFiles+=QString::number(fi.size());
+        QFileInfo fileInfo(files[i].getPath());
+        sharedFiles+=QString::number(fileInfo.size());
 
         sharedFiles+= "#";
         sharedFiles+=files[i].getFileName() + "\n";
@@ -211,20 +211,20 @@ void NetworkManager::sendSharedFilesList (QTcpSocket &tcpSocket, const std::vect
     QString part = sharedFiles.mid(index, index+BUFFER_SIZE);
     index+=BUFFER_SIZE;
     QByteArray sendData;
-    sendData = part.toLocal8Bit();
-    data.fromChar(sendData, nullptr, NC_RECV_LIST);
-    sendBuffer(tcpSocket, data.getString(), data.getSize());
+    sendData = m_protocolMessages.getReceiveListMessage();
+    sendData += part.toLocal8Bit();
+    sendBuffer(tcpSocket, sendData);
     while (index < sharedFiles.length())
     {
         qDebug()<<"index:"<<index;
         part = sharedFiles.mid(index, BUFFER_SIZE);
         index+=BUFFER_SIZE;
         sendData = part.toLocal8Bit();
-        sendBuffer(tcpSocket, sendData.constData(), sendData.size());
+        sendBuffer(tcpSocket, sendData);
     }
 }
 
 void NetworkManager::sendHelloMessage (QTcpSocket& tcpSocket)
 {
-    sendBuffer(tcpSocket, "\x02\t\n", CODE_LENGTH);
+    sendBuffer(tcpSocket, m_protocolMessages.getHelloMessage());
 }

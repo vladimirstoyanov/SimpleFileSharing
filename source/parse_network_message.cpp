@@ -5,11 +5,38 @@ ParseNetworkMessage::ParseNetworkMessage()
 
 }
 
+ProtocolData ParseNetworkMessage::parseProtocolData (const QByteArray & byteArray)
+{
+    ProtocolData protocolData;
+    if(byteArray.length()<CODE_LENGTH)
+    {
+        return protocolData;
+    }
+
+    protocolData.setMessageCode(byteArray[0]);
+
+    int index =-1;
+    for (int i=0; i<byteArray.length(); ++i)
+    {
+        if('\n' == byteArray[i])
+        {
+            index = i;
+            break;
+        }
+    }
+    if (-1 == index)
+    {
+        return protocolData;
+    }
+
+    protocolData.setArguments (byteArray.mid(1, index));
+    return protocolData;
+}
 
 std::vector<RemoteHostFileData> ParseNetworkMessage::parseGetListResultMessage (const QString &resultMessage)
 {
     std::vector<RemoteHostFileData> remoteHostFileDataList;
-    if (resultMessage == "" || resultMessage.length()<3)
+    if (resultMessage == "" || resultMessage.length()<CODE_LENGTH)
     {
         return remoteHostFileDataList;
     }

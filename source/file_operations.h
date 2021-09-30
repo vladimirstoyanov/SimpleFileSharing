@@ -7,6 +7,7 @@
 
 #include "message_codes.h"
 
+//ToDo: add file read/write methods
 class FileOperations
 {
 public:

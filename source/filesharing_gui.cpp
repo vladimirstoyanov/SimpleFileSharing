@@ -389,6 +389,7 @@ void FileSharing_GUI::stopLoadingAnimation()
     m_loadingGif->hide();
 }
 
+
 QString FileSharing_GUI::setQuery(int index)
 {
     if (index>=m_model->rowCount())
@@ -396,7 +397,6 @@ QString FileSharing_GUI::setQuery(int index)
         return "";
     }
 
-    QString query = "\x10\t";
 
     QString filename=m_model->item(index, m_nameColumnId)->text();
     int num=0;
@@ -412,8 +412,8 @@ QString FileSharing_GUI::setQuery(int index)
             ++num;
         }
     }
-    query+=QString::number(num) + "#" + filename+"\n";
-    return query;
+
+    return m_protocolMessages.getFileMessage(filename, QString::number(num));
 }
 
 void FileSharing_GUI::clearProgressColumnData ()

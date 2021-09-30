@@ -34,6 +34,7 @@
 #include "addfile_gui.h"
 #include "client_thread.h"
 #include "server.h"
+#include "protocol_messages.h"
 #include "remote_host_file_data.h"
 #include "scanip_gui.h"
 #include "scan_network.h"
@@ -80,6 +81,7 @@ private:
     int                                     m_nameColumnId;
     int                                     m_offsetBetweenWidgets;
     int                                     m_progressColumnId;
+    ProtocolMessages                        m_protocolMessages;
     std::shared_ptr<ScanIP_GUI>             m_scanIpGUI;
     std::shared_ptr<ScanNetwork>            m_scanNetwork;
     Server                                  m_server;

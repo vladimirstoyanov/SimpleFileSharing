@@ -26,28 +26,20 @@
 
 #include "message_codes.h"
 
-//ToDo: refactor this class
 class ProtocolData
 {
 public:
     explicit ProtocolData();
     virtual ~ProtocolData();
 
-    void        fromChar(const char *);
-    void        fromChar(const char *s, const char *arg, int cmd);
+    char getMessageCode () const { return this->m_messageCode; }
+    QByteArray getArguments () const { return this->m_arguments; }
 
-    //get
-    QByteArray  getArguments () const  { return this->m_arguments; }
-    qint64      getSize() const { return this->m_size; }
-    char *      getString () const { return this->m_string; }
-    int         getType () const { return this->m_type; }
-
+    void setMessageCode (const char messageCode) { m_messageCode = messageCode; }
+    void setArguments (const QByteArray &arguments) { m_arguments = arguments; }
 private:
+    char        m_messageCode;
     QByteArray  m_arguments;
-    qint64      m_size;
-    char        *m_string;
-    int         m_type;
-
 };
 
 #endif // PROTOCOL_DATA_H

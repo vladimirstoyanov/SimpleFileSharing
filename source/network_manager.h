@@ -12,6 +12,7 @@
 #include <QTcpSocket>
 
 #include "protocol_data.h"
+#include "protocol_messages.h"
 #include "file_data.h"
 #include "message_codes.h"
 #include "parse_network_message.h"
@@ -32,14 +33,15 @@ public:
     std::vector<RemoteHostFileData> getSharedFilesByRemoteHost (const QString &ip);
     int                             getPort () const { return this->m_port; }
     void                            sendHelloMessage (QTcpSocket &socket);
-    void                            sendBuffer (QTcpSocket &socket, const char *data, int size);
+    void                            sendBuffer (QTcpSocket &socket, const QByteArray &byteArray);
     bool                            sendFile (QTcpSocket & tcpSocket, const FileData &fileData);
-    void                            sendSharedFilesList(QTcpSocket &tcpSocket, const std::vector<FileData> &sharedFiles, ProtocolData &data);
+    void                            sendSharedFilesList(QTcpSocket &tcpSocket, const std::vector<FileData> &sharedFiles);
 
 
 private:
-    int             m_port;
-    FileOperations  m_fileOperations;
+    int              m_port;
+    FileOperations   m_fileOperations;
+    ProtocolMessages m_protocolMessages;
 
     bool        checkFileHash (const QString &filePath, const QString &remoteFileHash);
     bool        connectToHost (QTcpSocket &socket, const QString &ip);

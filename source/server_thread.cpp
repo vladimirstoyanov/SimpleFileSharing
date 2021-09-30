@@ -50,10 +50,10 @@ int ServerThread::getFileIndex (const ProtocolData &data, const std::vector<File
     qDebug()<<arguments;
 
     int i=0;
-    QString num="", filename="";
+    QString numberOfFile="", filename=""; //ToDo: add file ID.
     while(i<arguments.size() && arguments[i]!='#')
     {
-        num+=arguments[i];
+        numberOfFile+=arguments[i];
         ++i;
     }
     ++i;
@@ -62,7 +62,7 @@ int ServerThread::getFileIndex (const ProtocolData &data, const std::vector<File
         filename+=arguments[i];
         ++i;
     }
-    int number = num.toInt();
+    int number = numberOfFile.toInt();
     for (unsigned int i=0; i<files.size(); ++i)
     {
         if (filename == files[i].getFileName())
@@ -85,7 +85,7 @@ void ServerThread::parseData()
      NetworkManager networkManager;
      std::vector<FileData> files  = m_sharedFiles->get();
 
-     switch (protocolData.getType())
+     switch (protocolData.getMessageCode())
      {
         case NC_GET_FILE:
         {
@@ -102,7 +102,7 @@ void ServerThread::parseData()
         }
         case NC_GET_LIST:
         {
-                networkManager.sendSharedFilesList(m_tcpSocket, files, protocolData);
+                networkManager.sendSharedFilesList(m_tcpSocket, files);
                 break;
         }
         case NC_HELLO:
@@ -121,28 +121,8 @@ void ServerThread::parseData()
 
 ProtocolData ServerThread::getProtocolData()
 {
-    ProtocolData protocolData;
-    if(m_socketData.length()<CODE_LENGTH)
-    {
-        return protocolData;
-    }
-
-    for(int i=0;i<m_socketData.length(); ++i)
-    {
-        if('\n' == m_socketData[i])
-        {
-            QByteArray bSize;
-            for(int j=0;j<=i;++j)
-            {
-                bSize.append(m_socketData[j]);
-            }
-
-            m_socketData = m_socketData.remove(0, bSize.toInt());
-            protocolData.fromChar(bSize.constData());
-            break;
-        }
-    }
-    return protocolData;
+    ParseNetworkMessage parseNetworkMessage;
+    return parseNetworkMessage.parseProtocolData(m_socketData);
 }
 
 void ServerThread::sockError(QAbstractSocket::SocketError error)

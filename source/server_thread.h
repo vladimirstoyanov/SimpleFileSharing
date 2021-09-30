@@ -28,10 +28,11 @@
 #include <QTcpServer>
 #include <QTcpSocket>
 
-#include "protocol_data.h"
 #include "file_data.h"
 #include "message_codes.h"
 #include "network_manager.h"
+#include "parse_network_message.h"
+#include "protocol_data.h"
 #include "shared_files.h"
 
 class ServerThread: public QThread

@@ -25,6 +25,7 @@ SOURCES += main.cpp\
     parse_file_data.cpp \
     parse_network_message.cpp \
     protocol_data.cpp \
+    protocol_messages.cpp \
     remote_host_file_data.cpp \
     search.cpp \
     scan_network.cpp \
@@ -46,6 +47,7 @@ HEADERS  += filesharing_gui.h \
     parse_file_data.h \
     parse_network_message.h \
     protocol_data.h \
+    protocol_messages.h \
     remote_host_file_data.h \
     search.h \
     scan_network.h \

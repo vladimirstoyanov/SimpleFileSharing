@@ -44,12 +44,6 @@ public:
     char *      getString () const { return this->m_string; }
     int         getType () const { return this->m_type; }
 
-    //set
-    void        setArgument (const QByteArray &arguments) { this->m_arguments = arguments; }
-    void        setSize(qint64 size) { this->m_size = size; }
-    void        setString (char *string) { this->m_string = string; }
-    void        setType (int type ){ this->m_type = type; }
-
 private:
     QByteArray  m_arguments;
     qint64      m_size;

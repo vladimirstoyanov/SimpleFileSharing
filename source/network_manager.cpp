@@ -57,47 +57,51 @@ std::vector<RemoteHostFileData> NetworkManager::getSharedFilesByRemoteHost (cons
     return parseNetworkMessage.parseGetListResultMessage(recv);
 }
 
-QString NetworkManager::getFileHash (QTcpSocket &tcpSocket, QByteArray &ba1, const QString &ip, const QString &query)
+QString NetworkManager::getFileHash (QTcpSocket &tcpSocket, QByteArray &fileBuffer, const QString &ip, const QString &query)
 {
     connectToHost(tcpSocket, ip);
-    return requestHash(tcpSocket, ba1, query);
+    return requestHash(tcpSocket, fileBuffer, query);
 }
 
-QString NetworkManager::requestHash(QTcpSocket & socket, QByteArray &ba1, const QString &query)
+QString NetworkManager::requestHash(QTcpSocket & socket, QByteArray &fileBuffer, const QString &query)
 {
-    QByteArray ba2;
-    ba2 = query.toLocal8Bit();
-    socket.write(ba2);
+    QByteArray hashQuery;
+    hashQuery = query.toLocal8Bit();
+    socket.write(hashQuery);
     socket.waitForReadyRead();
 
 
-    ba1=socket.readAll();
+    fileBuffer=socket.readAll();
 
     //get hash
     QString hash="";
     int j=0;
-    for (j=0; j<ba1.size(); j++)
+    for (j=0; j<fileBuffer.size(); j++)
     {
-        if (ba1[j]=='#')
+        if ('#' == fileBuffer[j])
         {
             break;
         }
-        hash+=ba1[j];
+        hash+=fileBuffer[j];
     }
-    ba1 = ba1.remove(0,j+1);
+    fileBuffer = fileBuffer.remove(0,j+1);
     return hash;
 }
 
 
-void NetworkManager::downloadFile (const QString &ip, const QString &fileName, const QString &fileDirectory, const QString &query, const qint64 size, std::function<void (int)> downloadProgress)
+void NetworkManager::downloadFile (const QString &ip,
+                                   const QString &filePath,
+                                   const QString &query,
+                                   const qint64 size,
+                                   std::function<void (int)> downloadProgress)
 {
     QTcpSocket tcpSocket;
-    QByteArray ba1;
+    QByteArray fileBuffer;
 
-    QString remoteFileHash = getFileHash(tcpSocket,  ba1, ip, query);
-    createFile (tcpSocket, ba1, fileName, fileDirectory,size, downloadProgress);
+    QString remoteFileHash = getFileHash(tcpSocket,  fileBuffer, ip, query);
+    createFile (tcpSocket, fileBuffer, filePath, size, downloadProgress);
 
-    if (checkFileHash(fileDirectory + fileName, remoteFileHash))
+    if (checkFileHash(filePath, remoteFileHash))
     {
         downloadProgress(-1); //error
     }
@@ -123,40 +127,42 @@ bool NetworkManager::checkFileHash (const QString &filePath, const QString &remo
     return true;
 }
 
-void NetworkManager::createFile (QTcpSocket &socket, QByteArray &ba1, const QString &fileName, const QString &fileDirectory, const qint64 size, std::function<void (int)> downloadProgress)
+void NetworkManager::createFile (QTcpSocket &socket,
+                                 QByteArray &fileBuffer,
+                                 const QString &filePath,
+                                 const qint64 size, std::function<void (int)> downloadProgress)
 {
     int percentage = 0;
-    QFile f(fileDirectory + fileName);
+    QFile f(filePath);
 
     if (!f.open(QIODevice::WriteOnly))
     {
-        qDebug()<<"Client::run(): Can't open " + fileDirectory + fileName + ".";
+        qDebug()<<"Client::run(): Can't open " + filePath + ".";
         socket.close();
+        downloadProgress (-1);
         return;
     }
 
-    if (ba1.size()>0)
+    if (fileBuffer.size()>0)
     {
-        f.write(ba1);
+        f.write(fileBuffer);
     }
 
-    int b = 0;
-
+    int currentSize = 0;
     while(socket.waitForReadyRead())
     {
-        ba1=socket.readAll();
-        if (size>b)
+        fileBuffer=socket.readAll();
+        if (size>currentSize)
         {
-            b+=ba1.size();
-            double a = b/(size*1.0);
-            percentage = 100*a;
+            currentSize+=fileBuffer.size();
+            percentage = 100*(double)(currentSize/(size*1.0));
             if (percentage != 100.0)
             {
                 downloadProgress(percentage);
             }
         }
 
-        f.write(ba1);
+        f.write(fileBuffer);
     }
 
     f.close();

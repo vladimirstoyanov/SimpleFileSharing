@@ -39,10 +39,10 @@ Client::~Client()
 
 void Client::run()
 {
-    //ToDo: update file download progress
     NetworkManager networkManager;
-    auto fp = std::bind(&Client::downloadProgressCallback,this, 0);
-    networkManager.downloadFile(m_hostIp, m_fileName, m_fileDir, m_query, m_fileSize, fp);
+    QString filePath = m_fileDir + m_fileName;
+    auto downlaodProgress = std::bind(&Client::downloadProgressCallback,this, 0);
+    networkManager.downloadFile(m_hostIp, filePath, m_query, m_fileSize, downlaodProgress);
 }
 
 void Client::downloadProgressCallback (int percentage)

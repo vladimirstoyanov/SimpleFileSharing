@@ -21,8 +21,7 @@ public:
     virtual ~NetworkManager () = default;
 
     void                            downloadFile (const QString &ip,
-                                                  const QString &fileName,
-                                                  const QString &fileDirectory,
+                                                  const QString &filePath,
                                                   const QString &query,
                                                   const qint64 size,
                                                   std::function<void(int)> downloadProgress);
@@ -33,9 +32,9 @@ private:
 
     bool        checkFileHash (const QString &filePath, const QString &remoteFileHash);
     bool        connectToHost (QTcpSocket &socket, const QString &ip);
-    void        createFile (QTcpSocket &socket, QByteArray &ba1, const QString &fileName, const QString &fileDirectory, const qint64 size, std::function<void(int)> downloadProgress);
+    void        createFile (QTcpSocket &socket, QByteArray &fileBuffer, const QString &filePath, const qint64 size, std::function<void(int)> downloadProgress);
     QString     getResultAsQString (QTcpSocket &socket);
-    QString     getFileHash (QTcpSocket &tcpSocket, QByteArray &ba1, const QString &ip, const QString &query);
+    QString     getFileHash (QTcpSocket &tcpSocket, QByteArray &fileBuffer, const QString &ip, const QString &query);
     void        requestFileList (QTcpSocket &socket);
     QString     requestHash(QTcpSocket & socket, QByteArray &ba1, const QString &query);
 };

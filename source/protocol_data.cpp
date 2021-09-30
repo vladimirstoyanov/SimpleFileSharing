@@ -15,18 +15,17 @@
     along with Simple File Sharing.  If not, see <http://www.gnu.org/licenses/>.
 */
 
-#include "data.h"
+#include "protocol_data.h"
 
-Data::Data():
+ProtocolData::ProtocolData():
     m_arguments (nullptr)
-    , m_Fl (0)
     , m_size (0)
     , m_string (nullptr)
     , m_type (0)
 {
 }
 
-Data::~Data()
+ProtocolData::~ProtocolData()
 {
     if(m_string)
     {
@@ -34,7 +33,7 @@ Data::~Data()
     }
 }
 
-void Data::fromChar(const char *s)
+void ProtocolData::fromChar(const char *s)
 {
     if(!s)
     {
@@ -91,7 +90,7 @@ void Data::fromChar(const char *s)
 
 }
 
-void Data::fromChar(const char *s, const char *arg, int cmd)
+void ProtocolData::fromChar(const char *s, const char *arg, int cmd)
 {
     if(m_string)
     {
@@ -144,9 +143,8 @@ void Data::fromChar(const char *s, const char *arg, int cmd)
     }
 }
 
-QByteArray Data::getHash(const QString &fileName)
+QByteArray ProtocolData::getHash(const QString &fileName)
 {
-    int chunkSize = 8192;
     QCryptographicHash crypto(QCryptographicHash::Sha1);
     QFile file(fileName);
 
@@ -157,7 +155,7 @@ QByteArray Data::getHash(const QString &fileName)
 
     while(!file.atEnd())
     {
-      crypto.addData(file.read(chunkSize));
+      crypto.addData(file.read(BUFFER_SIZE));
     }
 
     return crypto.result().toHex();

@@ -28,7 +28,7 @@
 #include <QTcpServer>
 #include <QTcpSocket>
 
-#include "data.h"
+#include "protocol_data.h"
 #include "file_data.h"
 #include "message_codes.h"
 #include "network_manager.h"
@@ -50,17 +50,14 @@ private:
     QByteArray m_socketData;
     QTcpSocket m_tcpSocket;
 
-    Data returnData();
-    int  getFileIndex (const Data &data, const std::vector<FileData> &files);
+    ProtocolData getProtocolData();
+    int  getFileIndex (const ProtocolData &data, const std::vector<FileData> &files);
     void parseData();
 
 private slots:
     void disconnected();
     void readyToRead();
-    void sockError(QAbstractSocket::SocketError); //ToDo: change the name to sockError
-
-signals:
-    void Bytes(qint64); //ToDo: change the name to bytes
+    void sockError(QAbstractSocket::SocketError);
 };
 
 #endif // SERVER_THREAD_H

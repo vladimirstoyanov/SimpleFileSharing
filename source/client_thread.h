@@ -27,7 +27,7 @@
 #include <QThread>
 #include <QTcpSocket>
 
-#include "data.h"
+#include "protocol_data.h"
 #include "network_manager.h"
 
 class ClientThread: public QThread

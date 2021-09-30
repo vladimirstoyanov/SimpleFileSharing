@@ -11,7 +11,7 @@
 #include <QTcpServer>
 #include <QTcpSocket>
 
-#include "data.h"
+#include "protocol_data.h"
 #include "file_data.h"
 #include "message_codes.h"
 #include "parse_network_message.h"
@@ -32,8 +32,8 @@ public:
     int                             getPort () const { return this->m_port; }
     void                            sendHelloMessage (QTcpSocket &socket);
     void                            sendBuffer (QTcpSocket &socket, const char *data, int size);
-    bool                            sendFile (QTcpSocket & tcpSocket, const FileData &fileData, Data &data);
-    void                            sendSharedFilesList(QTcpSocket &tcpSocket, const std::vector<FileData> &sharedFiles, Data &data);
+    bool                            sendFile (QTcpSocket & tcpSocket, const FileData &fileData, ProtocolData &data);
+    void                            sendSharedFilesList(QTcpSocket &tcpSocket, const std::vector<FileData> &sharedFiles, ProtocolData &data);
 
 
 private:

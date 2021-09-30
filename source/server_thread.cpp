@@ -35,8 +35,6 @@ void ServerThread::readyToRead()
 {
     qDebug()<<__PRETTY_FUNCTION__;
     qint64 bytes = m_tcpSocket.bytesAvailable();
-    emit Bytes(bytes);
-
     char *buf = new char[bytes];
     m_tcpSocket.read(buf,bytes);
     m_socketData.append(buf,  bytes); //FIXME
@@ -45,7 +43,7 @@ void ServerThread::readyToRead()
     parseData();
 }
 
-int ServerThread::getFileIndex (const Data &data, const std::vector<FileData> &files)
+int ServerThread::getFileIndex (const ProtocolData &data, const std::vector<FileData> &files)
 {
     int index=DOWNLOAD_ERROR;
     QByteArray arguments = data.getArguments();
@@ -83,28 +81,28 @@ int ServerThread::getFileIndex (const Data &data, const std::vector<FileData> &f
 }
 void ServerThread::parseData()
 {
-     Data data = returnData();
+     ProtocolData protocolData = getProtocolData();
      NetworkManager networkManager;
      std::vector<FileData> files  = m_sharedFiles->get();
 
-     switch (data.getType())
+     switch (protocolData.getType())
      {
         case NC_GET_FILE:
         {
 
-                int index = getFileIndex (data, files);
+                int index = getFileIndex (protocolData, files);
                 if (DOWNLOAD_ERROR == index)
                 {
                     //ToDo: notify the GUI
                     break;
                 }
-                networkManager.sendFile(m_tcpSocket, files[index], data);
+                networkManager.sendFile(m_tcpSocket, files[index], protocolData);
 
                 break;
         }
         case NC_GET_LIST:
         {
-                networkManager.sendSharedFilesList(m_tcpSocket, files, data);
+                networkManager.sendSharedFilesList(m_tcpSocket, files, protocolData);
                 break;
         }
         case NC_HELLO:
@@ -121,12 +119,12 @@ void ServerThread::parseData()
 }
 
 
-Data ServerThread::returnData()
+ProtocolData ServerThread::getProtocolData()
 {
-    Data data;
+    ProtocolData protocolData;
     if(m_socketData.length()<CODE_LENGTH)
     {
-        return data;
+        return protocolData;
     }
 
     for(int i=0;i<m_socketData.length(); ++i)
@@ -140,11 +138,11 @@ Data ServerThread::returnData()
             }
 
             m_socketData = m_socketData.remove(0,bSize.toInt());
-            data.fromChar(bSize.constData());
+            protocolData.fromChar(bSize.constData());
             break;
         }
     }
-    return data;
+    return protocolData;
 }
 
 void ServerThread::sockError(QAbstractSocket::SocketError error)

@@ -23,10 +23,10 @@ SOURCES += main.cpp\
     network_manager.cpp \
     parse_file_data.cpp \
     parse_network_message.cpp \
+    protocol_data.cpp \
     remote_host_file_data.cpp \
     search.cpp \
     scan_network.cpp \
-    data.cpp \
     addfile_gui.cpp \
     server.cpp \
     server_thread.cpp \
@@ -43,10 +43,10 @@ HEADERS  += filesharing_gui.h \
     network_manager.h \
     parse_file_data.h \
     parse_network_message.h \
+    protocol_data.h \
     remote_host_file_data.h \
     search.h \
     scan_network.h \
-    data.h \
     addfile_gui.h \
     server.h \
     server_thread.h \

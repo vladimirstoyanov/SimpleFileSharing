@@ -15,8 +15,8 @@
     along with Simple File Sharing.  If not, see <http://www.gnu.org/licenses/>.
 */
 
-#ifndef DATA_H
-#define DATA_H
+#ifndef PROTOCOL_DATA_H
+#define PROTOCOL_DATA_H
 
 #include <string>
 
@@ -25,11 +25,14 @@
 #include <QDebug>
 #include <QFile>
 
-class Data
+#include "message_codes.h"
+
+//ToDo: refactor this class
+class ProtocolData
 {
 public:
-    explicit Data();
-    virtual ~Data();
+    explicit ProtocolData();
+    virtual ~ProtocolData();
 
     QByteArray  getHash(const QString &fileName);
     void        fromChar(const char *);
@@ -49,11 +52,10 @@ public:
 
 private:
     QByteArray  m_arguments;
-    char        m_Fl;
     qint64      m_size;
     char        *m_string;
     int         m_type;
 
 };
 
-#endif // DATA_H
+#endif // PROTOCOL_DATA_H

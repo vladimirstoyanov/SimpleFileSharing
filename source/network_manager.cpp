@@ -114,7 +114,7 @@ void NetworkManager::downloadFile (const QString &ip,
 
 bool NetworkManager::checkFileHash (const QString &filePath, const QString &remoteFileHash)
 {
-    Data data;
+    ProtocolData data;
     if (remoteFileHash!=data.getHash(filePath).data())
     {
         return false;
@@ -171,7 +171,7 @@ void NetworkManager::sendBuffer (QTcpSocket &socket, const char *data, int size)
     socket.waitForBytesWritten();
 }
 
-bool NetworkManager::sendFile (QTcpSocket & tcpSocket, const FileData &fileData,  Data &data)
+bool NetworkManager::sendFile (QTcpSocket & tcpSocket, const FileData &fileData,  ProtocolData &data)
 {
     QString fileHash= data.getHash(fileData.getPath());
     fileHash +='#';
@@ -193,7 +193,7 @@ bool NetworkManager::sendFile (QTcpSocket & tcpSocket, const FileData &fileData,
 }
 
 
-void NetworkManager::sendSharedFilesList (QTcpSocket &tcpSocket, const std::vector<FileData> &files, Data &data)
+void NetworkManager::sendSharedFilesList (QTcpSocket &tcpSocket, const std::vector<FileData> &files, ProtocolData &data)
 {
     QString sharedFiles = "";
     qDebug()<<"files.size():"<<sharedFiles.size();

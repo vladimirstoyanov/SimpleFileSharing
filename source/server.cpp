@@ -1,4 +1,4 @@
-﻿/*
+/*
     This file is part of Simple File Sharing.
 
     Simple File Sharing is free software: you can redistribute it and/or modify
@@ -16,160 +16,33 @@
 */
 
 #include "server.h"
-#include "search.h"
-#include <QFileInfo>
-#include <QDir>
-#include "addfile_gui.h"
-
-Server::Server(qintptr id, const SharedFiles &sharedFiels):
-    m_descriptor(id)
-    , m_sharedFiles (sharedFiels)
+#include <QDebug>
+Server::Server(std::shared_ptr<SharedFiles> sharedFiles, QObject *parent) :
+    QTcpServer(parent)
+    , m_sharedFiles(sharedFiles)
 {
 }
 
-Server::~Server()
+void Server::StartServer()
 {
-}
-
-void Server::readyToRead()
-{
-    qDebug()<<__PRETTY_FUNCTION__;
-    qint64 bytes = m_tcpSocket.bytesAvailable();
-    emit Bytes(bytes);
-
-    char *buf = new char[bytes];
-    m_tcpSocket.read(buf,bytes);
-    m_socketData.append(buf,  bytes); //FIXME
-    delete []buf;
-
-    parseData();
-}
-
-int Server::getFileIndex (const Data &data, const std::vector<FileData> &files)
-{
-    int index=DOWNLOAD_ERROR;
-    QByteArray arguments = data.getArguments();
-    qDebug()<<arguments;
-
-    int i=0;
-    QString num="", filename="";
-    while(i<arguments.size() && arguments[i]!='#')
+    NetworkManager networkManager;
+    int port = networkManager.getPort ();
+    if (!this->listen(QHostAddress::Any, port))
     {
-        num+=arguments[i];
-        ++i;
+        QString errorMessage = "Port ";
+        errorMessage+=QString::number(port);
+        errorMessage+=" can't be opened!";
+
+        QMessageBox::critical(nullptr,"Error!", errorMessage);
     }
-    ++i;
-    while(i<arguments.size() && arguments[i]!='\0')
-    {
-        filename+=arguments[i];
-        ++i;
-    }
-    int number = num.toInt();
-    for (unsigned int i=0; i<files.size(); ++i)
-    {
-        if (filename == files[i].getFileName())
-        {
-            if (number>0)
-            {
-                --number;
-                continue;
-            }
-            index = i;
-            break;
-        }
-    }
-
-    return index;
-}
-void Server::parseData()
-{
-     Data data = returnData();
-     NetworkManager networkManager;
-     std::vector<FileData> files  = m_sharedFiles.get();
-
-     switch (data.getType())
-     {
-        case NC_GET_FILE:
-        {
-
-                int index = getFileIndex (data, files);
-                if (DOWNLOAD_ERROR == index)
-                {
-                    //ToDo: notify the GUI
-                    break;
-                }
-                networkManager.sendFile(m_tcpSocket, files[index], data);
-
-                break;
-        }
-        case NC_GET_LIST:
-        {
-                networkManager.sendSharedFilesList(m_tcpSocket, files, data);
-                break;
-        }
-        case NC_HELLO:
-        {
-                networkManager.sendHelloMessage(m_tcpSocket);
-                break;
-        }
-        default:
-        {
-                break;
-        }
-     }
-     m_tcpSocket.close();
 }
 
-
-Data Server::returnData()
+void Server::incomingConnection(qintptr id)
 {
-    Data data;
-    if(m_socketData.length()<CODE_LENGTH)
-    {
-        return data;
-    }
+    qDebug()<<__PRETTY_FUNCTION__<<": ID: "<<QString::number(id);
+    std::shared_ptr<ServerThread> thread = std::make_shared<ServerThread>(id, m_sharedFiles);
 
-    for(int i=0;i<m_socketData.length(); ++i)
-    {
-        if('\n' == m_socketData[i])
-        {
-            QByteArray bSize;
-            for(int j=0;j<=i;++j)
-            {
-                bSize.append(m_socketData[j]);
-            }
+    connect(thread.get(), SIGNAL(finished()),thread.get(), SLOT(deleteLater()));
 
-            m_socketData = m_socketData.remove(0,bSize.toInt());
-            data.fromChar(bSize.constData());
-            break;
-        }
-    }
-    return data;
-}
-
-void Server::sockError(QAbstractSocket::SocketError error)
-{
-    qDebug()<<__PRETTY_FUNCTION__<<':'<<error;
-    m_tcpSocket.close();
-}
-
-void Server::run()
-{
-    if(!m_tcpSocket.setSocketDescriptor(m_descriptor))
-    {
-        qDebug()<<__PRETTY_FUNCTION__<<": Can't set a socket descriptor...";
-        return;
-    }
-
-    connect(&m_tcpSocket,SIGNAL(readyRead()),SLOT(readyToRead()),Qt::DirectConnection);
-    connect(&m_tcpSocket,SIGNAL(disconnected()),this,SLOT(disconnected()),Qt::DirectConnection);
-    connect(&m_tcpSocket,SIGNAL(error(QAbstractSocket::SocketError)),SLOT(sockError(QAbstractSocket::SocketError)),Qt::QueuedConnection);
-
-    exec();
-}
-
-void Server::disconnected()
-{
-   m_tcpSocket.deleteLater();
-   exit(0);
+    thread->start();
 }

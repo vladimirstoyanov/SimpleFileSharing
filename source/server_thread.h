@@ -15,50 +15,52 @@
     along with Simple File Sharing.  If not, see <http://www.gnu.org/licenses/>.
 */
 
-#ifndef CLIENT_H
-#define CLIENT_H
+#ifndef SERVER_THREAD_H
+#define SERVER_THREAD_H
 
-#include <functional>
+#include <memory>
+#include <vector>
 
 #include <QDebug>
-#include <QFileInfo>
-#include <QHostInfo>
-#include <QQueue>
+#include <QFile>
+#include <QStringList>
 #include <QThread>
+#include <QTcpServer>
 #include <QTcpSocket>
 
 #include "data.h"
+#include "file_data.h"
+#include "message_codes.h"
 #include "network_manager.h"
+#include "shared_files.h"
 
-class Client: public QThread
+class ServerThread: public QThread
 {
     Q_OBJECT
+public:
+    ServerThread(qintptr id, std::shared_ptr<SharedFiles> sharedFiels);
+    virtual ~ServerThread();
+
 protected:
     void run();
 
-public:
-    Client(
-            const QString &hostAdress,
-            const QString &query,
-            const QString &fileName,
-            const QString &fileDir,
-            const qint64 size,
-            const int index);
-
-    virtual ~Client();
-
 private:
-    int     m_row;
-    QString m_hostIp;
-    QString m_fileDir;
-    QString m_fileName;
-    QString m_query;
-    qint64  m_fileSize;
+    qintptr m_descriptor;
+    std::shared_ptr<SharedFiles> m_sharedFiles;
+    QByteArray m_socketData;
+    QTcpSocket m_tcpSocket;
 
-    void downloadProgressCallback (int percentage);
+    Data returnData();
+    int  getFileIndex (const Data &data, const std::vector<FileData> &files);
+    void parseData();
+
+private slots:
+    void disconnected();
+    void readyToRead();
+    void sockError(QAbstractSocket::SocketError); //ToDo: change the name to sockError
 
 signals:
-    void setProgress(const int, const double);
+    void Bytes(qint64); //ToDo: change the name to bytes
 };
 
-#endif // CLIENT_H
+#endif // SERVER_THREAD_H

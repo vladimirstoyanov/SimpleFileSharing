@@ -17,6 +17,7 @@ CONFIG += c++11
 
 SOURCES += main.cpp\
     about_gui.cpp \
+    client_thread.cpp \
     file_data.cpp \
         filesharing_gui.cpp \
     network_manager.cpp \
@@ -24,19 +25,19 @@ SOURCES += main.cpp\
     parse_network_message.cpp \
     remote_host_file_data.cpp \
     search.cpp \
-    server.cpp \
     scan_network.cpp \
     data.cpp \
-    client.cpp \
     addfile_gui.cpp \
+    server.cpp \
+    server_thread.cpp \
     setdir_gui.cpp \
     setnetwork_gui.cpp \
     scanip_gui.cpp \
-    my_server.cpp \
     shared_files.cpp
 
 HEADERS  += filesharing_gui.h \
     about_gui.h \
+    client_thread.h \
     file_data.h \
     message_codes.h \
     network_manager.h \
@@ -44,15 +45,14 @@ HEADERS  += filesharing_gui.h \
     parse_network_message.h \
     remote_host_file_data.h \
     search.h \
-    server.h \
     scan_network.h \
     data.h \
-    client.h \
     addfile_gui.h \
+    server.h \
+    server_thread.h \
     setdir_gui.h \
     setnetwork_gui.h \
     scanip_gui.h \
-    my_server.h \
     shared_files.h
 
 FORMS    += filesharing_gui.ui \

@@ -446,7 +446,7 @@ void FileSharing_GUI::startDownload (const int row)
 
             double sizeDouble = m_model->item(i,m_sizeColumnId)->text().toDouble();
             qint64 size = sizeDouble *1000;
-            std::shared_ptr<Client> thread  = std::make_shared<Client>(m_currentHost, query, m_model->item(i,m_nameColumnId)->text(),dir,size,i);
+            std::shared_ptr<ClientThread> thread  = std::make_shared<ClientThread>(m_currentHost, query, m_model->item(i,m_nameColumnId)->text(),dir,size,i);
             connect(thread.get(), SIGNAL(setProgress(int,double)), this, SLOT(on_setProgress(int,double)));
             thread->start();
             return;

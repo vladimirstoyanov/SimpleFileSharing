@@ -15,10 +15,10 @@
     along with Simple File Sharing.  If not, see <http://www.gnu.org/licenses/>.
 */
 
-#include "client.h"
+#include "client_thread.h"
 #include <QDataStream>
 
-Client::Client(const QString &hostAdress,
+ClientThread::ClientThread(const QString &hostAdress,
         const QString &query,
         const QString &fileName,
         const QString &fileDir,
@@ -33,19 +33,19 @@ Client::Client(const QString &hostAdress,
 {
 }
 
-Client::~Client()
+ClientThread::~ClientThread()
 {
 }
 
-void Client::run()
+void ClientThread::run()
 {
     NetworkManager networkManager;
     QString filePath = m_fileDir + m_fileName;
-    auto downlaodProgress = std::bind(&Client::downloadProgressCallback,this, 0);
+    auto downlaodProgress = std::bind(&ClientThread::downloadProgressCallback,this, 0);
     networkManager.downloadFile(m_hostIp, filePath, m_query, m_fileSize, downlaodProgress);
 }
 
-void Client::downloadProgressCallback (int percentage)
+void ClientThread::downloadProgressCallback (int percentage)
 {
    emit setProgress(m_row, percentage);
 }

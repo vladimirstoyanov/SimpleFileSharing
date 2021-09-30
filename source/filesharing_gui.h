@@ -32,8 +32,8 @@
 
 #include "about_gui.h"
 #include "addfile_gui.h"
-#include "client.h"
-#include "my_server.h"
+#include "client_thread.h"
+#include "server.h"
 #include "remote_host_file_data.h"
 #include "scanip_gui.h"
 #include "scan_network.h"
@@ -82,7 +82,7 @@ private:
     int                                     m_progressColumnId;
     std::shared_ptr<ScanIP_GUI>             m_scanIpGUI;
     std::shared_ptr<ScanNetwork>            m_scanNetwork;
-    MyServer                                m_server;
+    Server                                  m_server;
     std::shared_ptr<SetDir_GUI>             m_setDirGUI;
     std::shared_ptr<SetNetwork_GUI>         m_setNetworkGUI;
     int                                     m_sizeColumnId;

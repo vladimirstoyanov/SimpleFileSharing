@@ -51,7 +51,7 @@ private:
     QByteArray  m_arguments;
     char        m_Fl;
     qint64      m_size;
-    char        *m_string; //ToDo: use QString, std::string or ByteArray instead char * and change the name
+    char        *m_string;
     int         m_type;
 
 };

@@ -26,9 +26,9 @@ ScanNetworkThread::ScanNetworkThread(const unsigned int maxHostCount)
     , m_hostUnscanned (0)
     , m_maxHostCount(maxHostCount)
     , m_mutex ()
+    , m_scannedIPAddresses(m_maxHostCount)
 
 {
-    m_scannedIPAddresses.reserve(m_maxHostCount);
 }
 
 int ScanNetworkThread::getUnscannedHostIp (QString &ip)
@@ -37,7 +37,7 @@ int ScanNetworkThread::getUnscannedHostIp (QString &ip)
     int hostNumber = m_getHostIndexError;
     for (unsigned int i=0; i<m_scannedIPAddresses.size(); ++i)
     {
-        if (0 == m_scannedIPAddresses[i])
+        if (m_hostUnscanned == m_scannedIPAddresses[i])
         {
             m_scannedIPAddresses[i]=m_hostInProgress;
             ip+=QString::number(i+1);
@@ -59,6 +59,7 @@ void ScanNetworkThread::run()
     }
     QString ip = "";
     int index = getUnscannedHostIp (ip);
+    qDebug ()<<__PRETTY_FUNCTION__<<": "<<"Trying to check "<<ip<<", index: "<<index;
     m_mutex.unlock();
 
     if (m_getHostIndexError == index)
@@ -84,7 +85,9 @@ void ScanNetworkThread::checkIsScanFinished()
     for (unsigned int i=0; i<m_maxHostCount-1; ++i)
     {
         if (m_scannedIPAddresses[i] == m_hostScanned)
+        {
             ++count;
+        }
     }
 
     if (count == m_maxHostCount-2) //"m_maxHostCount-2" because minus this machine host address and the broadcast address

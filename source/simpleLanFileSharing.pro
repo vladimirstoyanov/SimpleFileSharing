@@ -13,7 +13,7 @@ greaterThan(QT_MAJOR_VERSION, 4): QT += widgets
 TARGET = simpleLanFileSharing
 TEMPLATE = app
 CONFIG += c++11
-
+CONFIG += console #debug messages
 
 SOURCES += main.cpp\
     GUI/about_gui.cpp \

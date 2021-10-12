@@ -263,7 +263,7 @@ void FileSharing_GUI::initArrayOfScannedIpAddresses (int lastNumberOfIpAddress)
     {
         if (i == lastNumberOfIpAddress-1)
         {
-            m_scanNetwork->markHostInProgress(i);
+            m_scanNetwork->markHostAsScanned(i);
             continue;
          }
          m_scanNetwork->markHostAsUnscanned(i);

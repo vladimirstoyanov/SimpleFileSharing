@@ -49,10 +49,10 @@ public:
 
 private:
     QString             m_currentIP;
-    int                 m_getHostIndexError;
-    int                 m_hostInProgress;
-    int                 m_hostScanned;
-    int                 m_hostUnscanned;
+    const int           m_getHostIndexError;
+    const int           m_hostInProgress;
+    const int           m_hostScanned;
+    const int           m_hostUnscanned;
     unsigned int        m_maxHostCount;
     QMutex              m_mutex;
     NetworkManager      m_networkManager;

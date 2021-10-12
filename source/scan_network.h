@@ -32,24 +32,25 @@
 class ScanNetwork: public QObject, public QRunnable
 {
     Q_OBJECT
-public:
-    std::vector<int> m_scannedIPAddresses; //ToDo: move this list in the private section
 
 public:
-    ScanNetwork();
+    ScanNetwork(const unsigned int maxHostCount);
 
     void    run();
     int     scanIP(const QString &ip);
 
-    //get
+    void    markHostAsScanned (const unsigned int index);
+    void    markHostAsUnscanned (const unsigned int index);
     QString getCurrentIP () const { return this->m_currentIP; }
-
-    //set
     void    setCurrentIP (const QString &currentIP) { this->m_currentIP = currentIP; }
+
 
 private:
     QString m_currentIP;
+    unsigned int m_maxHostCount;
     QMutex  m_mutex;
+    std::vector<int> m_scannedIPAddresses;
+
 
     void    checkFinish();
 

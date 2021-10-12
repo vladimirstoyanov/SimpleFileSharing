@@ -17,18 +17,20 @@
 
 #include "scan_network.h"
 
-ScanNetwork::ScanNetwork()
+ScanNetwork::ScanNetwork(const unsigned int maxHostCount)
     : QRunnable()
     , m_currentIP ("")
+    , m_maxHostCount(maxHostCount)
     , m_mutex ()
-{
 
+{
+    m_scannedIPAddresses.reserve(m_maxHostCount);
 }
 
 void ScanNetwork::run()
 {
     m_mutex.lock();
-    if (m_currentIP == "")
+    if ("" == m_currentIP)
     {
         m_mutex.unlock();
         return;
@@ -37,7 +39,7 @@ void ScanNetwork::run()
     QString currentIpTmp = m_currentIP;
     int index = -1;
 
-    for (int i=0; i<m_scannedIPAddresses.size(); i++)
+    for (int i=0; i<m_scannedIPAddresses.size(); ++i)
     {
         if (m_scannedIPAddresses[i] == 0)
         {
@@ -131,13 +133,27 @@ int ScanNetwork::scanIP(const QString &ip)
 void ScanNetwork::checkFinish()
 {
     int count = 0;
-    for (int i=0; i<255; i++)
+    for (int i=0; i<m_maxHostCount-1; i++)
     {
         if (m_scannedIPAddresses[i] == 2)
             count++;
     }
 
-    if (count == 254)
+    if (count == m_maxHostCount-2)
         emit finishScan();
 }
 
+void ScanNetwork::markHostAsScanned (const unsigned int index)
+{
+    if (index<m_scannedIPAddresses.size())
+    {
+        m_scannedIPAddresses[index] = 1;
+    }
+}
+void ScanNetwork::markHostAsUnscanned (const unsigned int index)
+{
+    if (index<m_scannedIPAddresses.size())
+    {
+        m_scannedIPAddresses[index] = 0;
+    }
+}

@@ -44,6 +44,7 @@ public:
     virtual ~ScanIP_GUI();
 
 private:
+    unsigned int                     m_maxHostCount;
     std::shared_ptr <Ui::ScanIP_GUI> m_ui;
 
 private slots:

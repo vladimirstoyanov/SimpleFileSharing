@@ -30,6 +30,7 @@
 
 ScanIP_GUI::ScanIP_GUI(QWidget *parent) :
     QDialog(parent)
+    , m_maxHostCount(256)
     , m_ui(std::make_shared<Ui::ScanIP_GUI> ())
 {
     m_ui->setupUi(this);
@@ -69,7 +70,7 @@ void ScanIP_GUI::on_okButton_clicked()
         return;
     }
 
-    ScanNetwork sn;
+    ScanNetwork sn(m_maxHostCount);
     if (!sn.scanIP(ip))
     {
         emit scanIP(ip);

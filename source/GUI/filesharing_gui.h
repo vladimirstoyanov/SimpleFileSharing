@@ -95,7 +95,7 @@ private:
 
     void    addDataInTableView(const QString &file_name, const QString &size);
     void    addItemToThreeView(const QString &item);
-    void    allocateMemory();
+    //void    allocateMemory();
     void    clearProgressColumnData ();
     void    clearTableView ();
     bool    getBaseNetworkIp (const QString &ipAddress, QString &baseNetworkIp);

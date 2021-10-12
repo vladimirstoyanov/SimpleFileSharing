@@ -37,7 +37,7 @@ FileSharing_GUI::FileSharing_GUI(QWidget *parent) :
     , m_offsetBetweenWidgets(5)
     , m_progressColumnId(1)
     , m_scanIpGUI (std::make_shared<ScanIP_GUI> ())
-    , m_scanNetwork (std::make_shared<ScanNetwork>())
+    , m_scanNetwork (std::make_shared<ScanNetwork>(m_maxHostCount))
     , m_server (m_sharedFiles)
     , m_setDirGUI (std::make_shared<SetDir_GUI> ())
     , m_setNetworkGUI (std::make_shared<SetNetwork_GUI>())
@@ -263,10 +263,10 @@ void FileSharing_GUI::initArrayOfScannedIpAddresses (int lastNumberOfIpAddress)
     {
         if (i == lastNumberOfIpAddress-1)
         {
-            m_scanNetwork->m_scannedIPAddresses[i]=1; //mark as scanned
+            m_scanNetwork->markHostAsScanned(i);
             continue;
          }
-         m_scanNetwork->m_scannedIPAddresses[i]=0; //mark as unscanned
+         m_scanNetwork->markHostAsUnscanned(i);
     }
 }
 
@@ -529,11 +529,6 @@ void FileSharing_GUI::setThreadCount ()
     }
 }
 
-void FileSharing_GUI::allocateMemory()
-{
-    m_scanNetwork->m_scannedIPAddresses.reserve(m_maxHostCount);
-}
-
 void FileSharing_GUI::setupConnections ()
 {
     connect(m_scanIpGUI.get(),SIGNAL(scanIP(QString)),this,SLOT(on_scanIP(QString)));
@@ -563,7 +558,5 @@ void FileSharing_GUI::setupGui ()
 
     //init waiting gif animation
     m_loadingGif->setMovie(m_movie.get());
-
-    allocateMemory();
 }
 

@@ -28,6 +28,7 @@
 #include <QtCore>
 
 #include <vector>
+#include "network_manager.h"
 
 class ScanNetwork: public QObject, public QRunnable
 {
@@ -40,23 +41,29 @@ public:
     int     scanIP(const QString &ip);
 
     void    markHostAsScanned (const unsigned int index);
+    void    markHostInProgress (const unsigned int index);
     void    markHostAsUnscanned (const unsigned int index);
     QString getCurrentIP () const { return this->m_currentIP; }
     void    setCurrentIP (const QString &currentIP) { this->m_currentIP = currentIP; }
 
 
 private:
-    QString m_currentIP;
-    unsigned int m_maxHostCount;
-    QMutex  m_mutex;
-    std::vector<int> m_scannedIPAddresses;
+    QString             m_currentIP;
+    int                 m_getHostIndexError;
+    int                 m_hostInProgress;
+    int                 m_hostScanned;
+    int                 m_hostUnscanned;
+    unsigned int        m_maxHostCount;
+    QMutex              m_mutex;
+    NetworkManager      m_networkManager;
+    std::vector<int>    m_scannedIPAddresses;
 
-
-    void    checkFinish();
+    void    checkIsScanFinished();
+    int     getHostIp (QString &ip);
 
 signals:
-    void    foundComputer(const QString &ip);
-    void    finishScan();
+    void    foundHost(const QString &ip);
+    void    scanFinished();
 };
 
 #endif // SCAN_NETWORK_H

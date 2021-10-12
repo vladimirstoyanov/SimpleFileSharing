@@ -62,8 +62,8 @@ public:
     virtual ~FileSharing_GUI();
 
 public slots:
-    void onFoundComputer(const QString &ip);
-    void on_finishScan();
+    void onFoundHost(const QString &ip);
+    void onScanFinished();
 
 private:
     std::shared_ptr<About_GUI>              m_aboutGUI;
@@ -95,7 +95,6 @@ private:
 
     void    addDataInTableView(const QString &file_name, const QString &size);
     void    addItemToThreeView(const QString &item);
-    //void    allocateMemory();
     void    clearProgressColumnData ();
     void    clearTableView ();
     bool    getBaseNetworkIp (const QString &ipAddress, QString &baseNetworkIp);

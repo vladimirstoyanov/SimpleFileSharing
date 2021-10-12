@@ -53,12 +53,12 @@ FileSharing_GUI::~FileSharing_GUI()
     m_scanNetwork->deleteLater();
 }
 
-void FileSharing_GUI::onFoundComputer(const QString &ip)
+void FileSharing_GUI::onFoundHost(const QString &ip)
 {
     addItemToThreeView(ip);
 }
 
-void FileSharing_GUI::on_finishScan()
+void FileSharing_GUI::onScanFinished()
 {
     qDebug()<<"The network scan has finished.";
     postScanNetwork();
@@ -263,7 +263,7 @@ void FileSharing_GUI::initArrayOfScannedIpAddresses (int lastNumberOfIpAddress)
     {
         if (i == lastNumberOfIpAddress-1)
         {
-            m_scanNetwork->markHostAsScanned(i);
+            m_scanNetwork->markHostInProgress(i);
             continue;
          }
          m_scanNetwork->markHostAsUnscanned(i);
@@ -534,10 +534,10 @@ void FileSharing_GUI::setupConnections ()
     connect(m_scanIpGUI.get(),SIGNAL(scanIP(QString)),this,SLOT(on_scanIP(QString)));
 
     //when a host has been found
-    connect(m_scanNetwork.get(),SIGNAL(foundComputer(QString)),this,SLOT(onFoundComputer(QString)));
+    connect(m_scanNetwork.get(),SIGNAL(foundHost(QString)),this,SLOT(onFoundHost(QString)));
 
     //when the network scanner has finished
-    connect(m_scanNetwork.get(),SIGNAL(finishScan()),this,SLOT(on_finishScan()));
+    connect(m_scanNetwork.get(),SIGNAL(scanFinished()),this,SLOT(onScanFinished()));
 }
 
 void FileSharing_GUI::setupGui ()

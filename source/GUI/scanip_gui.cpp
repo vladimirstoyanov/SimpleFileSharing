@@ -70,8 +70,8 @@ void ScanIP_GUI::on_okButton_clicked()
         return;
     }
 
-    ScanNetwork sn(m_maxHostCount);
-    if (!sn.scanIP(ip))
+    NetworkManager networkManager;
+    if (networkManager.scanIp(ip))
     {
         emit scanIP(ip);
         this->hide();

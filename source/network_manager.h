@@ -32,10 +32,13 @@ public:
                                                   std::function<void(int)> downloadProgress);
     std::vector<RemoteHostFileData> getSharedFilesByRemoteHost (const QString &ip);
     int                             getPort () const { return this->m_port; }
+    bool                            scanIp (const QString &ip);
     void                            sendHelloMessage (QTcpSocket &socket);
     void                            sendBuffer (QTcpSocket &socket, const QByteArray &byteArray);
     bool                            sendFile (QTcpSocket & tcpSocket, const FileData &fileData);
     void                            sendSharedFilesList(QTcpSocket &tcpSocket, const std::vector<FileData> &sharedFiles);
+
+
 
 
 private:

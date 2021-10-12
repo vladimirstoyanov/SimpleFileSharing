@@ -24,6 +24,7 @@
 #include <QLabel>
 #include <QMovie>
 
+#include "network_manager.h"
 #include "scan_network.h"
 
 /*

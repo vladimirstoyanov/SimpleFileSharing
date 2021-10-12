@@ -20,11 +20,33 @@
 ScanNetwork::ScanNetwork(const unsigned int maxHostCount)
     : QRunnable()
     , m_currentIP ("")
+    , m_getHostIndexError(-1)
+    , m_hostInProgress (1)
+    , m_hostScanned (2)
+    , m_hostUnscanned (0)
     , m_maxHostCount(maxHostCount)
     , m_mutex ()
 
 {
     m_scannedIPAddresses.reserve(m_maxHostCount);
+}
+
+int ScanNetwork::getHostIp (QString &ip)
+{
+    ip = m_currentIP;
+    int hostNumber = m_getHostIndexError;
+    for (unsigned int i=0; i<m_scannedIPAddresses.size(); ++i)
+    {
+        if (0 == m_scannedIPAddresses[i])
+        {
+            m_scannedIPAddresses[i]=m_hostInProgress;
+            ip+=QString::number(i+1);
+            hostNumber=i;
+            break;
+        }
+    }
+
+    return hostNumber;
 }
 
 void ScanNetwork::run()
@@ -35,125 +57,61 @@ void ScanNetwork::run()
         m_mutex.unlock();
         return;
     }
-
-    QString currentIpTmp = m_currentIP;
-    int index = -1;
-
-    for (int i=0; i<m_scannedIPAddresses.size(); ++i)
-    {
-        if (m_scannedIPAddresses[i] == 0)
-        {
-            m_scannedIPAddresses[i]=1;
-            currentIpTmp+=QString::number(i+1);
-            index=i;
-            break;
-        }
-    }
-
+    QString ip = "";
+    int index = getHostIp (ip);
     m_mutex.unlock();
 
-    if (index==-1)
+    if (m_getHostIndexError == index)
     {
         return;
     }
 
-    if(!scanIP(currentIpTmp))
+    if(m_networkManager.scanIp(ip))
     {
-        emit foundComputer(currentIpTmp);
+        emit foundHost(ip);
     }
 
     m_mutex.lock();
-
-    m_scannedIPAddresses[index]=2;
-
-    qDebug()<<currentIpTmp + " has been scaned.";
-
-    checkFinish();
-
+    m_scannedIPAddresses[index]=m_hostScanned;
+    qDebug()<<ip + " has been scaned.";
+    checkIsScanFinished();
     m_mutex.unlock();
 }
 
-//return 0: when found IP address
-int ScanNetwork::scanIP(const QString &ip)
+void ScanNetwork::checkIsScanFinished()
 {
-    QTcpSocket socket;
-    QString content = "";
-
-    socket.connectToHost(ip,26001);
-    bool flag = socket.waitForConnected();
-    if(!flag)
+    unsigned int count = 0;
+    for (unsigned int i=0; i<m_maxHostCount-1; ++i)
     {
-        socket.close();
-        socket.deleteLater();
-
-        return 1;
+        if (m_scannedIPAddresses[i] == m_hostScanned)
+            ++count;
     }
 
-    char *ncHello = new char [3];
-    ncHello[0]=char(1);
-    ncHello[1]='\t';
-    ncHello[2]='\n';
-    socket.write(ncHello,3);
-
-    delete []ncHello;
-
-    QByteArray ba1;
-    content ="";
-
-    socket.waitForReadyRead();
-    ba1=socket.readAll();
-
-    while(socket.waitForReadyRead())
+    if (count == m_maxHostCount-2) //"m_maxHostCount-2" because minus this machine host address and the broadcast address
     {
-        ba1=socket.readAll();
+        emit scanFinished();
     }
-
-    socket.close();
-    socket.deleteLater();
-
-    const char *recv = ba1.constData();
-    if (!recv)
-    {
-        return 1;
-    }
-
-    if(strlen(recv)<3)
-    {
-        return 1;
-    }
-
-    if (recv[0]!=char(2) || recv[1]!='\t' || recv[2]!='\n')
-    {
-        return 1;
-    }
-
-    return 0;
-}
-
-void ScanNetwork::checkFinish()
-{
-    int count = 0;
-    for (int i=0; i<m_maxHostCount-1; i++)
-    {
-        if (m_scannedIPAddresses[i] == 2)
-            count++;
-    }
-
-    if (count == m_maxHostCount-2)
-        emit finishScan();
 }
 
 void ScanNetwork::markHostAsScanned (const unsigned int index)
 {
     if (index<m_scannedIPAddresses.size())
     {
-        m_scannedIPAddresses[index] = 1;
+        m_scannedIPAddresses[index] = m_hostScanned;
+    }
+}
+
+void ScanNetwork::markHostInProgress (const unsigned int index)
+{
+    if (index<m_scannedIPAddresses.size())
+    {
+        m_scannedIPAddresses[index] = m_hostInProgress;
     }
 }
 void ScanNetwork::markHostAsUnscanned (const unsigned int index)
 {
     if (index<m_scannedIPAddresses.size())
     {
-        m_scannedIPAddresses[index] = 0;
+        m_scannedIPAddresses[index] = m_hostUnscanned;
     }
 }

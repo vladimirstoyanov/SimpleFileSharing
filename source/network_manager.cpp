@@ -218,3 +218,18 @@ void NetworkManager::sendHelloMessage (QTcpSocket& tcpSocket)
 {
     sendBuffer(tcpSocket, m_protocolMessages.getHelloMessage());
 }
+
+bool NetworkManager::scanIp(const QString &ip)
+{
+    QTcpSocket socket;
+
+    connectToHost(socket, ip);
+    sendHelloMessage (socket);
+    QString result = getResultAsQString (socket);
+
+    if (result!=m_protocolMessages.getReceiveListMessage())
+    {
+        return false;
+    }
+    return true;
+}

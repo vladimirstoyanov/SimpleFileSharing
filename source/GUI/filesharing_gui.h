@@ -30,16 +30,17 @@
 #include <thread>
 #include <vector>
 
-#include "about_gui.h"
-#include "addfile_gui.h"
+#include "GUI/about_gui.h"
+#include "GUI/addfile_gui.h"
+#include "GUI/scanip_gui.h"
+#include "GUI/setdir_gui.h"
+#include "GUI/setnetwork_gui.h"
 #include "client_thread.h"
 #include "server.h"
 #include "protocol_messages.h"
 #include "remote_host_file_data.h"
-#include "scanip_gui.h"
 #include "scan_network.h"
-#include "setdir_gui.h"
-#include "setnetwork_gui.h"
+
 #include "shared_files.h"
 #include "network_manager.h"
 

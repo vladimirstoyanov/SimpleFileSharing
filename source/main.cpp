@@ -15,7 +15,7 @@
     along with Simple File Sharing.  If not, see <http://www.gnu.org/licenses/>.
 */
 
-#include "filesharing_gui.h"
+#include "GUI/filesharing_gui.h"
 #include <QApplication>
 
 int main(int argc, char *argv[])

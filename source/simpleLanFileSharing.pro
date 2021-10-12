@@ -16,11 +16,11 @@ CONFIG += c++11
 
 
 SOURCES += main.cpp\
-    about_gui.cpp \
+    GUI/about_gui.cpp \
     client_thread.cpp \
     file_data.cpp \
     file_operations.cpp \
-        filesharing_gui.cpp \
+    GUI/filesharing_gui.cpp \
     network_manager.cpp \
     parse_file_data.cpp \
     parse_network_message.cpp \
@@ -29,16 +29,16 @@ SOURCES += main.cpp\
     remote_host_file_data.cpp \
     search.cpp \
     scan_network.cpp \
-    addfile_gui.cpp \
+    GUI/addfile_gui.cpp \
     server.cpp \
     server_thread.cpp \
-    setdir_gui.cpp \
-    setnetwork_gui.cpp \
-    scanip_gui.cpp \
+    GUI/setdir_gui.cpp \
+    GUI/setnetwork_gui.cpp \
+    GUI/scanip_gui.cpp \
     shared_files.cpp
 
-HEADERS  += filesharing_gui.h \
-    about_gui.h \
+HEADERS  += GUI/filesharing_gui.h \
+    GUI/about_gui.h \
     client_thread.h \
     file_data.h \
     file_operations.h \
@@ -51,17 +51,17 @@ HEADERS  += filesharing_gui.h \
     remote_host_file_data.h \
     search.h \
     scan_network.h \
-    addfile_gui.h \
+    GUI/addfile_gui.h \
     server.h \
     server_thread.h \
-    setdir_gui.h \
-    setnetwork_gui.h \
-    scanip_gui.h \
+    GUI/setdir_gui.h \
+    GUI/setnetwork_gui.h \
+    GUI/scanip_gui.h \
     shared_files.h
 
-FORMS    += filesharing_gui.ui \
-    about_gui.ui \
-    addfile_gui.ui \
-    setdir_gui.ui \
-    setnetwork_gui.ui \
-    scanip_gui.ui
+FORMS    += GUI/filesharing_gui.ui \
+    GUI/about_gui.ui \
+    GUI/addfile_gui.ui \
+    GUI/setdir_gui.ui \
+    GUI/setnetwork_gui.ui \
+    GUI/scanip_gui.ui

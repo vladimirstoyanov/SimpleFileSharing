@@ -15,7 +15,7 @@
     along with Simple File Sharing.  If not, see <http://www.gnu.org/licenses/>.
 */
 
-#include "filesharing_gui.h"
+#include "GUI/filesharing_gui.h"
 #include "ui_filesharing_gui.h"
 
 FileSharing_GUI::FileSharing_GUI(QWidget *parent) :

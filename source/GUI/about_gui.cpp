@@ -1,4 +1,4 @@
-#include "about_gui.h"
+#include "GUI/about_gui.h"
 #include "ui_about_gui.h"
 
 About_GUI::About_GUI(QWidget *parent) :

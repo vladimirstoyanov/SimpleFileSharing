@@ -20,7 +20,7 @@
 
 #include <math.h>
 
-#include "addfile_gui.h"
+#include "GUI/addfile_gui.h"
 #include "search.h"
 #include "ui_addfile_gui.h"
 

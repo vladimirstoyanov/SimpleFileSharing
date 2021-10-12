@@ -15,7 +15,7 @@
     along with Simple File Sharing.  If not, see <http://www.gnu.org/licenses/>.
 */
 
-#include "scanip_gui.h"
+#include "GUI/scanip_gui.h"
 #include "ui_scanip_gui.h"
 #include <QMessageBox>
 #include <QFrame>

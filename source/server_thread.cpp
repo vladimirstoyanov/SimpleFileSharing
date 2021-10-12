@@ -19,7 +19,7 @@
 #include "search.h"
 #include <QFileInfo>
 #include <QDir>
-#include "addfile_gui.h"
+#include "GUI/addfile_gui.h"
 
 ServerThread::ServerThread(qintptr id, std::shared_ptr<SharedFiles> sharedFiels):
     m_descriptor(id)

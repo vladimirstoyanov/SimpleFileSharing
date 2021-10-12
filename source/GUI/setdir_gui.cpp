@@ -15,7 +15,7 @@
     along with Simple File Sharing.  If not, see <http://www.gnu.org/licenses/>.
 */
 
-#include "setdir_gui.h"
+#include "GUI/setdir_gui.h"
 #include "ui_setdir_gui.h"
 #include <QFileDialog>
 #include <QDebug>

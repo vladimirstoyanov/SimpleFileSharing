@@ -15,7 +15,7 @@
     along with Simple File Sharing.  If not, see <http://www.gnu.org/licenses/>.
 */
 
-#include "setnetwork_gui.h"
+#include "GUI/setnetwork_gui.h"
 #include "ui_setnetwork_gui.h"
 #include <QHostAddress>
 #include <QNetworkInterface>

@@ -3,6 +3,7 @@
 ProtocolMessages::ProtocolMessages():
     m_helloMessage("\x02\t\n")
     , m_receiveListMessage("\x28\t\n")
+    , m_getListMessage ("\x14\t\n")
 {
 
 }

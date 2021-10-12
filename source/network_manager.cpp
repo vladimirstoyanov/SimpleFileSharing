@@ -21,11 +21,7 @@ bool NetworkManager::connectToHost (QTcpSocket &socket, const QString &ip)
 
 void NetworkManager::requestFileList (QTcpSocket &socket)
 {
-    char *ncGetList = new char [CODE_LENGTH];
-    ncGetList[0]=char(NC_GET_LIST);
-    ncGetList[1]='\t';
-    ncGetList[2]='\n';
-    socket.write(ncGetList, CODE_LENGTH);
+    sendBuffer(socket, m_protocolMessages.getFileListMessage());
 }
 
 QString NetworkManager::getResultAsQString (QTcpSocket &socket)

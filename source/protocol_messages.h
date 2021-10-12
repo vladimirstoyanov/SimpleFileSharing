@@ -14,12 +14,14 @@ public:
 
     QString    generateDownloadFileMessage (const QString &fileName, const QString &id);
     QString    generateSharedFilesListMessage (const std::vector<FileData> &files);
+    QByteArray getFileListMessage () const { return m_getListMessage; }
     QByteArray getHelloMessage () const { return m_helloMessage; }
     QByteArray getReceiveListMessage () const { return m_receiveListMessage; }
 
 private:
     QByteArray m_helloMessage;
     QByteArray m_receiveListMessage;
+    QByteArray m_getListMessage;
 };
 
 #endif // PROTOCOLMESSAGES_H

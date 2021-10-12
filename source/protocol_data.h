@@ -32,8 +32,9 @@ public:
     explicit ProtocolData();
     virtual ~ProtocolData();
 
-    char getMessageCode () const { return this->m_messageCode; }
+
     QByteArray getArguments () const { return this->m_arguments; }
+    char getMessageCode () const { return this->m_messageCode; }
 
     void setMessageCode (const char messageCode) { m_messageCode = messageCode; }
     void setArguments (const QByteArray &arguments) { m_arguments = arguments; }

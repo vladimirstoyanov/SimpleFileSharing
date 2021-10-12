@@ -42,15 +42,11 @@ std::vector<RemoteHostFileData> ParseNetworkMessage::parseGetListResultMessage (
     }
 
     QStringList pieces = resultMessage.split( "\n" );
-    QString id = "";
-    QString text ="";
-    QString size ="";
-    QString name ="";
 
     for (int i=1; i<pieces.length(); ++i) //first line is skipped (message protocol)
     {
         QStringList line = resultMessage.split("#");
-        if (line.length()!=3)
+        if (line.length()!=CODE_LENGTH)
         {
             //ToDo: return an error
             return remoteHostFileDataList;

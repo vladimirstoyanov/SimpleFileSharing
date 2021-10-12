@@ -44,7 +44,8 @@ class AddFile_GUI : public QDialog
     Q_OBJECT
 
 public:
-    explicit AddFile_GUI( std::shared_ptr<SharedFiles> sharedFiles, QWidget *parent = nullptr);
+    explicit AddFile_GUI( std::shared_ptr<SharedFiles> sharedFiles,
+                          QWidget *parent = nullptr);
     virtual ~AddFile_GUI();
 
 private slots:
@@ -56,9 +57,12 @@ private slots:
 
 private:
     QString                             m_addFileLastDir;
+    int                                 m_fileNameId;
     std::shared_ptr<QStandardItemModel> m_model;
     int                                 m_offsetBetweenWidgets;
+    int                                  m_pathId;
     std::shared_ptr<SharedFiles>        m_sharedFiles;
+    int                                 m_sizeId;
     std::shared_ptr<Ui::AddFile_GUI>    m_ui;
 
 
@@ -72,7 +76,6 @@ private:
     void loadData(); //load list with shared files
     void resizeEvent(QResizeEvent *); //this event is called when "addfile_gui" window is resized
     void showEvent( QShowEvent *event ); //this event is called when "addfile_gui" window is shown
-
 };
 
 #endif // ADDFILE_GUI_H

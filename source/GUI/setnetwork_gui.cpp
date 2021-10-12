@@ -108,7 +108,7 @@ QString SetNetwork_GUI::load()
     file.close();
 
     //it checks for exist hosts
-    for (int i=0; i<m_ui->comboBox->count(); i++)
+    for (int i=0; i<m_ui->comboBox->count(); ++i)
     {
         if (m_ui->comboBox->itemText(i) == line)
         {

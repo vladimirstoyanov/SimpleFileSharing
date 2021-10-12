@@ -27,9 +27,12 @@
 AddFile_GUI::AddFile_GUI(std::shared_ptr<SharedFiles> sharedFiles, QWidget *parent) :
     QDialog(parent)
     , m_addFileLastDir("")
+    , m_fileNameId (0)
     , m_model (std::make_shared<QStandardItemModel>(0,3,this))
     , m_offsetBetweenWidgets(5)
+    , m_pathId (1)
     , m_sharedFiles (sharedFiles)
+    , m_sizeId (2)
     , m_ui(std::make_shared<Ui::AddFile_GUI> ())
 {
     m_ui->setupUi(this);
@@ -43,7 +46,6 @@ AddFile_GUI::~AddFile_GUI()
 //"Add" button
 void AddFile_GUI::on_addButton_clicked()
 {
-    //Dialog to chose files
     QStringList pathList = QFileDialog::getOpenFileNames(this, tr("Share File(s)"), m_addFileLastDir, tr("Files (*.*)"));
 
     if (0 == pathList.size())
@@ -102,9 +104,9 @@ int AddFile_GUI::getDirNameByAbsolutePath(const QString &path, QString &dirname)
 
 void AddFile_GUI::initModelTableView()
 {
-    m_model->setHorizontalHeaderItem(0, new QStandardItem(QString("file name")));
-    m_model->setHorizontalHeaderItem(1, new QStandardItem(QString("path")));
-    m_model->setHorizontalHeaderItem(2, new QStandardItem(QString("size (MB)")));
+    m_model->setHorizontalHeaderItem(m_fileNameId, new QStandardItem(QString("file name")));
+    m_model->setHorizontalHeaderItem(m_pathId, new QStandardItem(QString("path")));
+    m_model->setHorizontalHeaderItem(m_sizeId, new QStandardItem(QString("size (MB)")));
     m_ui->tableView->setModel(m_model.get());
 }
 
@@ -113,9 +115,9 @@ bool AddFile_GUI::isPathExist (const QString &path)
     QModelIndex mi;
     QVariant v;
 
-    for (int i=0; i<m_model->rowCount(); i++)
+    for (int i=0; i<m_model->rowCount(); ++i)
     {
-        mi = m_model->index(i,1);
+        mi = m_model->index(i,m_pathId);
         v=mi.data();
         if (v.toString() == path)
         {
@@ -134,13 +136,13 @@ void AddFile_GUI::addToTableView(const FileData & fileData)
 
     m_model->setRowCount(m_model->rowCount()+1);
 
-    m_model->setData(m_model->index(m_model->rowCount()-1,0),fileData.getFileName());
-    m_model->setData(m_model->index(m_model->rowCount()-1,1),fileData.getPath());
-    m_model->setData(m_model->index(m_model->rowCount()-1,2),fileData.getSize());
+    m_model->setData(m_model->index(m_model->rowCount()-1,m_fileNameId),fileData.getFileName());
+    m_model->setData(m_model->index(m_model->rowCount()-1,m_pathId),fileData.getPath());
+    m_model->setData(m_model->index(m_model->rowCount()-1,m_sizeId),fileData.getSize());
 
-    m_model->item(m_model->rowCount()-1,0)->setEditable(false);
-    m_model->item(m_model->rowCount()-1,1)->setEditable(false);
-    m_model->item(m_model->rowCount()-1,2)->setEditable(false);
+    m_model->item(m_model->rowCount()-1,m_fileNameId)->setEditable(false);
+    m_model->item(m_model->rowCount()-1,m_pathId)->setEditable(false);
+    m_model->item(m_model->rowCount()-1,m_sizeId)->setEditable(false);
 }
 
 int AddFile_GUI::getFileNameByAbsolutePath(const QString &path, QString &filename)
@@ -153,7 +155,7 @@ int AddFile_GUI::getFileNameByAbsolutePath(const QString &path, QString &filenam
         return 1;
     }
 
-    for (int i=path.length()-1; i>=0; i--)
+    for (int i=path.length()-1; i>=0; --i)
     {
 
         if (path[i] == separator[0])
@@ -223,9 +225,9 @@ std::vector<FileData> AddFile_GUI::convertToVectorOfFileData()
         for (int i=0; i<m_model->rowCount(); i++)
         {
             FileData fileData (QString::number(i),
-                               m_model->index(i,0).data().toString(),
-                               m_model->index(i,1).data().toString(),
-                               m_model->index(i,2).data().toString());
+                               m_model->index(i,m_fileNameId).data().toString(),
+                               m_model->index(i,m_pathId).data().toString(),
+                               m_model->index(i,m_sizeId).data().toString());
             sharedFiles.push_back(fileData);
         }
 

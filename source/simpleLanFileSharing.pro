@@ -27,8 +27,8 @@ SOURCES += main.cpp\
     protocol_data.cpp \
     protocol_messages.cpp \
     remote_host_file_data.cpp \
+    scan_network_thread.cpp \
     search.cpp \
-    scan_network.cpp \
     GUI/addfile_gui.cpp \
     server.cpp \
     server_thread.cpp \
@@ -49,8 +49,8 @@ HEADERS  += GUI/filesharing_gui.h \
     protocol_data.h \
     protocol_messages.h \
     remote_host_file_data.h \
+    scan_network_thread.h \
     search.h \
-    scan_network.h \
     GUI/addfile_gui.h \
     server.h \
     server_thread.h \

@@ -15,8 +15,8 @@
     along with Simple File Sharing.  If not, see <http://www.gnu.org/licenses/>.
 */
 
-#ifndef SCAN_NETWORK_H
-#define SCAN_NETWORK_H
+#ifndef SCAN_NETWORK_THREAD_H
+#define SCAN_NETWORK_THREAD_H
 
 #include <QDebug>
 #include <QList>
@@ -30,12 +30,12 @@
 #include <vector>
 #include "network_manager.h"
 
-class ScanNetwork: public QObject, public QRunnable
+class ScanNetworkThread: public QObject, public QRunnable
 {
     Q_OBJECT
 
 public:
-    ScanNetwork(const unsigned int maxHostCount);
+    ScanNetworkThread(const unsigned int maxHostCount);
 
     void    run();
     int     scanIP(const QString &ip);
@@ -59,11 +59,11 @@ private:
     std::vector<int>    m_scannedIPAddresses;
 
     void    checkIsScanFinished();
-    int     getHostIp (QString &ip);
+    int     getUnscannedHostIp (QString &ip);
 
 signals:
     void    foundHost(const QString &ip);
     void    scanFinished();
 };
 
-#endif // SCAN_NETWORK_H
+#endif // SCAN_NETWORK_THREAD_H

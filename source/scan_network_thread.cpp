@@ -15,9 +15,9 @@
     along with Simple File Sharing.  If not, see <http://www.gnu.org/licenses/>.
 */
 
-#include "scan_network.h"
+#include "scan_network_thread.h"
 
-ScanNetwork::ScanNetwork(const unsigned int maxHostCount)
+ScanNetworkThread::ScanNetworkThread(const unsigned int maxHostCount)
     : QRunnable()
     , m_currentIP ("")
     , m_getHostIndexError(-1)
@@ -31,7 +31,7 @@ ScanNetwork::ScanNetwork(const unsigned int maxHostCount)
     m_scannedIPAddresses.reserve(m_maxHostCount);
 }
 
-int ScanNetwork::getHostIp (QString &ip)
+int ScanNetworkThread::getUnscannedHostIp (QString &ip)
 {
     ip = m_currentIP;
     int hostNumber = m_getHostIndexError;
@@ -49,7 +49,7 @@ int ScanNetwork::getHostIp (QString &ip)
     return hostNumber;
 }
 
-void ScanNetwork::run()
+void ScanNetworkThread::run()
 {
     m_mutex.lock();
     if ("" == m_currentIP)
@@ -58,7 +58,7 @@ void ScanNetwork::run()
         return;
     }
     QString ip = "";
-    int index = getHostIp (ip);
+    int index = getUnscannedHostIp (ip);
     m_mutex.unlock();
 
     if (m_getHostIndexError == index)
@@ -72,13 +72,13 @@ void ScanNetwork::run()
     }
 
     m_mutex.lock();
-    m_scannedIPAddresses[index]=m_hostScanned;
+    markHostAsScanned(index);
     qDebug()<<ip + " has been scaned.";
     checkIsScanFinished();
     m_mutex.unlock();
 }
 
-void ScanNetwork::checkIsScanFinished()
+void ScanNetworkThread::checkIsScanFinished()
 {
     unsigned int count = 0;
     for (unsigned int i=0; i<m_maxHostCount-1; ++i)
@@ -93,7 +93,7 @@ void ScanNetwork::checkIsScanFinished()
     }
 }
 
-void ScanNetwork::markHostAsScanned (const unsigned int index)
+void ScanNetworkThread::markHostAsScanned (const unsigned int index)
 {
     if (index<m_scannedIPAddresses.size())
     {
@@ -101,14 +101,14 @@ void ScanNetwork::markHostAsScanned (const unsigned int index)
     }
 }
 
-void ScanNetwork::markHostInProgress (const unsigned int index)
+void ScanNetworkThread::markHostInProgress (const unsigned int index)
 {
     if (index<m_scannedIPAddresses.size())
     {
         m_scannedIPAddresses[index] = m_hostInProgress;
     }
 }
-void ScanNetwork::markHostAsUnscanned (const unsigned int index)
+void ScanNetworkThread::markHostAsUnscanned (const unsigned int index)
 {
     if (index<m_scannedIPAddresses.size())
     {

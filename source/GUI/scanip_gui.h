@@ -25,7 +25,7 @@
 #include <QMovie>
 
 #include "network_manager.h"
-#include "scan_network.h"
+#include "scan_network_thread.h"
 
 /*
  This gui class is shown when the user clicked on 'Scan IP' button from main window.

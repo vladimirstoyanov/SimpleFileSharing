@@ -39,7 +39,7 @@
 #include "server.h"
 #include "protocol_messages.h"
 #include "remote_host_file_data.h"
-#include "scan_network.h"
+#include "scan_network_thread.h"
 
 #include "shared_files.h"
 #include "network_manager.h"
@@ -84,7 +84,7 @@ private:
     int                                     m_progressColumnId;
     ProtocolMessages                        m_protocolMessages;
     std::shared_ptr<ScanIP_GUI>             m_scanIpGUI;
-    std::shared_ptr<ScanNetwork>            m_scanNetwork;
+    std::shared_ptr<ScanNetworkThread>      m_scanNetwork;
     Server                                  m_server;
     std::shared_ptr<SetDir_GUI>             m_setDirGUI;
     std::shared_ptr<SetNetwork_GUI>         m_setNetworkGUI;

@@ -37,7 +37,7 @@ FileSharing_GUI::FileSharing_GUI(QWidget *parent) :
     , m_offsetBetweenWidgets(5)
     , m_progressColumnId(1)
     , m_scanIpGUI (std::make_shared<ScanIP_GUI> ())
-    , m_scanNetwork (std::make_shared<ScanNetwork>(m_maxHostCount))
+    , m_scanNetwork (std::make_shared<ScanNetworkThread>(m_maxHostCount))
     , m_server (m_sharedFiles)
     , m_setDirGUI (std::make_shared<SetDir_GUI> ())
     , m_setNetworkGUI (std::make_shared<SetNetwork_GUI>())

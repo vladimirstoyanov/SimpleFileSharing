@@ -17,6 +17,10 @@ public:
 private:
     std::map <int, std::shared_ptr<ClientThread> > m_client_threads;
 
+    int  getNextClient ();
+    bool isThreadRunning ();
+    void startClientThread ();
+
 public slots:
     void onClientThreadFinished (int rowId);
 };

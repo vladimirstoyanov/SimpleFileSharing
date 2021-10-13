@@ -176,6 +176,7 @@ bool NetworkManager::sendFile (QTcpSocket & tcpSocket, const FileData &fileData)
     QFile file(fileData.getPath());
     if (!file.open(QIODevice::ReadOnly))
     {
+        tcpSocket.close();
         return false;
     }
 
@@ -184,6 +185,8 @@ bool NetworkManager::sendFile (QTcpSocket & tcpSocket, const FileData &fileData)
         QByteArray  bytes = file.read(BUFFER_SIZE);
         sendBuffer(tcpSocket, bytes);
     }
+
+    tcpSocket.close();
     return true;
 }
 
@@ -208,6 +211,7 @@ void NetworkManager::sendSharedFilesList (QTcpSocket &tcpSocket, const std::vect
         sendData = part.toLocal8Bit();
         sendBuffer(tcpSocket, sendData);
     }
+    tcpSocket.close();
 }
 
 void NetworkManager::sendHelloMessage (QTcpSocket& tcpSocket)
@@ -218,6 +222,7 @@ void NetworkManager::sendHelloMessage (QTcpSocket& tcpSocket)
 void NetworkManager::sendHelloMessageReceived (QTcpSocket& tcpSocket)
 {
     sendBuffer(tcpSocket, m_protocolMessages.getHelloMessageReceived());
+    tcpSocket.close();
 }
 
 bool NetworkManager::scanIp(const QString &ip)
@@ -227,7 +232,7 @@ bool NetworkManager::scanIp(const QString &ip)
     connectToHost(socket, ip);
     sendHelloMessage (socket);
     QString result = getResultAsQString (socket);
-
+    socket.close();
     if (result!=m_protocolMessages.getHelloMessageReceived())
     {
         return false;

@@ -66,17 +66,17 @@ void FileSharing_GUI::onScanFinished()
 
 void FileSharing_GUI::addItemToThreeView(const QString &name)
 {
-    for (int i=0; i<m_ui->treeWidget->topLevelItemCount(); i++)
+    for (int i=0; i<m_ui->treeWidget->topLevelItemCount(); ++i)
     {
-        if (m_ui->treeWidget->topLevelItem(i)->text(0) == name)
+        if (m_ui->treeWidget->topLevelItem(i)->text(0) == name) //check if host exist
         {
                 return;
         }
     }
 
-    std::shared_ptr<QTreeWidgetItem> item = std::make_shared<QTreeWidgetItem>();
+    QTreeWidgetItem* item = new QTreeWidgetItem();
     item->setText(0,name);
-    m_ui->treeWidget->addTopLevelItem(item.get());
+    m_ui->treeWidget->addTopLevelItem(item);
 }
 
 void FileSharing_GUI::setGeometryOfWidgets()

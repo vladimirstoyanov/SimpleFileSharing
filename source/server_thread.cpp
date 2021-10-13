@@ -29,16 +29,14 @@ ServerThread::ServerThread(qintptr id, std::shared_ptr<SharedFiles> sharedFiels)
 
 ServerThread::~ServerThread()
 {
+    qDebug()<<__PRETTY_FUNCTION__;
 }
 
 void ServerThread::readyToRead()
 {
     qDebug()<<__PRETTY_FUNCTION__;
     qint64 bytes = m_tcpSocket.bytesAvailable();
-    char *buf = new char[bytes];
-    m_tcpSocket.read(buf,bytes);
-    m_socketData.append(buf,  bytes); //FIXME
-    delete []buf;
+    m_socketData = m_tcpSocket.read(bytes);
 
     parseData();
 }
@@ -110,7 +108,6 @@ void ServerThread::parseData()
                 break;
         }
      }
-     m_tcpSocket.close();
 }
 
 
@@ -143,6 +140,7 @@ void ServerThread::run()
 
 void ServerThread::disconnected()
 {
-   m_tcpSocket.deleteLater();
-   exit(0);
+   qDebug ()<<__PRETTY_FUNCTION__;
+   //m_tcpSocket.deleteLater();
+   //exit(0);
 }

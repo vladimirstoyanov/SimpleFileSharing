@@ -42,9 +42,21 @@ void Server::incomingConnection(qintptr id)
     qDebug()<<__PRETTY_FUNCTION__<<": ID: "<<QString::number(id);
     std::shared_ptr<ServerThread> thread = std::make_shared<ServerThread>(id, m_sharedFiles);
 
-    connect(thread.get(), SIGNAL(finished()),thread.get(), SLOT(deleteLater()));
+    connect(thread.get(), SIGNAL(serverThreadFinished(qint64)),this, SLOT(onServerThreadFinished(qint64)));
 
     thread->start();
 
-    m_server_threads[id] = thread; //ToDo: when thread finished, remove the data
+    m_server_threads[id] = thread;
+}
+
+void Server::onServerThreadFinished (qint64 id)
+{
+    qDebug()<<__PRETTY_FUNCTION__<<":thread with id has finished: "<<id;
+
+    if (m_server_threads.find(id)!=m_server_threads.end())
+    {
+        m_server_threads[id]->quit();
+        m_server_threads[id]->deleteLater();
+        m_server_threads.erase(id);
+    }
 }

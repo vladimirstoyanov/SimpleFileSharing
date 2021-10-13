@@ -82,7 +82,7 @@ void ServerThread::parseData()
      {
         case NC_GET_FILE:
         {
-
+                qDebug()<<__PRETTY_FUNCTION__<<":Get file requested";
                 int index = getFileIndex (protocolData, files);
                 if (DOWNLOAD_ERROR == index)
                 {
@@ -95,11 +95,13 @@ void ServerThread::parseData()
         }
         case NC_GET_LIST:
         {
+                qDebug()<<__PRETTY_FUNCTION__<<":File list requested";
                 networkManager.sendSharedFilesList(m_tcpSocket, files);
                 break;
         }
         case NC_HELLO:
         {
+                qDebug()<<__PRETTY_FUNCTION__<<":hello message received";
                 networkManager.sendHelloMessageReceived(m_tcpSocket);
                 break;
         }
@@ -108,6 +110,7 @@ void ServerThread::parseData()
                 break;
         }
      }
+     serverThreadFinished(m_descriptor);
 }
 
 
@@ -141,6 +144,5 @@ void ServerThread::run()
 void ServerThread::disconnected()
 {
    qDebug ()<<__PRETTY_FUNCTION__;
-   //m_tcpSocket.deleteLater();
-   //exit(0);
+   serverThreadFinished(m_descriptor);
 }

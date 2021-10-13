@@ -39,6 +39,8 @@ protected:
 private:
     std::shared_ptr<SharedFiles> m_sharedFiles;
     std::map <qint64,  std::shared_ptr<ServerThread> > m_server_threads;
+private slots:
+    void onServerThreadFinished (qint64 id);
 };
 
 #endif // MYSERVER_H

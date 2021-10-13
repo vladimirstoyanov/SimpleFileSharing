@@ -55,7 +55,8 @@ private:
     ProtocolData getProtocolData();
     int  getFileIndex (const ProtocolData &data, const std::vector<FileData> &files);
     void parseData();
-
+signals:
+    void serverThreadFinished (qint64 id);
 private slots:
     void disconnected();
     void readyToRead();

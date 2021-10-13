@@ -30,6 +30,8 @@ ServerThread::ServerThread(qintptr id, std::shared_ptr<SharedFiles> sharedFiels)
 ServerThread::~ServerThread()
 {
     qDebug()<<__PRETTY_FUNCTION__;
+    quit();
+    wait();
 }
 
 void ServerThread::readyToRead()
@@ -46,7 +48,7 @@ int ServerThread::getFileIndex (const ProtocolData &data, const std::vector<File
     int index=DOWNLOAD_ERROR;
     QByteArray arguments = data.getArguments();
     qDebug()<<arguments;
-
+    //\t0#filename\n
     int i=0;
     QString fileId="", filename="";
     while(i<arguments.size() && arguments[i]!='#')

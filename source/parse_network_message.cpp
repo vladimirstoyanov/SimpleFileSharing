@@ -24,12 +24,13 @@ ProtocolData ParseNetworkMessage::parseProtocolData (const QByteArray & byteArra
             break;
         }
     }
-    if (-1 == index)
+    int size = index - (CODE_LENGTH-1);
+    if (size<0)
     {
         return protocolData;
     }
 
-    protocolData.setArguments (byteArray.mid(1, index));
+    protocolData.setArguments (byteArray.mid(CODE_LENGTH-1, size));
     return protocolData;
 }
 

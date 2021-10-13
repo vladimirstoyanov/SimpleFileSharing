@@ -35,6 +35,8 @@ ClientThread::ClientThread(const QString &hostAdress,
 
 ClientThread::~ClientThread()
 {
+    quit();
+    wait();
 }
 
 void ClientThread::run()

@@ -55,8 +55,7 @@ void Server::onServerThreadFinished (qint64 id)
 
     if (m_server_threads.find(id)!=m_server_threads.end())
     {
-        m_server_threads[id]->quit();
-        m_server_threads[id]->deleteLater();
+        m_server_threads[id]->terminate();
         m_server_threads.erase(id);
     }
 }

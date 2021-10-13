@@ -15,7 +15,8 @@ public:
 
     void addClient (std::shared_ptr<ClientThread> clientThread);
 private:
-    std::map <int, std::shared_ptr<ClientThread> > m_client_threads;
+    std::map <int, std::shared_ptr<ClientThread> > m_clientThreads;
+    const int                                      m_clientsNotFound;
 
     int  getNextClient ();
     bool isThreadRunning ();

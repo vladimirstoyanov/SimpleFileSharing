@@ -32,13 +32,16 @@ class Server : public QTcpServer
 
 public:
     explicit Server(std::shared_ptr<SharedFiles> sharedFiles, QObject *parent = 0);
+    virtual ~Server ();
     void StartServer();
 
 protected:
     void incomingConnection(qintptr id);
+
 private:
     std::shared_ptr<SharedFiles> m_sharedFiles;
     std::map <qint64,  std::shared_ptr<ServerThread> > m_serverThreads;
+
 private slots:
     void onServerThreadFinished (qint64 id);
 };

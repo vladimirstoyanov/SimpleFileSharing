@@ -12,7 +12,7 @@ class ClientManager: public QObject
     Q_OBJECT
 public:
     ClientManager();
-
+    virtual ~ClientManager();
     void addClient (std::shared_ptr<ClientThread> clientThread);
 private:
     std::map <int, std::shared_ptr<ClientThread> > m_clientThreads;

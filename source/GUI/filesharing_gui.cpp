@@ -550,6 +550,12 @@ void FileSharing_GUI::setupGui ()
     setThreadCount();
     setGeometryOfWidgets();
     initModelTableView();
+
+    this->resize(m_ui->tableView->columnWidth(m_nameColumnId)*4
+                 +m_ui->treeWidget->width()
+                 +3*m_offsetBetweenWidgets,
+                 this->height());
+
     m_server.StartServer();
 
     //init menu actions

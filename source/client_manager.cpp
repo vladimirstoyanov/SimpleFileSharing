@@ -6,6 +6,10 @@ ClientManager::ClientManager():
 
 }
 
+ClientManager::~ClientManager()
+{
+}
+
 void ClientManager::addClient (std::shared_ptr<ClientThread> clientThread)
 {
     if (m_clientThreads.find(clientThread->getRowId()) == m_clientThreads.end())

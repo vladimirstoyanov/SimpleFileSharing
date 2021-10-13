@@ -23,6 +23,10 @@ Server::Server(std::shared_ptr<SharedFiles> sharedFiles, QObject *parent) :
 {
 }
 
+Server::~Server()
+{
+}
+
 void Server::StartServer()
 {
     NetworkManager networkManager;

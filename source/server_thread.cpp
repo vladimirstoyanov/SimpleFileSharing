@@ -152,3 +152,5 @@ void ServerThread::disconnected()
    qDebug ()<<__PRETTY_FUNCTION__;
    emit serverThreadFinished(m_descriptor);
 }
+
+

@@ -35,6 +35,7 @@
 #include "GUI/scanip_gui.h"
 #include "GUI/setdir_gui.h"
 #include "GUI/setnetwork_gui.h"
+#include "client_manager.h"
 #include "client_thread.h"
 #include "server.h"
 #include "protocol_messages.h"
@@ -72,6 +73,7 @@ private:
     int                                     m_defaultThreadCount;
     bool                                    m_downloadButtonClicked;
     int                                     m_downloadColumnId;
+    std::shared_ptr<ClientManager>          m_clientManager;
     QString                                 m_currentHost;
     std::shared_ptr<QLabel>                 m_loadingGif;
     int                                     m_loadingGifWidth;

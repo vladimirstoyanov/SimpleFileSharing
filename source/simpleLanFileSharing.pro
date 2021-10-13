@@ -17,6 +17,7 @@ CONFIG += console #debug messages
 
 SOURCES += main.cpp\
     GUI/about_gui.cpp \
+    client_manager.cpp \
     client_thread.cpp \
     file_data.cpp \
     file_operations.cpp \
@@ -39,6 +40,7 @@ SOURCES += main.cpp\
 
 HEADERS  += GUI/filesharing_gui.h \
     GUI/about_gui.h \
+    client_manager.h \
     client_thread.h \
     file_data.h \
     file_operations.h \

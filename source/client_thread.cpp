@@ -23,8 +23,8 @@ ClientThread::ClientThread(const QString &hostAdress,
         const QString &fileName,
         const QString &fileDir,
         const qint64 size,
-        const int index):
-    m_row(index)
+        const int rowId):
+    m_rowId(rowId)
     , m_hostIp(hostAdress)
     , m_fileDir (fileDir)
     , m_fileName(fileName)
@@ -43,9 +43,10 @@ void ClientThread::run()
     QString filePath = m_fileDir + m_fileName;
     auto downlaodProgress = std::bind(&ClientThread::downloadProgressCallback,this, 0);
     networkManager.downloadFile(m_hostIp, filePath, m_query, m_fileSize, downlaodProgress);
+    emit clientThreadFinished(m_rowId);
 }
 
 void ClientThread::downloadProgressCallback (int percentage)
 {
-   emit setProgress(m_row, percentage);
+   emit setProgress(m_rowId, percentage);
 }

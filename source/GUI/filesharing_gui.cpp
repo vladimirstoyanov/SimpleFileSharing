@@ -26,6 +26,7 @@ FileSharing_GUI::FileSharing_GUI(QWidget *parent) :
     , m_defaultThreadCount (4)
     , m_downloadButtonClicked (false)
     , m_downloadColumnId(2)
+    , m_clientManager (std::make_shared<ClientManager> ())
     , m_currentHost ("")
     , m_loadingGif (std::make_shared<QLabel>(this))
     , m_loadingGifWidth (16)
@@ -420,7 +421,7 @@ void FileSharing_GUI::startDownload (const int row)
         index = m_model->index(i,m_downloadColumnId, QModelIndex());
         if(index.data(Qt::CheckStateRole) == Qt::Checked)
         {
-            QString dir = m_setDirGUI->load();
+            QString dir = m_setDirGUI->load();//ToDo: create a settings class that manages the download directory
             if (0 == modifyPath(dir))
             {
                 dir = QDir::currentPath();
@@ -436,7 +437,7 @@ void FileSharing_GUI::startDownload (const int row)
             qint64 size = sizeDouble *1000;
             std::shared_ptr<ClientThread> thread  = std::make_shared<ClientThread>(m_currentHost, query, m_model->item(i,m_nameColumnId)->text(),dir,size,i);
             connect(thread.get(), SIGNAL(setProgress(int,double)), this, SLOT(on_setProgress(int,double)));
-            thread->start();
+            m_clientManager->addClient(thread);
             return;
         }
     }

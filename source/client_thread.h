@@ -43,12 +43,13 @@ public:
             const QString &fileName,
             const QString &fileDir,
             const qint64 size,
-            const int index);
+            const int rowId);
 
     virtual ~ClientThread();
+    int getRowId () const { return m_rowId; }
 
 private:
-    int     m_row;
+    int     m_rowId;
     QString m_hostIp;
     QString m_fileDir;
     QString m_fileName;
@@ -57,8 +58,10 @@ private:
 
     void downloadProgressCallback (int percentage);
 
+
 signals:
     void setProgress(const int, const double);
+    void clientThreadFinished (int);
 };
 
 #endif // CLIENT_THREAD_H

@@ -344,14 +344,14 @@ void FileSharing_GUI::addDataInTableView(const QString &fileName, const QString 
     m_model->setData(m_model->index(m_model->rowCount()-1,m_progressColumnId),"");
 
     //checkBox
-    std::shared_ptr<QStandardItem> item0 = std::make_shared<QStandardItem>(true);
+    QStandardItem* item0 = new QStandardItem(true);
     item0->setCheckable(true);
     item0->setCheckState(Qt::Unchecked);
-    m_model->setItem(m_model->rowCount()-1,m_downloadColumnId,item0.get());
+    m_model->setItem(m_model->rowCount()-1,m_downloadColumnId,item0);
 
-    double size_num = size.toInt();
-    size_num/=1024.0;
-    m_model->setData(m_model->index(m_model->rowCount()-1,m_sizeColumnId),QString::number(size_num));
+    double sizeInKBytes = size.toInt();
+    sizeInKBytes/=1024.0;
+    m_model->setData(m_model->index(m_model->rowCount()-1,m_sizeColumnId),QString::number(sizeInKBytes));
 
     //set data to be not editable
     m_model->item(m_model->rowCount()-1,m_nameColumnId)->setEditable(false);

@@ -46,7 +46,7 @@ void ClientThread::run()
 {
     NetworkManager networkManager;
     QString filePath = m_fileDir + m_fileName;
-    auto downlaodProgress = std::bind(&ClientThread::downloadProgressCallback,this, 0);
+    auto downlaodProgress = std::bind(&ClientThread::downloadProgressCallback,this, std::placeholders::_1);
     networkManager.downloadFile(m_hostIp, filePath, m_query, m_fileSize, downlaodProgress);
     emit clientThreadFinished(m_rowId);
 }

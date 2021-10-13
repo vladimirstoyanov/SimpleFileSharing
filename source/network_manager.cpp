@@ -97,7 +97,7 @@ void NetworkManager::downloadFile (const QString &ip,
     QString remoteFileHash = getFileHash(tcpSocket,  fileBuffer, ip, query);
     createFile (tcpSocket, fileBuffer, filePath, size, downloadProgress);
 
-    if (checkFileHash(filePath, remoteFileHash))
+    if (!checkFileHash(filePath, remoteFileHash))
     {
         downloadProgress(DOWNLOAD_ERROR);
     }
@@ -145,7 +145,7 @@ void NetworkManager::createFile (QTcpSocket &socket,
         if (size>currentSize)
         {
             currentSize+=fileBuffer.size();
-            percentage = 100*(double)(currentSize/(size*1.0));
+            percentage = (double)(100*(currentSize/(size*1.0)));
             if (percentage != 100.0)
             {
                 downloadProgress(percentage);

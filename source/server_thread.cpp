@@ -79,8 +79,8 @@ void ServerThread::parseData()
      ProtocolData protocolData = getProtocolData();
      NetworkManager networkManager;
      std::vector<FileData> files  = m_sharedFiles->get();
-
-     switch (protocolData.getMessageCode())
+     int message  = protocolData.getMessageCode();
+     switch (message)
      {
         case NC_GET_FILE:
         {

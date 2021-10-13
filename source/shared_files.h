@@ -25,7 +25,7 @@ private:
 
 private:
     std::vector<FileData> m_fileData;
-    QString               m_sharedFiles;
+    QString               m_sharedFiles; 
 };
 
 #endif // SHARED_FILES_H

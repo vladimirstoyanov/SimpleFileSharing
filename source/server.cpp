@@ -45,4 +45,6 @@ void Server::incomingConnection(qintptr id)
     connect(thread.get(), SIGNAL(finished()),thread.get(), SLOT(deleteLater()));
 
     thread->start();
+
+    m_server_threads[id] = thread; //ToDo: when thread finished, remove the data
 }

@@ -1,8 +1,9 @@
 #include "protocol_messages.h"
 
 ProtocolMessages::ProtocolMessages():
-    m_helloMessage("\x02\t\n")
+    m_helloMessage("\x01\t\n")
     , m_receiveListMessage("\x28\t\n")
+    , m_receiveHelloMessage("\x02\t\n")
     , m_getListMessage ("\x14\t\n")
 {
 

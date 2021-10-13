@@ -223,7 +223,7 @@ bool NetworkManager::scanIp(const QString &ip)
     sendHelloMessage (socket);
     QString result = getResultAsQString (socket);
 
-    if (result!=m_protocolMessages.getReceiveListMessage())
+    if (result!=m_protocolMessages.getReceiveHelloMessage())
     {
         return false;
     }

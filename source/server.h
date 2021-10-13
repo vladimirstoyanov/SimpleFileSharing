@@ -20,6 +20,7 @@
 
 #include <QMessageBox>
 #include <QTcpServer>
+#include <map>
 
 #include "network_manager.h"
 #include "shared_files.h"
@@ -37,6 +38,7 @@ protected:
     void incomingConnection(qintptr id);
 private:
     std::shared_ptr<SharedFiles> m_sharedFiles;
+    std::map <qint64,  std::shared_ptr<ServerThread> > m_server_threads;
 };
 
 #endif // MYSERVER_H

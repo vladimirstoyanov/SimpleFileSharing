@@ -35,7 +35,10 @@ ClientThread::ClientThread(const QString &hostAdress,
 
 ClientThread::~ClientThread()
 {
-    quit();
+    if (isRunning())
+    {
+        quit();
+    }
     wait();
 }
 

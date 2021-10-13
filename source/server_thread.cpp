@@ -30,7 +30,10 @@ ServerThread::ServerThread(qintptr id, std::shared_ptr<SharedFiles> sharedFiels)
 ServerThread::~ServerThread()
 {
     qDebug()<<__PRETTY_FUNCTION__;
-    quit();
+    if (isRunning())
+    {
+        quit();
+    }
     wait();
 }
 

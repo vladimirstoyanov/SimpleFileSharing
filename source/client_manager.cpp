@@ -1,26 +1,27 @@
 #include "client_manager.h"
 
-ClientManager::ClientManager()
+ClientManager::ClientManager():
+    m_clientsNotFound(-1)
 {
 
 }
 
 void ClientManager::addClient (std::shared_ptr<ClientThread> clientThread)
 {
-    if (m_client_threads.find(clientThread->getRowId()) == m_client_threads.end())
+    if (m_clientThreads.find(clientThread->getRowId()) == m_clientThreads.end())
     {
         QObject::connect(clientThread.get(), SIGNAL(clientThreadFinished(int)), this, SLOT(onClientThreadFinished (int)));
-        m_client_threads[clientThread->getRowId()] = clientThread;
+        m_clientThreads[clientThread->getRowId()] = clientThread;
     }
     startClientThread();
 }
 
 void ClientManager::onClientThreadFinished (int rowId)
 {
-    if (m_client_threads.find(rowId) != m_client_threads.end())
+    if (m_clientThreads.find(rowId) != m_clientThreads.end())
     {
-        m_client_threads[rowId]->terminate();
-        m_client_threads.erase(rowId);
+        m_clientThreads[rowId]->terminate();
+        m_clientThreads.erase(rowId);
     }
     startClientThread();
 }
@@ -30,16 +31,16 @@ void ClientManager::startClientThread ()
     if (!isThreadRunning())
     {
         int rowId =getNextClient();
-        if (rowId!=-1)
+        if (rowId!=m_clientsNotFound)
         {
-            m_client_threads[rowId]->start();
+            m_clientThreads[rowId]->start();
         }
     }
 }
 
 bool ClientManager::isThreadRunning ()
 {
-    for (auto &item: m_client_threads)
+    for (auto &item: m_clientThreads)
     {
         if (item.second->isRunning())
         {
@@ -51,9 +52,9 @@ bool ClientManager::isThreadRunning ()
 
 int ClientManager::getNextClient ()
 {
-    for (auto &item: m_client_threads)
+    for (auto &item: m_clientThreads)
     {
         return item.second->getRowId();
     }
-    return -1;
+    return m_clientsNotFound;
 }

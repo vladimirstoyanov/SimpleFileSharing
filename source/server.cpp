@@ -46,16 +46,16 @@ void Server::incomingConnection(qintptr id)
 
     thread->start();
 
-    m_server_threads[id] = thread;
+    m_serverThreads[id] = thread;
 }
 
 void Server::onServerThreadFinished (qint64 id)
 {
     qDebug()<<__PRETTY_FUNCTION__<<":thread with id has finished: "<<id;
 
-    if (m_server_threads.find(id)!=m_server_threads.end())
+    if (m_serverThreads.find(id)!=m_serverThreads.end())
     {
-        m_server_threads[id]->terminate();
-        m_server_threads.erase(id);
+        m_serverThreads[id]->terminate();
+        m_serverThreads.erase(id);
     }
 }

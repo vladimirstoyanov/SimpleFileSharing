@@ -48,7 +48,8 @@ int ServerThread::getFileIndex (const ProtocolData &data, const std::vector<File
     int index=DOWNLOAD_ERROR;
     QByteArray arguments = data.getArguments();
     qDebug()<<arguments;
-    //\t0#filename\n
+
+    //ToDo: refactor the below code
     int i=0;
     QString fileId="", filename="";
     while(i<arguments.size() && arguments[i]!='#')
@@ -78,7 +79,7 @@ void ServerThread::parseData()
 {
      ProtocolData protocolData = getProtocolData();
      NetworkManager networkManager;
-     std::vector<FileData> files  = m_sharedFiles->get();
+     std::vector<FileData> files  = m_sharedFiles->getFileListData();
      int message  = protocolData.getMessageCode();
      switch (message)
      {

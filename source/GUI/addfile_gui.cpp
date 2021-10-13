@@ -212,7 +212,7 @@ void AddFile_GUI::clearTableView ()
 void AddFile_GUI::loadData ()
 {
     clearTableView();
-    std::vector<FileData> sharedFiles = m_sharedFiles->get();
+    std::vector<FileData> sharedFiles = m_sharedFiles->getFileListData();
     for (auto &item: sharedFiles)
     {
           addToTableView(item);

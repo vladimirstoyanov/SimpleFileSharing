@@ -15,7 +15,7 @@ public:
     virtual ~SharedFiles ();
 
     void addFile (const FileData &fileData);
-    std::vector<FileData> get () const { return this->m_fileData; }
+    std::vector<FileData> getFileListData () const { return this->m_fileData; }
     void removeFile (const FileData &fileData);
     void update (const std::vector<FileData> &files);
 

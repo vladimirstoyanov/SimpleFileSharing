@@ -215,6 +215,11 @@ void NetworkManager::sendHelloMessage (QTcpSocket& tcpSocket)
     sendBuffer(tcpSocket, m_protocolMessages.getHelloMessage());
 }
 
+void NetworkManager::sendHelloMessageReceived (QTcpSocket& tcpSocket)
+{
+    sendBuffer(tcpSocket, m_protocolMessages.getHelloMessageReceived());
+}
+
 bool NetworkManager::scanIp(const QString &ip)
 {
     QTcpSocket socket;
@@ -223,7 +228,7 @@ bool NetworkManager::scanIp(const QString &ip)
     sendHelloMessage (socket);
     QString result = getResultAsQString (socket);
 
-    if (result!=m_protocolMessages.getReceiveHelloMessage())
+    if (result!=m_protocolMessages.getHelloMessageReceived())
     {
         return false;
     }

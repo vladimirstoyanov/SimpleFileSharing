@@ -102,7 +102,7 @@ void ServerThread::parseData()
         }
         case NC_HELLO:
         {
-                networkManager.sendHelloMessage(m_tcpSocket);
+                networkManager.sendHelloMessageReceived(m_tcpSocket);
                 break;
         }
         default:

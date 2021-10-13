@@ -1,10 +1,10 @@
 #include "protocol_messages.h"
 
 ProtocolMessages::ProtocolMessages():
-    m_helloMessage("\x01\t\n")
-    , m_receiveListMessage("\x28\t\n")
-    , m_receiveHelloMessage("\x02\t\n")
+      m_helloMessage("\x01\t\n")
+    , m_helloMessageReceived("\x02\t\n")
     , m_getListMessage ("\x14\t\n")
+    , m_listMessageReceived("\x28\t\n")
 {
 
 }
@@ -18,7 +18,7 @@ QString ProtocolMessages::generateDownloadFileMessage (const QString &fileName, 
 
 QString ProtocolMessages::generateSharedFilesListMessage (const std::vector<FileData> &files)
 {
-    QString sharedFiles = m_receiveListMessage;
+    QString sharedFiles = m_listMessageReceived;
     FileOperations fileOperations;
     for (unsigned int i=0; i<files.size(); ++i)
     {

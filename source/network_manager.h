@@ -34,6 +34,7 @@ public:
     int                             getPort () const { return this->m_port; }
     bool                            scanIp (const QString &ip);
     void                            sendHelloMessage (QTcpSocket &socket);
+    void                            sendHelloMessageReceived (QTcpSocket& tcpSocket);
     void                            sendBuffer (QTcpSocket &socket, const QByteArray &byteArray);
     bool                            sendFile (QTcpSocket & tcpSocket, const FileData &fileData);
     void                            sendSharedFilesList(QTcpSocket &tcpSocket, const std::vector<FileData> &sharedFiles);

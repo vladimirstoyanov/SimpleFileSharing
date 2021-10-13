@@ -33,7 +33,7 @@ ProtocolData ParseNetworkMessage::parseProtocolData (const QByteArray & byteArra
     return protocolData;
 }
 
-std::vector<RemoteHostFileData> ParseNetworkMessage::parseGetListResultMessage (const QString &resultMessage)
+std::vector<RemoteHostFileData> ParseNetworkMessage::parseListResultMessage (const QString &resultMessage)
 {
     std::vector<RemoteHostFileData> remoteHostFileDataList;
     if (resultMessage == "" || resultMessage.length()<CODE_LENGTH)
@@ -45,7 +45,7 @@ std::vector<RemoteHostFileData> ParseNetworkMessage::parseGetListResultMessage (
 
     for (int i=1; i<pieces.length(); ++i) //first line is skipped (message protocol)
     {
-        QStringList line = resultMessage.split("#");
+        QStringList line = pieces[i].split("#");
         if (line.length()!=CODE_LENGTH)
         {
             //ToDo: return an error

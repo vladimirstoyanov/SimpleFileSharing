@@ -110,7 +110,7 @@ void ServerThread::parseData()
                 break;
         }
      }
-     serverThreadFinished(m_descriptor);
+     emit serverThreadFinished(m_descriptor);
 }
 
 
@@ -144,5 +144,5 @@ void ServerThread::run()
 void ServerThread::disconnected()
 {
    qDebug ()<<__PRETTY_FUNCTION__;
-   serverThreadFinished(m_descriptor);
+   emit serverThreadFinished(m_descriptor);
 }

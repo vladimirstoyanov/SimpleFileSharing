@@ -14,7 +14,7 @@ class ParseNetworkMessage
 public:
     ParseNetworkMessage();
 
-    std::vector<RemoteHostFileData> parseGetListResultMessage (const QString &resultMessage);
+    std::vector<RemoteHostFileData> parseListResultMessage (const QString &resultMessage);
     ProtocolData parseProtocolData (const QByteArray & byteArray);
 };
 

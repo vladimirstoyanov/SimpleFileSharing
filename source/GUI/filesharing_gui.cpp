@@ -169,6 +169,7 @@ void FileSharing_GUI::postScanNetwork ()
     stopLoadingAnimation();
 }
 
+//ToDo: move the implementation to another class
 bool FileSharing_GUI::getBaseNetworkIp (const QString &ipAddress, QString &baseNetworkIp)
 {
     baseNetworkIp ="";
@@ -195,6 +196,7 @@ bool FileSharing_GUI::getBaseNetworkIp (const QString &ipAddress, QString &baseN
     return true;
 }
 
+//ToDo: move the implementation to another class
 bool FileSharing_GUI::getLastNumberOfIpAddress (const QString &ipAddress, int &lastNumber)
 {
     QString lastNum = "";

@@ -50,7 +50,7 @@ std::vector<RemoteHostFileData> NetworkManager::getSharedFilesByRemoteHost (cons
     socket.close();
 
     ParseNetworkMessage parseNetworkMessage;
-    return parseNetworkMessage.parseGetListResultMessage(recv);
+    return parseNetworkMessage.parseListResultMessage(recv);
 }
 
 QString NetworkManager::getFileHash (QTcpSocket &tcpSocket, QByteArray &fileBuffer, const QString &ip, const QString &query)

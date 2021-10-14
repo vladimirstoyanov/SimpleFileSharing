@@ -48,7 +48,7 @@ void AddFile_GUI::on_addButton_clicked()
 {
     QStringList pathList = QFileDialog::getOpenFileNames(this, tr("Share File(s)"), m_addFileLastDir, tr("Files (*.*)"));
 
-    if (0 == pathList.size())
+    if (pathList.empty())
     {
         return;
     }

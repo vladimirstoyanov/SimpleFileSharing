@@ -38,7 +38,7 @@ bool Search::searchBefore(const QString &text, const QString &subtext, unsigned 
 {
     vector<int> T(subtext.length() + 1, -1);
 
-    if(subtext.length() == 0 && subtext.length()>text.length())
+    if(0 == subtext.length() && subtext.length()>text.length())
     {
         index = 0;
         return false;
@@ -76,7 +76,7 @@ bool Search::searchAfter(const QString &text, const QString &subtext, unsigned i
 {
     vector<int> T(subtext.length() + 1, -1);
 
-    if(subtext.length() == 0 && subtext.length()>text.length())
+    if( 0 == subtext.length() && subtext.length()>text.length())
     {
         index = 0;
         return false;

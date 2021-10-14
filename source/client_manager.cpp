@@ -15,16 +15,17 @@ void ClientManager::addClient (std::shared_ptr<ClientThread> clientThread)
     if (m_clientThreads.find(clientThread->getRowId()) == m_clientThreads.end())
     {
         QObject::connect(clientThread.get(), SIGNAL(clientThreadFinished(int)), this, SLOT(onClientThreadFinished (int)));
-        m_clientThreads[clientThread->getRowId()] = clientThread;
+        m_clientThreads.insert(std::make_pair (clientThread->getRowId(), clientThread));
     }
     startClientThread();
 }
 
 void ClientManager::onClientThreadFinished (int rowId)
 {
-    if (m_clientThreads.find(rowId) != m_clientThreads.end())
+    std::map<int, std::shared_ptr<ClientThread> >::iterator it = m_clientThreads.find(rowId);
+    if (it != m_clientThreads.end())
     {
-        m_clientThreads[rowId]->terminate();
+        it->second->terminate();
         m_clientThreads.erase(rowId);
     }
     startClientThread();

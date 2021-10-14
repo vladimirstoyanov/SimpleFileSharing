@@ -50,16 +50,17 @@ void Server::incomingConnection(qintptr id)
 
     thread->start();
 
-    m_serverThreads[id] = thread;
+    m_serverThreads.insert(std::make_pair(id, thread));
 }
 
 void Server::onServerThreadFinished (qint64 id)
 {
     qDebug()<<__PRETTY_FUNCTION__<<":thread with id has finished: "<<id;
 
-    if (m_serverThreads.find(id)!=m_serverThreads.end())
+    std::map<qint64, std::shared_ptr<ServerThread> >::iterator it = m_serverThreads.find(id);
+    if (it != m_serverThreads.end())
     {
-        m_serverThreads[id]->terminate();
+        it->second->terminate();
         m_serverThreads.erase(id);
     }
 }

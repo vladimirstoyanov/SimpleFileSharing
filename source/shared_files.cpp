@@ -78,8 +78,5 @@ bool SharedFiles::save()
 void SharedFiles::update (const std::vector<FileData> &files)
 {
     m_fileData.clear(); //remove old files
-    for (auto &item: files)
-    {
-        m_fileData.push_back(item);
-    }
+    m_fileData.insert(m_fileData.end(), files.begin(), files.end());
 }

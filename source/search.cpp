@@ -43,7 +43,7 @@ bool Search::searchBefore(const QString &text, const QString &subtext, unsigned 
         index = 0;
         return false;
     }
-    for(int i = 1; i <= subtext.length(); i++)
+    for(int i = 1; i <= subtext.length(); ++i)
     {
         int pos = T[i - 1];
         while(pos != -1 && subtext[pos] != subtext[i - 1]) pos = T[pos];
@@ -81,7 +81,7 @@ bool Search::searchAfter(const QString &text, const QString &subtext, unsigned i
         index = 0;
         return false;
     }
-    for(int i = 1; i <= subtext.length(); i++)
+    for(int i = 1; i <= subtext.length(); ++i)
     {
         int pos = T[i - 1];
         while(pos != -1 && subtext[pos] != subtext[i - 1]) pos = T[pos];
@@ -127,7 +127,7 @@ int  Search::getTextBetweenTwoStrings(const QString &line, const QString &str1, 
         return 1;
     }
 
-    for(unsigned int i=index; i<index1; i++)
+    for(unsigned int i=index; i<index1; ++i)
     {
         text+=line[i];
     }

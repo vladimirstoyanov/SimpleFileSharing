@@ -222,6 +222,8 @@ void AddFile_GUI::loadData ()
 std::vector<FileData> AddFile_GUI::convertToVectorOfFileData()
 {
         std::vector<FileData> sharedFiles;
+        sharedFiles.reserve(m_model->rowCount());
+
         for (int i=0; i<m_model->rowCount(); i++)
         {
             FileData fileData (QString::number(i),

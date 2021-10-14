@@ -43,7 +43,7 @@ std::vector<RemoteHostFileData> ParseNetworkMessage::parseListResultMessage (con
     }
 
     QStringList pieces = resultMessage.split( "\n" );
-
+    remoteHostFileDataList.reserve(pieces.length());
     for (int i=1; i<pieces.length(); ++i) //first line is skipped (message protocol)
     {
         QStringList line = pieces[i].split("#");

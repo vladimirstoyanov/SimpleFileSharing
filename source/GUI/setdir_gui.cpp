@@ -88,5 +88,6 @@ QString SetDir_GUI::load()
 
 void SetDir_GUI::showEvent(QShowEvent *event)
 {
+    Q_UNUSED(event);
     load();
 }

@@ -249,7 +249,7 @@ void AddFile_GUI::on_removeButton_clicked()
     //get selected rows
     QModelIndexList indexes = m_ui->tableView->selectionModel()->selectedRows();
 
-    qSort(indexes.begin(), indexes.end());
+    std::sort(indexes.begin(), indexes.end());
 
     while (!indexes.isEmpty())
     {

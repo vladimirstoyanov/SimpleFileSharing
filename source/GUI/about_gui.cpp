@@ -17,7 +17,7 @@ void About_GUI::setupGui ()
     m_ui->setupUi(this);
 
     this->adjustSize();
-    this->move(QApplication::desktop()->screen()->rect().center() - this->rect().center());
+    this->move(this->screen()->availableGeometry().center()- this->rect().center());
 
     m_ui->textBrowser->setGeometry(0,0,this->width(), this->height());
     m_ui->textBrowser->setHtml("Simple File Sharing written by Vladimir Stoyanov.<p>e-mail: <a href=\"mailto:vlado_stoyanov@yahoo.com\">vlado_stoyanov@yahoo.com</p>");

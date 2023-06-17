@@ -4,6 +4,7 @@
 #include <memory>
 
 #include <QDesktopWidget>
+#include <QScreen>
 #include <QWidget>
 
 namespace Ui {

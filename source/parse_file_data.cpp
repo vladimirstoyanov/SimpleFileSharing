@@ -22,7 +22,7 @@ bool ParseFileData::isElementExist (const QString &line, const QString &element)
     Search search;
 
     search.searchAfter(line, element, index);
-    if (index != element.length())
+    if (index != (unsigned int)element.length())
     {
         return false;
     }

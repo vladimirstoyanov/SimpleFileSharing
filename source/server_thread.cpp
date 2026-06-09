@@ -140,9 +140,9 @@ void ServerThread::run()
         return;
     }
 
-    connect(&m_tcpSocket,SIGNAL(readyRead()),SLOT(readyToRead()),Qt::DirectConnection);
-    connect(&m_tcpSocket,SIGNAL(disconnected()),this,SLOT(disconnected()),Qt::DirectConnection);
-    connect(&m_tcpSocket,SIGNAL(error(QAbstractSocket::SocketError)),SLOT(sockError(QAbstractSocket::SocketError)),Qt::QueuedConnection);
+    connect(&m_tcpSocket, &QTcpSocket::readyRead, this, &ServerThread::readyToRead, Qt::DirectConnection);
+    connect(&m_tcpSocket, &QTcpSocket::disconnected, this, &ServerThread::disconnected, Qt::DirectConnection);
+    connect(&m_tcpSocket, &QAbstractSocket::errorOccurred, this, &ServerThread::sockError, Qt::QueuedConnection);
 
     exec();
 }

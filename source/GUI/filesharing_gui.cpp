@@ -150,10 +150,10 @@ void FileSharing_GUI::resizeEvent(QResizeEvent *event)
 
 void FileSharing_GUI::initModelTableView()
 {
-    m_model->setHorizontalHeaderItem(m_nameColumnId, new QStandardItem(QString("name")));
-    m_model->setHorizontalHeaderItem(m_progressColumnId, new QStandardItem(QString("progress")));
-    m_model->setHorizontalHeaderItem(m_downloadColumnId, new QStandardItem(QString("download")));
-    m_model->setHorizontalHeaderItem(m_sizeColumnId, new QStandardItem(QString("size (KB)")));
+    m_model->setHorizontalHeaderItem(m_nameColumnId, new QStandardItem(QString("Name")));
+    m_model->setHorizontalHeaderItem(m_progressColumnId, new QStandardItem(QString("Progress")));
+    m_model->setHorizontalHeaderItem(m_downloadColumnId, new QStandardItem(QString("Download")));
+    m_model->setHorizontalHeaderItem(m_sizeColumnId, new QStandardItem(QString("Size (KB)")));
     m_ui->tableView->setModel(m_model.get());
 }
 
@@ -292,10 +292,10 @@ void FileSharing_GUI::initActions()
 {
     m_ui->actionFilie_or_Directory->setShortcut(QKeySequence::New);
     m_ui->actionFilie_or_Directory->setStatusTip(tr("File"));
-    connect(m_ui->actionFilie_or_Directory, SIGNAL(triggered()), this, SLOT(menu_addFile()));
-    connect(m_ui->actionDownloaded_Directory, SIGNAL(triggered()), this, SLOT(menu_downloadedDirectory()));
-    connect(m_ui->actionSet_network, SIGNAL(triggered()), this, SLOT(menu_setNetwork()));
-    connect(m_ui->actionAbout, SIGNAL(triggered()), this, SLOT(menu_about()));
+    connect(m_ui->actionFilie_or_Directory, &QAction::triggered, this, &FileSharing_GUI::menu_addFile);
+    connect(m_ui->actionDownloaded_Directory, &QAction::triggered, this, &FileSharing_GUI::menu_downloadedDirectory);
+    connect(m_ui->actionSet_network, &QAction::triggered, this, &FileSharing_GUI::menu_setNetwork);
+    connect(m_ui->actionAbout, &QAction::triggered, this, &FileSharing_GUI::menu_about);
 }
 
 void FileSharing_GUI::menu_about()
@@ -436,7 +436,7 @@ void FileSharing_GUI::startDownload (const int row)
             double sizeDouble = m_model->item(i,m_sizeColumnId)->text().toDouble();
             qint64 size = sizeDouble *1000;
             std::shared_ptr<ClientThread> thread  = std::make_shared<ClientThread>(m_currentHost, query, m_model->item(i,m_nameColumnId)->text(),dir,size,i);
-            connect(thread.get(), SIGNAL(setProgress(int,double)), this, SLOT(onSetProgress(int,double)));
+            connect(thread.get(), &ClientThread::setProgress, this, &FileSharing_GUI::onSetProgress);
             m_clientManager->addClient(thread);
             return;
         }
@@ -534,13 +534,13 @@ void FileSharing_GUI::setThreadCount ()
 
 void FileSharing_GUI::setupConnections ()
 {
-    connect(m_scanIpGUI.get(),SIGNAL(scanIP(QString)),this,SLOT(onScanIP(QString)));
+    connect(m_scanIpGUI.get(), &ScanIP_GUI::scanIP, this, &FileSharing_GUI::onScanIP);
 
     //onFoundHost is called when a host is found
-    connect(m_scanNetwork.get(),SIGNAL(foundHost(QString)),this,SLOT(onFoundHost(QString)));
+    connect(m_scanNetwork.get(), &ScanNetworkThread::foundHost, this, &FileSharing_GUI::onFoundHost);
 
     //onScanFinished is called when the network scan is finished
-    connect(m_scanNetwork.get(),SIGNAL(scanFinished()),this,SLOT(onScanFinished()));
+    connect(m_scanNetwork.get(), &ScanNetworkThread::scanFinished, this, &FileSharing_GUI::onScanFinished);
 
     connect(&m_server, &Server::serverErrorOccurred, this, &FileSharing_GUI::onServerErrorOccurred);
 }

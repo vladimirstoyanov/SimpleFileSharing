@@ -14,7 +14,7 @@ void ClientManager::addClient (std::shared_ptr<ClientThread> clientThread)
 {
     if (m_clientThreads.find(clientThread->getRowId()) == m_clientThreads.end())
     {
-        QObject::connect(clientThread.get(), SIGNAL(clientThreadFinished(int)), this, SLOT(onClientThreadFinished(int)));
+        QObject::connect(clientThread.get(), &ClientThread::clientThreadFinished, this, &ClientManager::onClientThreadFinished);
         m_clientThreads.insert(std::make_pair (clientThread->getRowId(), clientThread));
     }
     startClientThread();

@@ -21,7 +21,7 @@
 #include <QMessageBox>
 #include <QTcpServer>
 
-#include <map>
+#include <unordered_map>
 
 #include "network_manager.h"
 #include "shared_files.h"
@@ -41,7 +41,7 @@ protected:
 
 private:
     std::shared_ptr<SharedFiles> m_sharedFiles;
-    std::map <qint64,  std::shared_ptr<ServerThread> > m_serverThreads;
+    std::unordered_map <qint64,  std::shared_ptr<ServerThread> > m_serverThreads;
 
 private slots:
     void onServerThreadFinished (qint64 id);

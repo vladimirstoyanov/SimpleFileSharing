@@ -16,10 +16,7 @@
 */
 
 #include "GUI/setnetwork_gui.h"
-#include "ui_setnetwork_gui.h"
-#include <QHostAddress>
-#include <QNetworkInterface>
-#include <QFile>
+
 
 SetNetwork_GUI::SetNetwork_GUI(QWidget *parent) :
     QDialog(parent),

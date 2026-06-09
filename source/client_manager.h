@@ -1,7 +1,7 @@
 #ifndef CLIENT_MANAGER_H
 #define CLIENT_MANAGER_H
 
-#include <map>
+#include <unordered_map>
 #include <memory>
 
 
@@ -13,9 +13,10 @@ class ClientManager: public QObject
 public:
     ClientManager();
     virtual ~ClientManager();
+
     void addClient (std::shared_ptr<ClientThread> clientThread);
 private:
-    std::map <int, std::shared_ptr<ClientThread> > m_clientThreads;
+    std::unordered_map <int, std::shared_ptr<ClientThread> > m_clientThreads;
     const int                                      m_clientsNotFound;
 
     int  getNextClient ();

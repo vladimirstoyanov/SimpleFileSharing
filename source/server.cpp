@@ -57,7 +57,7 @@ void Server::onServerThreadFinished (qint64 id)
 {
     qDebug()<<__PRETTY_FUNCTION__<<":thread with id has finished: "<<id;
 
-    std::map<qint64, std::shared_ptr<ServerThread> >::iterator it = m_serverThreads.find(id);
+    std::unordered_map<qint64, std::shared_ptr<ServerThread> >::iterator it = m_serverThreads.find(id);
     if (it != m_serverThreads.end())
     {
         it->second->terminate();

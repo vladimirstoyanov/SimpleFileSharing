@@ -60,7 +60,7 @@ private:
     int                                 m_fileNameId;
     std::unique_ptr<QStandardItemModel> m_model;
     int                                 m_offsetBetweenWidgets;
-    int                                  m_pathId;
+    int                                 m_pathId;
     std::shared_ptr<SharedFiles>        m_sharedFiles;
     int                                 m_sizeId;
     std::unique_ptr<Ui::AddFile_GUI>    m_ui;

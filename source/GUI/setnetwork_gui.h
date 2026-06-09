@@ -19,8 +19,14 @@
 #define SETNETWORK_GUI_H
 
 #include <QDialog>
+#include <QFile>
+#include <QHostAddress>
+#include <QNetworkInterface>
 
 #include <memory>
+
+#include "ui_setnetwork_gui.h"
+
 /*
   menu: "Settings"->"Set network"
 */

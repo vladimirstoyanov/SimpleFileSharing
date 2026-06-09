@@ -51,13 +51,15 @@ ScanIP_GUI::ScanIP_GUI(QWidget *parent) :
     m_ui->lineEdit_3->setValidator( validator2.get() );
     std::unique_ptr<QValidator> validator3 = std::make_unique<QRegularExpressionValidator>(rx, m_ui->lineEdit_4);
     m_ui->lineEdit_4->setValidator( validator3.get() );
+
+    connect(m_ui->okButton, &QPushButton::clicked, this, &ScanIP_GUI::okButtonClicked);
 }
 
 ScanIP_GUI::~ScanIP_GUI()
 {
 }
 
-void ScanIP_GUI::on_okButton_clicked()
+void ScanIP_GUI::okButtonClicked()
 {
     //change cursor
     QApplication::setOverrideCursor(Qt::WaitCursor);

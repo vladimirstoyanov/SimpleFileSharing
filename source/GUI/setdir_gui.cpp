@@ -27,27 +27,31 @@ SetDir_GUI::SetDir_GUI(QWidget *parent) :
 {
     m_ui->setupUi(this);
     this->setFixedSize(this->width(), this->height());
+
+    connect(m_ui->okButton, &QPushButton::clicked, this, &SetDir_GUI::okButtonClicked);
+    connect(m_ui->chooseDirectoryButton, &QPushButton::clicked, this, &SetDir_GUI::onSetDirectoryButtonClicked);
 }
 
 SetDir_GUI::~SetDir_GUI()
 {
 }
 
-//"OK" button
-void SetDir_GUI::on_okButton_clicked()
+//"OK" buton clicked
+void SetDir_GUI::okButtonClicked()
 {
     save();
     this->hide();
 }
 
-//"Choose Directory" button clicked
-void SetDir_GUI::on_chooseDirectoryButton_clicked()
+//"Set A Directory" button clicked
+void SetDir_GUI::onSetDirectoryButtonClicked()
 {
     QString dir = QFileDialog::getExistingDirectory(this, tr("Open Directory"),
                                                  "/home",
                                                  QFileDialog::ShowDirsOnly
                                                  | QFileDialog::DontResolveSymlinks);
     m_ui->lineEdit->setText(dir);
+
 }
 
 void SetDir_GUI::save()

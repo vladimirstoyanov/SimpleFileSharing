@@ -49,10 +49,10 @@ public:
     virtual ~AddFile_GUI();
 
 private slots:
-    void on_addButton_clicked();    //"Add" button
-    void on_cancelButton_clicked(); //"Cancel" button
-    void on_okButton_clicked();     //"OK" button
-    void on_removeButton_clicked(); //"Remove" button
+    void onAddButtonClicked();    //"Add" button
+    void onCancelButtonClicked(); //"Cancel" button
+    void onOkButtonClicked();     //"OK" button
+    void onRemoveButtonClicked(); //"Remove" button
 
 
 private:

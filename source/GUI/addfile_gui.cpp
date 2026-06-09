@@ -37,6 +37,11 @@ AddFile_GUI::AddFile_GUI(std::shared_ptr<SharedFiles> sharedFiles, QWidget *pare
 {
     m_ui->setupUi(this);
     initModelTableView();
+
+    connect(m_ui->okButton, &QPushButton::clicked, this, &AddFile_GUI::onOkButtonClicked);
+    connect(m_ui->addButton, &QPushButton::clicked, this, &AddFile_GUI::onAddButtonClicked);
+    connect(m_ui->cancelButton, &QPushButton::clicked, this, &AddFile_GUI::onCancelButtonClicked);
+    connect(m_ui->removeButton, &QPushButton::clicked, this, &AddFile_GUI::onRemoveButtonClicked);
 }
 
 AddFile_GUI::~AddFile_GUI()
@@ -44,7 +49,7 @@ AddFile_GUI::~AddFile_GUI()
 }
 
 //"Add" button
-void AddFile_GUI::on_addButton_clicked()
+void AddFile_GUI::onAddButtonClicked()
 {
     QStringList pathList = QFileDialog::getOpenFileNames(this, tr("Share File(s)"), m_addFileLastDir, tr("Files (*.*)"));
 
@@ -237,14 +242,14 @@ std::vector<FileData> AddFile_GUI::convertToVectorOfFileData()
 }
 
 //"OK" button
-void AddFile_GUI::on_okButton_clicked()
+void AddFile_GUI::onOkButtonClicked()
 {
     m_sharedFiles->update(convertToVectorOfFileData());
     this->hide();
 }
 
 //"Remove" button clicked
-void AddFile_GUI::on_removeButton_clicked()
+void AddFile_GUI::onRemoveButtonClicked()
 {
     //get selected rows
     QModelIndexList indexes = m_ui->tableView->selectionModel()->selectedRows();
@@ -264,7 +269,7 @@ void AddFile_GUI::showEvent( QShowEvent *event )
     loadData();
 }
 
-void AddFile_GUI::on_cancelButton_clicked()
+void AddFile_GUI::onCancelButtonClicked()
 {
     this->hide();
 }

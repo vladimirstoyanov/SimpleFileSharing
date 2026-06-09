@@ -128,14 +128,14 @@ private slots:
     void menu_addFile();
     void menu_downloadedDirectory();
     void menu_setNetwork();
-    void on_treeWidget_itemClicked(QTreeWidgetItem *item);
-    void on_downloadButton_clicked();                               //"Download" button
-    void on_scanIP(const QString &ip);
-    void on_scanIpButton_clicked();                                 //"Scan IP" button
-    void on_scanNetworkButton_clicked();                            //"Scan Network" button
-    void on_selectAllButton_clicked();                              //"Select All" button
-    void on_selectNoneButton_clicked();                             //"Select None" button
-    void on_setProgress (const int row, const double percentage);
+    void onTreeWidgetItemClicked(QTreeWidgetItem *item);
+    void onDownloadButtonClicked();                               //"Download" button
+    void onScanIP(const QString &ip);
+    void onScanIpButtonClicked();                                 //"Scan IP" button
+    void onScanNetworkButtonClicked();                            //"Scan Network" button
+    void onSelectAllButtonClicked();                              //"Select All" button
+    void onSelectNoneButtonClicked();                             //"Select None" button
+    void onSetProgress (const int row, const double percentage);
 
 signals:
     void EmerFinish(); //ToDo: change the name

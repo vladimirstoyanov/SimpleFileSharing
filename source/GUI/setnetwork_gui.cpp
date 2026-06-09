@@ -28,6 +28,9 @@ SetNetwork_GUI::SetNetwork_GUI(QWidget *parent) :
     m_ui->setupUi(this);
     addNetworksToComboBox ();
     this->setFixedSize(this->width(), this->height());
+
+    connect(m_ui->okButton, &QPushButton::clicked, this, &SetNetwork_GUI::onOkButtonClicked);
+    connect(m_ui->cancelButton, &QPushButton::clicked, this, &SetNetwork_GUI::onCancelButtonClicked);
 }
 
 SetNetwork_GUI::~SetNetwork_GUI()
@@ -35,14 +38,14 @@ SetNetwork_GUI::~SetNetwork_GUI()
 }
 
 //"OK" button
-void SetNetwork_GUI::on_okButton_clicked()
+void SetNetwork_GUI::onOkButtonClicked()
 {
     save();
     this->hide();
 }
 
 //"Cancel" button
-void SetNetwork_GUI::on_cancelButton_clicked()
+void SetNetwork_GUI::onCancelButtonClicked()
 {
     this->hide();
 }

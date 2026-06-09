@@ -47,8 +47,8 @@ private:
 
 private slots:
     void addNetworksToComboBox();
-    void on_okButton_clicked(); //"OK" button
-    void on_cancelButton_clicked(); //"Cancel" button
+    void onOkButtonClicked(); //"OK" button
+    void onCancelButtonClicked(); //"Cancel" button
 };
 
 #endif // SETNETWORK_GUI_H

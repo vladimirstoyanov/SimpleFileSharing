@@ -282,7 +282,7 @@ void FileSharing_GUI::clearTableView ()
 }
 
 //"Scan Network" button
-void FileSharing_GUI::on_scanNetworkButton_clicked()
+void FileSharing_GUI::onScanNetworkButtonClicked()
 {
     clearTableView();
     scanNetwork();
@@ -320,7 +320,7 @@ void FileSharing_GUI::menu_setNetwork()
 }
 
 
-void FileSharing_GUI::on_treeWidget_itemClicked(QTreeWidgetItem *item)
+void FileSharing_GUI::onTreeWidgetItemClicked(QTreeWidgetItem *item)
 {
     QApplication::setOverrideCursor(Qt::WaitCursor); //change the cursor
     clearTableView();
@@ -436,7 +436,7 @@ void FileSharing_GUI::startDownload (const int row)
             double sizeDouble = m_model->item(i,m_sizeColumnId)->text().toDouble();
             qint64 size = sizeDouble *1000;
             std::shared_ptr<ClientThread> thread  = std::make_shared<ClientThread>(m_currentHost, query, m_model->item(i,m_nameColumnId)->text(),dir,size,i);
-            connect(thread.get(), SIGNAL(setProgress(int,double)), this, SLOT(on_setProgress(int,double)));
+            connect(thread.get(), SIGNAL(setProgress(int,double)), this, SLOT(onSetProgress(int,double)));
             m_clientManager->addClient(thread);
             return;
         }
@@ -444,7 +444,7 @@ void FileSharing_GUI::startDownload (const int row)
 }
 
 //"Download" button
-void FileSharing_GUI::on_downloadButton_clicked()
+void FileSharing_GUI::onDownloadButtonClicked()
 {
     if (m_downloadButtonClicked)
     {
@@ -467,7 +467,7 @@ void FileSharing_GUI::next(const int row)
     m_downloadButtonClicked = false;
 }
 
-void FileSharing_GUI::on_setProgress(const int row, const double percentage)
+void FileSharing_GUI::onSetProgress(const int row, const double percentage)
 {
     double error = -1;
     double downloadFinished = 100;
@@ -488,12 +488,12 @@ void FileSharing_GUI::on_setProgress(const int row, const double percentage)
 }
 
 //"Scan IP" button
-void FileSharing_GUI::on_scanIpButton_clicked()
+void FileSharing_GUI::onScanIpButtonClicked()
 {
     m_scanIpGUI->show();
 }
 
-void FileSharing_GUI::on_scanIP(const QString &ip)
+void FileSharing_GUI::onScanIP(const QString &ip)
 {
     if (""!=ip)
     {
@@ -502,7 +502,7 @@ void FileSharing_GUI::on_scanIP(const QString &ip)
 }
 
 //"Select All" button
-void FileSharing_GUI::on_selectAllButton_clicked()
+void FileSharing_GUI::onSelectAllButtonClicked()
 {
     for (int i=0; i<m_model->rowCount(); ++i)
     {
@@ -511,7 +511,7 @@ void FileSharing_GUI::on_selectAllButton_clicked()
 }
 
 //"Select None" button
-void FileSharing_GUI::on_selectNoneButton_clicked()
+void FileSharing_GUI::onSelectNoneButtonClicked()
 {
     for (int i=0; i<m_model->rowCount(); i++)
     {
@@ -534,7 +534,7 @@ void FileSharing_GUI::setThreadCount ()
 
 void FileSharing_GUI::setupConnections ()
 {
-    connect(m_scanIpGUI.get(),SIGNAL(scanIP(QString)),this,SLOT(on_scanIP(QString)));
+    connect(m_scanIpGUI.get(),SIGNAL(scanIP(QString)),this,SLOT(onScanIP(QString)));
 
     //when a host has been found
     connect(m_scanNetwork.get(),SIGNAL(foundHost(QString)),this,SLOT(onFoundHost(QString)));
@@ -567,5 +567,15 @@ void FileSharing_GUI::setupGui ()
 
     //init waiting gif animation
     m_loadingGif->setMovie(m_movie.get());
+
+    //on click button connections
+    connect(m_ui->downloadButton, &QPushButton::clicked, this, &FileSharing_GUI::onDownloadButtonClicked);
+    connect(m_ui->scanIpButton, &QPushButton::clicked, this, &FileSharing_GUI::onScanIpButtonClicked);
+    connect(m_ui->scanNetworkButton, &QPushButton::clicked, this, &FileSharing_GUI::onScanNetworkButtonClicked);
+    connect(m_ui->selectAllButton, &QPushButton::clicked, this, &FileSharing_GUI::onSelectAllButtonClicked);
+    connect(m_ui->selectNoneButton, &QPushButton::clicked, this, &FileSharing_GUI::onSelectNoneButtonClicked);
+
+    //QTreeWidget item clicked
+    connect(m_ui->treeWidget, &QTreeWidget::itemClicked, this, &FileSharing_GUI::onTreeWidgetItemClicked);
 }
 

@@ -48,7 +48,7 @@ private:
     std::unique_ptr <Ui::ScanIP_GUI> m_ui;
 
 private slots:
-    void on_okButton_clicked();
+    void okButtonClicked();
 
 signals:
     void scanIP(const QString &);

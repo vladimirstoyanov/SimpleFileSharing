@@ -49,7 +49,7 @@ private:
 
     bool        checkFileHash (const QString &filePath, const QString &remoteFileHash);
     bool        connectToHost (QTcpSocket &socket, const QString &ip);
-    void        createFile (QTcpSocket &socket, QByteArray &fileBuffer, const QString &filePath, const qint64 size, std::function<void(int)> downloadProgress);
+    void        downloadFileHelper (QTcpSocket &socket, QByteArray &fileBuffer, const QString &filePath, const qint64 size, std::function<void(int)> downloadProgress);
     QString     getResultAsQString (QTcpSocket &socket);
     QString     getFileHash (QTcpSocket &tcpSocket, QByteArray &fileBuffer, const QString &ip, const QString &query);
     void        requestFileList (QTcpSocket &socket);

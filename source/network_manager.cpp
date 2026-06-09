@@ -95,7 +95,7 @@ void NetworkManager::downloadFile (const QString &ip,
     QByteArray fileBuffer;
 
     QString remoteFileHash = getFileHash(tcpSocket,  fileBuffer, ip, query);
-    createFile (tcpSocket, fileBuffer, filePath, size, downloadProgress);
+    downloadFileHelper (tcpSocket, fileBuffer, filePath, size, downloadProgress);
 
     if (!checkFileHash(filePath, remoteFileHash))
     {
@@ -110,22 +110,18 @@ void NetworkManager::downloadFile (const QString &ip,
 
 bool NetworkManager::checkFileHash (const QString &filePath, const QString &remoteFileHash)
 {
-    if (remoteFileHash!=m_fileOperations.getFileHash(filePath).data())
-    {
-        return false;
-    }
-    return true;
+    return remoteFileHash.compare(m_fileOperations.getFileHash(filePath), Qt::CaseInsensitive) == 0;
 }
 
-void NetworkManager::createFile (QTcpSocket &socket,
+void NetworkManager::downloadFileHelper (QTcpSocket &socket,
                                  QByteArray &fileBuffer,
                                  const QString &filePath,
                                  const qint64 size, std::function<void (int)> downloadProgress)
 {
     int percentage = 0;
-    QFile f(filePath);
+    QFile fileObject(filePath);
 
-    if (!f.open(QIODevice::WriteOnly))
+    if (!fileObject.open(QIODevice::WriteOnly))
     {
         qDebug()<<__PRETTY_FUNCTION__<<": Can't open " + filePath + ".";
         socket.close();
@@ -135,7 +131,7 @@ void NetworkManager::createFile (QTcpSocket &socket,
 
     if (fileBuffer.size()>0)
     {
-        f.write(fileBuffer);
+        fileObject.write(fileBuffer);
     }
 
     int currentSize = 0;
@@ -152,10 +148,10 @@ void NetworkManager::createFile (QTcpSocket &socket,
             }
         }
 
-        f.write(fileBuffer);
+        fileObject.write(fileBuffer);
     }
 
-    f.close();
+    fileObject.close();
     socket.close();
 }
 

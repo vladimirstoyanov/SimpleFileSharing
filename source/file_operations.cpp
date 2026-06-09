@@ -8,7 +8,7 @@ FileOperations::FileOperations()
 
 QByteArray FileOperations::getFileHash(const QString &fileName)
 {
-    QCryptographicHash crypto(QCryptographicHash::Sha1);
+    QCryptographicHash crypto(QCryptographicHash::Sha256);
     QFile file(fileName);
 
     if (!file.open(QFile::ReadOnly))

@@ -536,11 +536,13 @@ void FileSharing_GUI::setupConnections ()
 {
     connect(m_scanIpGUI.get(),SIGNAL(scanIP(QString)),this,SLOT(onScanIP(QString)));
 
-    //when a host has been found
+    //onFoundHost is called when a host is found
     connect(m_scanNetwork.get(),SIGNAL(foundHost(QString)),this,SLOT(onFoundHost(QString)));
 
-    //when the network scanner has finished
+    //onScanFinished is called when the network scan is finished
     connect(m_scanNetwork.get(),SIGNAL(scanFinished()),this,SLOT(onScanFinished()));
+
+    connect(&m_server, &Server::serverErrorOccurred, this, &FileSharing_GUI::onServerErrorOccurred);
 }
 
 void FileSharing_GUI::setupGui ()
@@ -556,12 +558,14 @@ void FileSharing_GUI::setupGui ()
                  +3*m_offsetBetweenWidgets,
                  this->height());
 
-    m_server.StartServer();
+
 
     //init menu actions
     initActions();
 
     setupConnections();
+
+    m_server.StartServer();
 
     m_ui->treeWidget->setHeaderLabel("Avaliable Hosts");
 
@@ -579,3 +583,7 @@ void FileSharing_GUI::setupGui ()
     connect(m_ui->treeWidget, &QTreeWidget::itemClicked, this, &FileSharing_GUI::onTreeWidgetItemClicked);
 }
 
+void FileSharing_GUI::onServerErrorOccurred(const QString &errorMessage)
+{
+    QMessageBox::critical(nullptr,"Error!", errorMessage);
+}

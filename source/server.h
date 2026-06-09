@@ -32,16 +32,21 @@ class Server : public QTcpServer
     Q_OBJECT
 
 public:
-    explicit Server(std::shared_ptr<SharedFiles> sharedFiles, QObject *parent = 0);
-    virtual ~Server ();
+    explicit Server(const std::shared_ptr<SharedFiles> &sharedFiles, QObject *parent = 0);
+    virtual ~Server () override;
     void StartServer();
 
+
+
 protected:
-    void incomingConnection(qintptr id);
+    void incomingConnection(qintptr id) override;
 
 private:
     std::shared_ptr<SharedFiles> m_sharedFiles;
     std::unordered_map <qint64,  std::shared_ptr<ServerThread> > m_serverThreads;
+
+signals:
+    void serverErrorOccurred(const QString &message);
 
 private slots:
     void onServerThreadFinished (qint64 id);

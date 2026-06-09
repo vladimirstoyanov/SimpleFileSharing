@@ -136,6 +136,7 @@ private slots:
     void onSelectAllButtonClicked();                              //"Select All" button
     void onSelectNoneButtonClicked();                             //"Select None" button
     void onSetProgress (const int row, const double percentage);
+    void onServerErrorOccurred (const QString &errorMessage);
 
 signals:
     void EmerFinish(); //ToDo: change the name

@@ -17,7 +17,7 @@
 
 #include "server.h"
 #include <QDebug>
-Server::Server(std::shared_ptr<SharedFiles> sharedFiles, QObject *parent) :
+Server::Server(const std::shared_ptr<SharedFiles> &sharedFiles, QObject *parent) :
     QTcpServer(parent)
     , m_sharedFiles(sharedFiles)
 {
@@ -25,6 +25,14 @@ Server::Server(std::shared_ptr<SharedFiles> sharedFiles, QObject *parent) :
 
 Server::~Server()
 {
+    for (auto& pair : m_serverThreads)
+    {
+        if (pair.second->isRunning())
+        {
+            pair.second->quit();
+            pair.second->wait();
+        }
+    }
 }
 
 void Server::StartServer()
@@ -33,11 +41,11 @@ void Server::StartServer()
     int port = networkManager.getPort ();
     if (!this->listen(QHostAddress::Any, port))
     {
-        QString errorMessage = "Port ";
-        errorMessage+=QString::number(port);
-        errorMessage+=" can't be opened!";
+        QString errorMessage = QString("Port %1 can't be opened!").arg(port);
+        qWarning() << errorMessage;
 
-        QMessageBox::critical(nullptr,"Error!", errorMessage);
+        // Let the UI tier handle this presentation
+        emit serverErrorOccurred(errorMessage);
     }
 }
 
@@ -46,7 +54,7 @@ void Server::incomingConnection(qintptr id)
     qDebug()<<__PRETTY_FUNCTION__<<": ID: "<<QString::number(id);
     std::shared_ptr<ServerThread> thread = std::make_shared<ServerThread>(id, m_sharedFiles);
 
-    connect(thread.get(), SIGNAL(serverThreadFinished(qint64)),this, SLOT(onServerThreadFinished(qint64)));
+    connect(thread.get(), &ServerThread::serverThreadFinished, this, &Server::onServerThreadFinished);
 
     thread->start();
 
@@ -55,12 +63,11 @@ void Server::incomingConnection(qintptr id)
 
 void Server::onServerThreadFinished (qint64 id)
 {
-    qDebug()<<__PRETTY_FUNCTION__<<":thread with id has finished: "<<id;
+    qDebug()<<__PRETTY_FUNCTION__<<": Thread with id has finished: "<<id;
 
-    std::unordered_map<qint64, std::shared_ptr<ServerThread> >::iterator it = m_serverThreads.find(id);
+    auto it = m_serverThreads.find(id);
     if (it != m_serverThreads.end())
     {
-        it->second->terminate();
-        m_serverThreads.erase(id);
+        m_serverThreads.erase(it);
     }
 }

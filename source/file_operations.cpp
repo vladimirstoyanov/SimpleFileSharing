@@ -13,7 +13,7 @@ QByteArray FileOperations::getFileHash(const QString &fileName)
 
     if (!file.open(QFile::ReadOnly))
     {
-        return "";
+        return QByteArray();
     }
 
     while(!file.atEnd())

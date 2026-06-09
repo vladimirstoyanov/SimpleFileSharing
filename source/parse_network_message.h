@@ -1,9 +1,10 @@
 #ifndef PARSENETWORKMESSAGE_H
 #define PARSENETWORKMESSAGE_H
 
-#include <vector>
-
 #include <QString>
+#include <QStringList>
+
+#include <vector>
 
 #include "message_codes.h"
 #include "protocol_data.h"

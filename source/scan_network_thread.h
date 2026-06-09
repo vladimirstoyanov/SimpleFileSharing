@@ -25,9 +25,9 @@
 #include <QTcpSocket>
 #include <QThread>
 #include <QThreadPool>
-#include <QtCore>
 
 #include <vector>
+
 #include "network_manager.h"
 
 class ScanNetworkThread: public QObject, public QRunnable

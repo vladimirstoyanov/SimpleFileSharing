@@ -18,17 +18,18 @@
 #ifndef CLIENT_THREAD_H
 #define CLIENT_THREAD_H
 
-#include <functional>
-
 #include <QDebug>
 #include <QFileInfo>
 #include <QHostInfo>
 #include <QQueue>
-#include <QThread>
 #include <QTcpSocket>
+#include <QThread>
 
-#include "protocol_data.h"
+#include <functional>
+
 #include "network_manager.h"
+#include "protocol_data.h"
+
 
 class ClientThread: public QThread
 {

@@ -18,16 +18,15 @@
 #ifndef SERVER_THREAD_H
 #define SERVER_THREAD_H
 
-#include <memory>
-#include <vector>
-
-
 #include <QDebug>
 #include <QFile>
 #include <QStringList>
 #include <QThread>
 #include <QTcpServer>
 #include <QTcpSocket>
+
+#include <memory>
+#include <vector>
 
 #include "file_data.h"
 #include "message_codes.h"

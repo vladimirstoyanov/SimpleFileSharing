@@ -18,9 +18,9 @@
 #ifndef SETDIR_GUI_H
 #define SETDIR_GUI_H
 
-#include <memory>
-
 #include <QDialog>
+
+#include <memory>
 
 namespace Ui
 {

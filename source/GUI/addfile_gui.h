@@ -28,11 +28,11 @@ menu: Share->File
 #include <QStandardItemModel>
 #include <QMessageBox>
 
-#include <memory>
-#include <vector>
-
 #include "parse_file_data.h"
 #include "shared_files.h"
+
+#include <memory>
+#include <vector>
 
 namespace Ui
 {

@@ -1,9 +1,6 @@
 #ifndef PROTOCOLMESSAGES_H
 #define PROTOCOLMESSAGES_H
 
-#include <QByteArray>
-#include <QString>
-
 #include "file_data.h"
 #include "file_operations.h"
 

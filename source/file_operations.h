@@ -1,10 +1,11 @@
 #ifndef FILEMANAGER_H
 #define FILEMANAGER_H
 
+#include <QString>
 #include <QCryptographicHash>
 #include <QFile>
 #include <QFileInfo>
-#include <QString>
+
 
 #include "message_codes.h"
 

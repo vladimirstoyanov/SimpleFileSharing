@@ -1,9 +1,9 @@
 #ifndef SHARED_FILES_H
 #define SHARED_FILES_H
 
-#include <vector>
-
 #include <QFile>
+
+#include <vector>
 
 #include "file_data.h"
 #include "parse_file_data.h"

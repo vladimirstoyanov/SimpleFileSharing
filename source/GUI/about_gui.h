@@ -1,10 +1,10 @@
 #ifndef ABOUT_GUI_H
 #define ABOUT_GUI_H
 
-#include <memory>
-
 #include <QScreen>
 #include <QWidget>
+
+#include <memory>
 
 namespace Ui {
 class About_GUI;

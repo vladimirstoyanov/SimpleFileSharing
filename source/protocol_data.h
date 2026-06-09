@@ -18,11 +18,7 @@
 #ifndef PROTOCOL_DATA_H
 #define PROTOCOL_DATA_H
 
-#include <string>
-
 #include <QByteArray>
-#include <QDebug>
-#include <QFile>
 
 #include "message_codes.h"
 

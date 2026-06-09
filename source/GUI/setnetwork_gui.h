@@ -18,10 +18,9 @@
 #ifndef SETNETWORK_GUI_H
 #define SETNETWORK_GUI_H
 
-#include <memory>
-
 #include <QDialog>
 
+#include <memory>
 /*
   menu: "Settings"->"Set network"
 */

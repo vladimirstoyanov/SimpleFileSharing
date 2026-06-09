@@ -18,14 +18,13 @@
 #ifndef SCANIP_GUI_H
 #define SCANIP_GUI_H
 
-#include <memory>
-
 #include <QDialog>
 #include <QLabel>
-#include <QMovie>
 
 #include "network_manager.h"
 #include "scan_network_thread.h"
+
+#include <memory>
 
 /*
  This gui class is shown when the user clicked on 'Scan IP' button from main window.

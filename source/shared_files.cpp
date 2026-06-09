@@ -18,12 +18,15 @@ void SharedFiles::addFile (const FileData &fileData)
 
 void SharedFiles::removeFile (const FileData &fileData)
 {
-    std::remove_if(m_fileData.begin(),
-               m_fileData.end(),
-               [&](const FileData & item)
-               {
-                    return (item == fileData);
-               });
+    m_fileData.erase(
+        std::remove_if(m_fileData.begin(),
+                       m_fileData.end(),
+                       [&](const FileData & item)
+                       {
+                           return (item == fileData);
+                       }),
+        m_fileData.end()
+        );
 }
 
 bool SharedFiles::load()

@@ -1,15 +1,15 @@
 #ifndef NETWORK_MANAGER_H
 #define NETWORK_MANAGER_H
 
-#include <functional>
-#include <vector>
-
+#include <QString>
 #include <QFile>
 #include <QFileInfo>
 #include <QNetworkInterface>
-#include <QString>
 #include <QTcpServer>
 #include <QTcpSocket>
+
+#include <functional>
+#include <vector>
 
 #include "protocol_data.h"
 #include "protocol_messages.h"

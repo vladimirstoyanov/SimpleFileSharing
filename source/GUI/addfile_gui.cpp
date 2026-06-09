@@ -28,7 +28,7 @@ AddFile_GUI::AddFile_GUI(std::shared_ptr<SharedFiles> sharedFiles, QWidget *pare
     QDialog(parent)
     , m_addFileLastDir("")
     , m_fileNameId (0)
-    , m_model (std::make_shared<QStandardItemModel>(0,3,this))
+    , m_model (std::make_unique<QStandardItemModel>(0,3,this))
     , m_offsetBetweenWidgets(5)
     , m_pathId (1)
     , m_sharedFiles (sharedFiles)

@@ -58,7 +58,7 @@ private slots:
 private:
     QString                             m_addFileLastDir;
     int                                 m_fileNameId;
-    std::shared_ptr<QStandardItemModel> m_model;
+    std::unique_ptr<QStandardItemModel> m_model;
     int                                 m_offsetBetweenWidgets;
     int                                  m_pathId;
     std::shared_ptr<SharedFiles>        m_sharedFiles;

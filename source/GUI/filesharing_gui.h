@@ -67,31 +67,31 @@ public slots:
     void onScanFinished();
 
 private:
-    std::shared_ptr<About_GUI>              m_aboutGUI;
+    std::unique_ptr<About_GUI>              m_aboutGUI;
     std::shared_ptr<SharedFiles>            m_sharedFiles;
-    std::shared_ptr<AddFile_GUI>            m_addFileGUI;
+    std::unique_ptr<AddFile_GUI>            m_addFileGUI;
     int                                     m_defaultThreadCount;
     bool                                    m_downloadButtonClicked;
     int                                     m_downloadColumnId;
-    std::shared_ptr<ClientManager>          m_clientManager;
+    std::unique_ptr<ClientManager>          m_clientManager;
     QString                                 m_currentHost;
-    std::shared_ptr<QLabel>                 m_loadingGif;
+    std::unique_ptr<QLabel>                 m_loadingGif;
     int                                     m_loadingGifWidth;
     int                                     m_loadingGifHeight;
     int                                     m_maxHostCount;
-    std::shared_ptr<QStandardItemModel>     m_model;
-    std::shared_ptr<QMovie>                 m_movie;
+    std::unique_ptr<QStandardItemModel>     m_model;
+    std::unique_ptr<QMovie>                 m_movie;
     int                                     m_nameColumnId;
     int                                     m_offsetBetweenWidgets;
     int                                     m_progressColumnId;
     ProtocolMessages                        m_protocolMessages;
-    std::shared_ptr<ScanIP_GUI>             m_scanIpGUI;
-    std::shared_ptr<ScanNetworkThread>      m_scanNetwork;
+    std::unique_ptr<ScanIP_GUI>             m_scanIpGUI;
+    std::unique_ptr<ScanNetworkThread>      m_scanNetwork;
     Server                                  m_server;
-    std::shared_ptr<SetDir_GUI>             m_setDirGUI;
-    std::shared_ptr<SetNetwork_GUI>         m_setNetworkGUI;
+    std::unique_ptr<SetDir_GUI>             m_setDirGUI;
+    std::unique_ptr<SetNetwork_GUI>         m_setNetworkGUI;
     int                                     m_sizeColumnId;
-    std::shared_ptr<QThreadPool>            m_threadPool;
+    std::unique_ptr<QThreadPool>            m_threadPool;
     std::unique_ptr<Ui::FileSharing_GUI>    m_ui;
 
 

@@ -41,7 +41,7 @@ public:
     QString load();
 
 private:
-    std::shared_ptr<Ui::SetNetwork_GUI> m_ui;
+    std::unique_ptr<Ui::SetNetwork_GUI> m_ui;
 
     void showEvent(QShowEvent *);
     void save ();

@@ -33,7 +33,7 @@ AddFile_GUI::AddFile_GUI(std::shared_ptr<SharedFiles> sharedFiles, QWidget *pare
     , m_pathId (1)
     , m_sharedFiles (sharedFiles)
     , m_sizeId (2)
-    , m_ui(std::make_shared<Ui::AddFile_GUI> ())
+    , m_ui(std::make_unique<Ui::AddFile_GUI> ())
 {
     m_ui->setupUi(this);
     initModelTableView();

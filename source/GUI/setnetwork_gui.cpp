@@ -23,7 +23,7 @@
 
 SetNetwork_GUI::SetNetwork_GUI(QWidget *parent) :
     QDialog(parent),
-    m_ui(std::make_shared <Ui::SetNetwork_GUI> ())
+    m_ui(std::make_unique <Ui::SetNetwork_GUI> ())
 {
     m_ui->setupUi(this);
     addNetworksToComboBox ();

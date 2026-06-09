@@ -3,7 +3,7 @@
 
 About_GUI::About_GUI(QWidget *parent) :
     QWidget(parent),
-    m_ui(std::make_shared<Ui::About_GUI> ())
+    m_ui(std::make_unique<Ui::About_GUI> ())
 {
     setupGui();
 }

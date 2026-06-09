@@ -92,7 +92,7 @@ private:
     std::shared_ptr<SetNetwork_GUI>         m_setNetworkGUI;
     int                                     m_sizeColumnId;
     std::shared_ptr<QThreadPool>            m_threadPool;
-    std::shared_ptr<Ui::FileSharing_GUI>    m_ui;
+    std::unique_ptr<Ui::FileSharing_GUI>    m_ui;
 
 
     void    addDataInTableView(const QString &file_name, const QString &size);

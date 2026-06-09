@@ -44,7 +44,7 @@ FileSharing_GUI::FileSharing_GUI(QWidget *parent) :
     , m_setNetworkGUI (std::make_shared<SetNetwork_GUI>())
     , m_sizeColumnId (3)
     , m_threadPool (std::make_shared<QThreadPool>(this))
-    , m_ui(std::make_shared<Ui::FileSharing_GUI> ())
+    , m_ui(std::make_unique<Ui::FileSharing_GUI> ())
 {
     setupGui();
 }

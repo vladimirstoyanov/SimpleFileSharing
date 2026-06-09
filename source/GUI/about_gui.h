@@ -3,7 +3,6 @@
 
 #include <memory>
 
-#include <QDesktopWidget>
 #include <QScreen>
 #include <QWidget>
 
@@ -20,7 +19,7 @@ public:
     ~About_GUI();
 
 private:
-    std::shared_ptr<Ui::About_GUI> m_ui;
+    std::unique_ptr<Ui::About_GUI> m_ui;
 
     void setupGui ();
 };

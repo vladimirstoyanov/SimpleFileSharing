@@ -31,7 +31,7 @@
 ScanIP_GUI::ScanIP_GUI(QWidget *parent) :
     QDialog(parent)
     , m_maxHostCount(256)
-    , m_ui(std::make_shared<Ui::ScanIP_GUI> ())
+    , m_ui(std::make_unique<Ui::ScanIP_GUI> ())
 {
     m_ui->setupUi(this);
 
@@ -42,14 +42,14 @@ ScanIP_GUI::ScanIP_GUI(QWidget *parent) :
     m_ui->lineEdit_4->setAlignment(Qt::AlignCenter);
 
 
-    QRegExp rx ( "^(0|[1-9]|[1-9][0-9]|1[0-9][0-9]|2([0-4][0-9]|5[0-5]))$" );
-    std::shared_ptr<QValidator> validator = std::make_shared<QRegExpValidator>(rx, m_ui->lineEdit);
+    QRegularExpression rx ( "^(0|[1-9]|[1-9][0-9]|1[0-9][0-9]|2([0-4][0-9]|5[0-5]))$" );
+    std::unique_ptr<QValidator> validator = std::make_unique<QRegularExpressionValidator>(rx, m_ui->lineEdit);
     m_ui->lineEdit->setValidator( validator.get() );
-    std::shared_ptr<QValidator> validator1 = std::make_shared<QRegExpValidator>(rx,  m_ui->lineEdit_2);
+    std::unique_ptr<QValidator> validator1 = std::make_unique<QRegularExpressionValidator>(rx,  m_ui->lineEdit_2);
     m_ui->lineEdit_2->setValidator( validator1.get() );
-    std::shared_ptr<QValidator> validator2 = std::make_shared<QRegExpValidator>(rx,  m_ui->lineEdit_3);
+    std::unique_ptr<QValidator> validator2 = std::make_unique<QRegularExpressionValidator>(rx,  m_ui->lineEdit_3);
     m_ui->lineEdit_3->setValidator( validator2.get() );
-    std::shared_ptr<QValidator> validator3 = std::make_shared<QRegExpValidator>(rx, m_ui->lineEdit_4);
+    std::unique_ptr<QValidator> validator3 = std::make_unique<QRegularExpressionValidator>(rx, m_ui->lineEdit_4);
     m_ui->lineEdit_4->setValidator( validator3.get() );
 }
 

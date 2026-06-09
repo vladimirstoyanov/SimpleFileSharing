@@ -23,7 +23,7 @@
 
 SetDir_GUI::SetDir_GUI(QWidget *parent) :
     QDialog(parent),
-    m_ui(std::make_shared<Ui::SetDir_GUI> ())
+    m_ui(std::make_unique<Ui::SetDir_GUI> ())
 {
     m_ui->setupUi(this);
     this->setFixedSize(this->width(), this->height());

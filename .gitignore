@@ -1,3 +1,7 @@
+source/.qtcreator/
+source/build/
+
+
 # Compiled Object files
 *.slo
 *.lo

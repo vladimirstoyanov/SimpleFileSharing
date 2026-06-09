@@ -46,7 +46,7 @@ public:
 
 private:
     unsigned int                     m_maxHostCount;
-    std::shared_ptr <Ui::ScanIP_GUI> m_ui;
+    std::unique_ptr <Ui::ScanIP_GUI> m_ui;
 
 private slots:
     void on_okButton_clicked();

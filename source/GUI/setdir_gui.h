@@ -41,7 +41,7 @@ public:
     QString load();
 
 private:
-    std::shared_ptr<Ui::SetDir_GUI> m_ui;
+    std::unique_ptr<Ui::SetDir_GUI> m_ui;
 
     void save ();
     void showEvent( QShowEvent *event );

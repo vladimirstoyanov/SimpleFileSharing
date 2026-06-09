@@ -63,7 +63,7 @@ private:
     int                                  m_pathId;
     std::shared_ptr<SharedFiles>        m_sharedFiles;
     int                                 m_sizeId;
-    std::shared_ptr<Ui::AddFile_GUI>    m_ui;
+    std::unique_ptr<Ui::AddFile_GUI>    m_ui;
 
 
     void addToTableView(const FileData & fileData);
